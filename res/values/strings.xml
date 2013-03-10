@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PontoPro</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="checkin">Checkin</string>
+    <string name="user_image_status">user image status</string>
+    <string name="daily_working_hours">Expediente diário</string>
+    <string name="daily_goal">Meta diária</string>
+    <string name="no_checkins_done">Nenhum checkin realizado</string>
+
+</resources>
