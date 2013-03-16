@@ -6,11 +6,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 
-public class MainActivity extends SherlockFragmentActivity {
+public class MainActivity extends SherlockFragmentActivity{
 
 	private ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
@@ -21,17 +22,23 @@ public class MainActivity extends SherlockFragmentActivity {
 		setContentView(R.layout.activity_main);
 		
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mPagerAdapter = new CheckinHistoryAdapter(getSupportFragmentManager());
-		mViewPager.setAdapter(mPagerAdapter);
+		if(mViewPager != null)
+		{
+			mPagerAdapter = new CheckinHistoryAdapter(getSupportFragmentManager());
+			mViewPager.setAdapter(mPagerAdapter);
+		}
 	}
 	
 	@Override
     public void onBackPressed() {
-        if (mViewPager.getCurrentItem() == 0) {
-            super.onBackPressed();
-        } else {
-            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
-        }
+		if(mViewPager != null)
+		{
+	        if (mViewPager.getCurrentItem() == 0) {
+	            super.onBackPressed();
+	        } else {
+	            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
+	        }
+		}
     }
 
 	@Override
@@ -41,7 +48,7 @@ public class MainActivity extends SherlockFragmentActivity {
 		return true;
 	}
 	
-	private class CheckinHistoryAdapter extends FragmentPagerAdapter
+	private class CheckinHistoryAdapter extends FragmentPagerAdapter implements OnPageChangeListener
 	{
 		Fragment screens[];
 		public CheckinHistoryAdapter(FragmentManager fm) {
@@ -64,7 +71,19 @@ public class MainActivity extends SherlockFragmentActivity {
 		public int getCount() {
 			return screens.length;
 		}
+
+		@Override
+		public void onPageScrollStateChanged(int arg0) {
+		}
+
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2) {
+		}
+
+		@Override
+		public void onPageSelected(int currentItem) {
+			//if(currentItem == 1)  screens[0].
+		}
 	}
 	
-
 }
