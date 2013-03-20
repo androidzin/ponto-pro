@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import br.com.androidzin.pontopro.database.DatabaseManager;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -15,18 +16,27 @@ public class MainActivity extends SherlockFragmentActivity{
 
 	private ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
+	private DatabaseManager mDatabaseManager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+		mDatabaseManager = new DatabaseManager(getApplicationContext());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		if(mViewPager != null)
 		{
 			mPagerAdapter = new CheckinHistoryAdapter(getSupportFragmentManager());
 			mViewPager.setAdapter(mPagerAdapter);
 		}
+
+	}
+	
+	
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDatabaseManager.close();
 	}
 	
 	@Override
