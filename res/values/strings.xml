@@ -19,6 +19,8 @@
     <string name="daily_working_hours">Expediente diário</string>
     <string name="daily_goal">Meta diária</string>
     <string name="no_checkins_done">Nenhum checkin realizado</string>
+    <string name="zerohour">00:00</string>
+    <string name="define_daily_goal">Qual sua meta hoje?</string>
     
 
 </resources>
