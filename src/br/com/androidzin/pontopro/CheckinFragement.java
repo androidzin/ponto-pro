@@ -1,12 +1,10 @@
 package br.com.androidzin.pontopro;
 
-import java.text.SimpleDateFormat;
-
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.os.Bundle;
-import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,21 +23,22 @@ public class CheckinFragement extends SherlockFragment implements OnTimeSetListe
 	private static final int minutesInMilis = 60000;
 	
 	private boolean hasDailyGoal;
-	private TextView mDailyGoal, mDailyGoalHour;
+	private TextView mDailyGoal, mWorktimeRemaining;
 	private ProgressBar mDailyGoalBar;
-	private CountDownTimer mDailyGoalTimer, mWorkHourTimer;
+	private Handler mHandler;
+	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
+		mHandler = new Handler();
 		setHasOptionsMenu(true);
 		return inflater.inflate(R.layout.checkin_fragement, container, false);
 	}
 	
 	public void onViewCreated(View view, Bundle savedInstanceState) {	
 		mDailyGoal = (TextView) view.findViewById(R.id.dailyGoalText);
-		mDailyGoalHour = (TextView) view.findViewById(R.id.dailyGoalStatusHour);
+		mWorktimeRemaining = (TextView) view.findViewById(R.id.workTimeRemaining);
 		mDailyGoalBar = (ProgressBar) view.findViewById(R.id.dailyGoal);
 	}
 	
@@ -74,42 +73,46 @@ public class CheckinFragement extends SherlockFragment implements OnTimeSetListe
 
 	private void showDailyGoalUI() {
 		mDailyGoal.setVisibility(View.VISIBLE);
-		mDailyGoalHour.setVisibility(View.VISIBLE);
+		mWorktimeRemaining.setVisibility(View.VISIBLE);
 		mDailyGoalBar.setVisibility(View.VISIBLE);
 	}
 
 
 	private void hideDailyGoalUI() {
 		mDailyGoal.setVisibility(View.INVISIBLE);
-		mDailyGoalHour.setVisibility(View.INVISIBLE);
+		mWorktimeRemaining.setVisibility(View.INVISIBLE);
 		mDailyGoalBar.setVisibility(View.INVISIBLE);
 		
 	}
 
 	@Override
 	public void onTimeSet(TimePicker view, int hour, int minute) {
-		mDailyGoalHour.setText(String.format("%02d:%02d:00", hour, minute));
-		if(mDailyGoalTimer == null)
-		{
-			long remainingTime = hour*hoursInMilis + minute * minutesInMilis;
-			startDailyCountTimer(remainingTime);
-		}
+		mWorktimeRemaining.setText(String.format("%02d:%02d:00", hour, minute));
+		long remainingTime = hour*hoursInMilis + minute * minutesInMilis;
+		startCountDownTimer(remainingTime);
 	}
 
-	private void startDailyCountTimer(long remainingTime) {
-		mDailyGoalTimer = new CountDownTimer(remainingTime, ONE_SECOND) {
+	private void startCountDownTimer(final long remainingTime) {
+		mHandler.post(coutingDown(remainingTime));
+	}
+
+	private Runnable coutingDown(final long remainingTime) {
+		return new Runnable() {
+			
+			private long elapsedTime = 0;
 			@Override
-			public void onTick(long millisUntilFinished) {
-				mDailyGoalHour.setText(String.format("%02d:%02d:%02d",
+			public void run() {
+				elapsedTime +=ONE_SECOND;
+				long millisUntilFinished = remainingTime - elapsedTime;
+				mWorktimeRemaining.setText(String.format("%02d:%02d:%02d",
 						millisUntilFinished/hoursInMilis, 
 						(millisUntilFinished%hoursInMilis)/minutesInMilis,
 						(millisUntilFinished%minutesInMilis)/ONE_SECOND));
+				if(millisUntilFinished > 0)
+				{
+					mHandler.postDelayed(this, ONE_SECOND);
+				}
 			}
-			
-			@Override
-			public void onFinish() {
-				
-			}
-		}.start();
+		};
 	}
 }
