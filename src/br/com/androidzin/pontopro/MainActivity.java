@@ -15,18 +15,25 @@ public class MainActivity extends SherlockFragmentActivity{
 
 	private ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
+	private boolean isTablet;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		if(mViewPager != null)
+		isTablet = getResources().getBoolean(R.bool.is_tablet);
+		if(isTablet == false)
 		{
+			mViewPager = (ViewPager) findViewById(R.id.pager);
 			mPagerAdapter = new CheckinHistoryAdapter(getSupportFragmentManager());
 			mViewPager.setAdapter(mPagerAdapter);
 		}
+	}
+	
+	public boolean isTable()
+	{
+		return isTablet;
 	}
 	
 	@Override
@@ -38,6 +45,12 @@ public class MainActivity extends SherlockFragmentActivity{
 	        } else {
 	            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
 	        }
+		} else {
+			if(getSupportFragmentManager().getBackStackEntryCount() == 0)
+			{
+				super.onBackPressed();
+			}
+			getSupportFragmentManager().popBackStack();			
 		}
     }
 

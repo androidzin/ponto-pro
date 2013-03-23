@@ -10,19 +10,32 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
-import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockListFragment;
 
-public class HistoryFragment extends SherlockFragment implements OnNavigationListener{
+public class HistoryFragment extends SherlockListFragment implements OnNavigationListener{
 
 	private SpinnerAdapter mSpinnerAdapter;
+	private MainActivity mActivity;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.history_options,
 		          android.R.layout.simple_spinner_dropdown_item);
+		mActivity = (MainActivity) getSherlockActivity();
 		return inflater.inflate(R.layout.history_fragment, container, false);
 		
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		if(mActivity != null && mActivity.isTable())
+		{
+			ActionBar bar = getSherlockActivity().getSupportActionBar();
+			bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+			bar.setListNavigationCallbacks(mSpinnerAdapter, this);
+		}
 	}
 	
 	@Override
@@ -35,9 +48,9 @@ public class HistoryFragment extends SherlockFragment implements OnNavigationLis
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
-		if(getSherlockActivity() != null)
+		if(mActivity != null && !mActivity.isTable())
 		{
-			ActionBar bar = getSherlockActivity().getSupportActionBar();
+			ActionBar bar = mActivity.getSupportActionBar();
 			if(isVisibleToUser)
 			{
 				bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -45,6 +58,16 @@ public class HistoryFragment extends SherlockFragment implements OnNavigationLis
 			} else {
 				bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 			}
+		}
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		if(mActivity != null && mActivity.isTable())
+		{
+			ActionBar bar = mActivity.getSupportActionBar();
+			bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		}
 	}
 	
