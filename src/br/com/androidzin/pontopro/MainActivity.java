@@ -17,37 +17,43 @@ public class MainActivity extends SherlockFragmentActivity{
 	private ViewPager mViewPager;
 	private PagerAdapter mPagerAdapter;
 	private DatabaseManager mDatabaseManager;
-	
+	private boolean isTablet;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 		mDatabaseManager = new DatabaseManager(getApplicationContext());
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		if(mViewPager != null)
+		isTablet = getResources().getBoolean(R.bool.is_tablet);
+		if(isTablet == false)
 		{
+			mViewPager = (ViewPager) findViewById(R.id.pager);
 			mPagerAdapter = new CheckinHistoryAdapter(getSupportFragmentManager());
 			mViewPager.setAdapter(mPagerAdapter);
 		}
-
 	}
 	
-	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		mDatabaseManager.close();
+	public boolean isTablet()
+	{
+		return isTablet;
 	}
 	
 	@Override
     public void onBackPressed() {
-		if(mViewPager != null)
+		if(isTablet == false)
 		{
 	        if (mViewPager.getCurrentItem() == 0) {
 	            super.onBackPressed();
 	        } else {
 	            mViewPager.setCurrentItem(mViewPager.getCurrentItem() - 1);
 	        }
+		} else {
+			if(getSupportFragmentManager().getBackStackEntryCount() == 0)
+			{
+				super.onBackPressed();
+			}
+			getSupportFragmentManager().popBackStack();			
 		}
     }
 
@@ -56,6 +62,12 @@ public class MainActivity extends SherlockFragmentActivity{
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSupportMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		mDatabaseManager.close();
 	}
 	
 	private class CheckinHistoryAdapter extends FragmentPagerAdapter implements OnPageChangeListener
