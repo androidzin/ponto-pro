@@ -4,34 +4,32 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.MenuItem;
 
-public class CheckinFragement extends SherlockFragment implements OnTimeSetListener{
+public class CheckinFragement extends SherlockFragment implements OnTimeSetListener, Countable{
 	
 	private static final int ZERO = 0;
-	private static final long ONE_SECOND = 1000;
 	private static final int hoursInMilis = 3600000;
 	private static final int minutesInMilis = 60000;
 	
 	private boolean hasDailyGoal;
 	private TextView mDailyGoal, mWorktimeRemaining;
 	private ProgressBar mDailyGoalBar;
-	private Handler mHandler;
+	private CountDownTimer timer;
 	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		mHandler = new Handler();
 		setHasOptionsMenu(true);
 		return inflater.inflate(R.layout.checkin_fragement, container, false);
 	}
@@ -92,27 +90,21 @@ public class CheckinFragement extends SherlockFragment implements OnTimeSetListe
 		startCountDownTimer(remainingTime);
 	}
 
-	private void startCountDownTimer(final long remainingTime) {
-		mHandler.post(coutingDown(remainingTime));
+	private void startCountDownTimer(long remainingTime) {
+		timer = new CountDownTimer(CountDownTimer.ONE_SECOND, remainingTime, this);
+		timer.start();
 	}
 
-	private Runnable coutingDown(final long remainingTime) {
-		return new Runnable() {
-			
-			private long elapsedTime = 0;
-			@Override
-			public void run() {
-				elapsedTime +=ONE_SECOND;
-				long millisUntilFinished = remainingTime - elapsedTime;
-				mWorktimeRemaining.setText(String.format("%02d:%02d:%02d",
-						millisUntilFinished/hoursInMilis, 
-						(millisUntilFinished%hoursInMilis)/minutesInMilis,
-						(millisUntilFinished%minutesInMilis)/ONE_SECOND));
-				if(millisUntilFinished > 0)
-				{
-					mHandler.postDelayed(this, ONE_SECOND);
-				}
-			}
-		};
+	@Override
+	public void onTick(long milisElapsedTime, long millisUntilFinished) {
+		mWorktimeRemaining.setText(String.format("%02d:%02d:%02d",
+				millisUntilFinished/hoursInMilis, 
+				(millisUntilFinished%hoursInMilis)/minutesInMilis,
+				(millisUntilFinished%minutesInMilis)/CountDownTimer.ONE_SECOND));
+	}
+
+	@Override
+	public void onFinish() {
+		Toast.makeText(getSherlockActivity(), "Terminou", Toast.LENGTH_SHORT).show();
 	}
 }
