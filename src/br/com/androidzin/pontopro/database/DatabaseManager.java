@@ -7,26 +7,28 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import br.com.androidzin.pontopro.model.Checkin;
+import br.com.androidzin.pontopro.model.Workday;
 
 public class DatabaseManager {
 
 	private Context context;
 	private SQLiteDatabase mDataBase;
 
-	private final String CHECKINS_ID = "_id";
-	private final String CHECKINS_TABLE = "checkins";
-	private final String CHECKINS_WORKDAY_ID = "workdayID";
-	private final String CHECKINS_CHECKIN_HOUR = "checkinHour";
+	public final String CHECKINS_ID = "_id";
+	public final String CHECKINS_TABLE = "checkins";
+	public final String CHECKINS_WORKDAY_ID = "workdayID";
+	public final String CHECKINS_CHECKIN_HOUR = "checkinHour";
 	
-	private final String WORKDAY_TABLE = "workday";
-	private final String WORKDAY_ID = "_id";
-	private final String WORKDAY_WORK_DATE = "workDate";
-	private final String WORKDAY_WORKED_HOURS = "workedHours";
-	private final String WORKDAY_IS_CLOSED = "isClosed";
-	private final String WORKDAY_DAILY_MARK = "dailyMark";
+	public final String WORKDAY_TABLE = "workday";
+	public final String WORKDAY_ID = "_id";
+	public final String WORKDAY_WORK_DATE = "workDate";
+	public final String WORKDAY_WORKED_HOURS = "workedHours";
+	public final String WORKDAY_IS_CLOSED = "isClosed";
+	public final String WORKDAY_DAILY_MARK = "dailyMark";
 	
 	private final String TABLE_ROW_ID = "id";
 	private final String TABLE_ROW_ONE = "table_row_one";
@@ -42,16 +44,13 @@ public class DatabaseManager {
 	}
 	
 	/**
-	 * Insert a new row into checkin table
+	 * Insert a new row into checkin table pointing to the specified workday
 	 * @param workdayID
 	 * @return the row ID of the newly inserted row, or -1 if failure
 	 */
-	public long addCheckin(int workdayID){
+	public long addCheckin(long workdayID){
 		long value = -1;
-		ContentValues values = new ContentValues();
-		values.put(CHECKINS_WORKDAY_ID, workdayID);
-		values.put(CHECKINS_CHECKIN_HOUR, System.currentTimeMillis());
-
+		ContentValues values = createCheckinValues(workdayID);
 		try {
 			value = mDataBase.insert(CHECKINS_TABLE, null, values);
 		} catch (Exception e) {
@@ -59,6 +58,13 @@ public class DatabaseManager {
 			e.printStackTrace();
 		}
 		return value;
+	}
+
+	private ContentValues createCheckinValues(long workdayID) {
+		ContentValues values = new ContentValues();
+		values.put(CHECKINS_WORKDAY_ID, workdayID);
+		values.put(CHECKINS_CHECKIN_HOUR, System.currentTimeMillis());
+		return values;
 	}
 	
 	/**
@@ -70,19 +76,74 @@ public class DatabaseManager {
 		return value;
 	}
 	
+	public Checkin getCheckinData(long checkinID){
+		Checkin result = null;
+		Cursor cursor;
+		
+		cursor = mDataBase.query(CHECKINS_TABLE, 
+								 new String [] {CHECKINS_ID, CHECKINS_WORKDAY_ID, CHECKINS_CHECKIN_HOUR}, 
+								 CHECKINS_ID + "=" + checkinID, null, null, null, null);
+		
+		cursor.moveToFirst();
+		
+		if ( !cursor.isAfterLast() ) {
+			result = new Checkin();
+			result.setCheckinID(cursor.getLong(0));
+			result.setWorkdayID(cursor.getLong(1));
+			result.setTimeStamp(cursor.getLong(2));
+		}
+		return result;
+	}
+	
+	public Checkin getCheckinFromWorkday(long workdayID) {
+		Checkin result = null;
+		
+		Cursor cursor;
+		cursor = mDataBase.query(CHECKINS_TABLE, 
+								 new String[] {CHECKINS_ID, CHECKINS_WORKDAY_ID, CHECKINS_CHECKIN_HOUR}, 
+								 CHECKINS_WORKDAY_ID + "=" + workdayID, null, null, null, null);
+		
+		cursor.moveToFirst();
+		
+		if ( !cursor.isAfterLast()) {
+			result = new Checkin();
+			result.setCheckinID(cursor.getLong(0));
+			result.setWorkdayID(cursor.getLong(1));
+			result.setTimeStamp(cursor.getLong(2));
+		}
+		
+		return result;
+	}
+	
 	/**
-	 * Insert a new row into workday table
-	 * @param dailyMark
+	 * Insert a new row into Workday table
+	 * Put's 0 for workedHours, dailyMark and false for isClosed.
 	 * @return the row ID of the newly inserted row, or -1 if failure
 	 */
-	public long addWorkday(int dailyMark){
+	public long addWorkday(){
 		long value = -1;
-		ContentValues values = new ContentValues();
-		values.put(WORKDAY_DAILY_MARK, dailyMark);
-		values.put(WORKDAY_WORK_DATE, System.currentTimeMillis());
-		values.put(WORKDAY_WORKED_HOURS, 0);
-		values.put(WORKDAY_IS_CLOSED, 0);
-
+		ContentValues values = createWorkdayValues(0, 0, false);
+		try {
+			value = mDataBase.insert(WORKDAY_TABLE, null, values);
+		} catch (Exception e) {
+			Log.e("DB ERROR", e.toString());
+			e.printStackTrace();
+		}
+		return value;
+	}
+	
+	/**
+	 * Insert a new row into Workday table
+	 * Put's false for isClosed.
+	 * @param dailyMark
+	 *  The goal for the day (in minutes)
+	 * @param workedTime
+	 * 	The already worked time (in minutes)
+	 * @return the row ID of the newly inserted row, or -1 if failure
+	 */
+	public long addWorkday(int dailyMark, int workedTime){
+		long value = -1;
+		ContentValues values = createWorkdayValues(dailyMark, workedTime, false);
 		try {
 			value =  mDataBase.insert(WORKDAY_TABLE, null, values);
 		} catch (Exception e) {
@@ -91,10 +152,42 @@ public class DatabaseManager {
 		}
 		return value;
 	}
+
+	public ContentValues createWorkdayValues(int dailyMark, int workedHours, boolean isClosed) {
+		ContentValues values = new ContentValues();
+		if ( dailyMark < 0 || workedHours < 0) 
+			throw new NumberFormatException();
+
+		values.put(WORKDAY_DAILY_MARK, dailyMark);
+		values.put(WORKDAY_WORK_DATE, System.currentTimeMillis());
+		values.put(WORKDAY_WORKED_HOURS, workedHours);
+		values.put(WORKDAY_IS_CLOSED, isClosed); 
+		
+		return values;
+	}
 	
 	public int deleteWorkday(long id) {
 		int value = mDataBase.delete(WORKDAY_TABLE, WORKDAY_ID + "=" + id, null);
 		return value;
+	}
+	
+	public Workday getWorkdayData(long wordayID){
+		Workday result = null;
+		Cursor cursor;
+		
+		cursor = mDataBase.query(WORKDAY_TABLE, new String [] {WORKDAY_WORK_DATE, WORKDAY_WORKED_HOURS, WORKDAY_DAILY_MARK, WORKDAY_IS_CLOSED}, 
+				WORKDAY_ID + "=" + wordayID, null, null, null, null);
+		
+		cursor.moveToFirst();
+		
+		if ( !cursor.isAfterLast() ) {
+			result = new Workday();
+			result.setDailyMark(cursor.getInt(2));
+			//result.setHasOpenCheckin(cursor.getInt(3));
+			result.setHasOpenCheckin(false);
+			result.setWorkedTime(cursor.getInt(1));
+		}
+		return result;
 	}
 
 	/**********************************************************************
@@ -141,7 +234,7 @@ public class DatabaseManager {
 		// to store this data instead. That way you can ensure
 		// data types are correct.
 		ArrayList<Object> rowArray = new ArrayList<Object>();
-		Cursor cursor;
+		Cursor cursor;	
 
 		try {
 			// this is a database call that creates a "cursor" object.
@@ -238,7 +331,7 @@ public class DatabaseManager {
 							+ "dailyMark INTEGER"
 							+ ");";
 		private String createCheckinTable = "create table checkins (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-							+ "workdayID INTEGER,"
+							+ "workdayID LONG,"
 							+ "checkinHour DATE,"
 							+ "FOREIGN KEY (workdayID) REFERENCES workday(_id) ON DELETE CASCADE ON UPDATE CASCADE"
 							+ ");";
@@ -276,5 +369,10 @@ public class DatabaseManager {
 		if (mDataBase.isOpen()) {
 			mDataBase.close();
 		}
+	}
+
+	public void getWorkday(long id) {
+		// TODO Auto-generated method stub
+		
 	}
 }
