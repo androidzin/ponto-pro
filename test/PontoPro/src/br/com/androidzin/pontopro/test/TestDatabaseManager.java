@@ -1,5 +1,7 @@
 package br.com.androidzin.pontopro.test;
 
+import java.util.List;
+
 import android.content.ContentValues;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
@@ -33,13 +35,13 @@ public class TestDatabaseManager extends AndroidTestCase {
 	
 	public void testSelectWorkdayNotNull(){
 		long id = databaseManager.addWorkday();
-		Workday w = databaseManager.getWorkdayData(id);
+		Workday w = databaseManager.getWorkday(id);
 		assertNotNull(w);
 	}
 	
 	public void testSelectEmptyWorkday(){
 		long id = databaseManager.addWorkday();
-		Workday w = databaseManager.getWorkdayData(id);
+		Workday w = databaseManager.getWorkday(id);
 		
 		assertEquals(false, w.hasOpenCheckin());
 		assertEquals(0, w.getDailyMark());
@@ -48,11 +50,15 @@ public class TestDatabaseManager extends AndroidTestCase {
 	
 	public void testSelectFullWorkday(){
 		long id = databaseManager.addWorkday(30, 30);
-		Workday w = databaseManager.getWorkdayData(id);
+		long checkinID = databaseManager.addCheckin(workdayID);
+		Workday w = databaseManager.getWorkday(id);
 		
 		assertEquals(false, w.hasOpenCheckin());
 		assertEquals(30, w.getDailyMark());
 		assertEquals(30, w.getWorkedTime());
+		for (Checkin c : w.getCheckinList()) {
+			assertEquals(checkinID, c.getCheckinID());
+		}
 	}
 	
 	public void testWorkdayValuesCreation(){
@@ -65,10 +71,24 @@ public class TestDatabaseManager extends AndroidTestCase {
 			
 		}
 	}
+	
+	public void testDeleteWorkday(){
+		databaseManager.deleteWorkday(workdayID);
+		Workday w = databaseManager.getWorkday(workdayID);
+		Checkin c = databaseManager.getCheckinData(checkinID);
+		assertNull(c);
+		assertNull(w);
+	}
 
 	public void testInsertCheckin(){
 		long id = databaseManager.addCheckin(workdayID);
 		assertEquals(2, id);
+	}
+	
+	public void testDeleteCheckin(){
+		databaseManager.deleteCheckin(checkinID);
+		Checkin c = databaseManager.getCheckinData(checkinID);
+		assertNull(c);
 	}
 	
 	public void testInsertCheckinInvalidWorkday(){
@@ -90,14 +110,10 @@ public class TestDatabaseManager extends AndroidTestCase {
 	}
 	
 	public void testSelectCheckinFromWorkdayNotNull(){
-		Checkin c = databaseManager.getCheckinFromWorkday(workdayID);
-		assertNotNull(c);
-	}
-	
-	public void testSelectCheckinFrowWorkdayCorrectValues(){
-		Checkin c = databaseManager.getCheckinFromWorkday(workdayID);
-		assertEquals(workdayID, c.getWorkdayID());
-		assertEquals(checkinID, c.getCheckinID());
+		List<Checkin> list = databaseManager.getCheckinListFromWorkday(workdayID);
+		for ( Checkin c : list) {
+			assertNotNull(c);
+		}
 	}
 	
 	public void tearDown() throws Exception {

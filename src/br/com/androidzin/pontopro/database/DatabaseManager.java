@@ -1,6 +1,7 @@
 package br.com.androidzin.pontopro.database;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -37,10 +38,17 @@ public class DatabaseManager {
 
 	public DatabaseManager(Context context) {
 		this.context = context;
-
-		// create or open the database
 		DatabaseHelper helper = new DatabaseHelper(context);
 		this.mDataBase = helper.getWritableDatabase();
+	}
+	
+	/**
+	 * Close this database connection
+	 */
+	public void close() {
+		if (mDataBase.isOpen()) {
+			mDataBase.close();
+		}
 	}
 	
 	/**
@@ -68,14 +76,19 @@ public class DatabaseManager {
 	}
 	
 	/**
-	 * @param workDay
+	 * Removes the specified Checkin from database
+	 * @param checkinID
 	 * @return the number of affected rows affected if a where clause is passed
 	 */
-	public int deleteCheckin(int workDay){
-		int value = mDataBase.delete(CHECKINS_TABLE, CHECKINS_WORKDAY_ID + "=" + workDay, null); 
+	public int deleteCheckin(long checkinID){
+		int value = mDataBase.delete(CHECKINS_TABLE, CHECKINS_ID + "=" + checkinID, null); 
 		return value;
 	}
 	
+	/**
+	 * @param checkinID
+	 * @return the Checkin object containing all it's data
+	 */
 	public Checkin getCheckinData(long checkinID){
 		Checkin result = null;
 		Cursor cursor;
@@ -95,24 +108,31 @@ public class DatabaseManager {
 		return result;
 	}
 	
-	public Checkin getCheckinFromWorkday(long workdayID) {
+	/**
+	 * @param workdayID
+	 * @return A List with all checkins related to the specified workday
+	 */
+	public List<Checkin> getCheckinListFromWorkday(long workdayID) {
 		Checkin result = null;
-		
+		ArrayList<Checkin> checkinList = new ArrayList<Checkin>();
 		Cursor cursor;
 		cursor = mDataBase.query(CHECKINS_TABLE, 
 								 new String[] {CHECKINS_ID, CHECKINS_WORKDAY_ID, CHECKINS_CHECKIN_HOUR}, 
-								 CHECKINS_WORKDAY_ID + "=" + workdayID, null, null, null, null);
+								 CHECKINS_WORKDAY_ID + "=" + workdayID, 
+								 null, null, null, null);
 		
 		cursor.moveToFirst();
-		
 		if ( !cursor.isAfterLast()) {
-			result = new Checkin();
-			result.setCheckinID(cursor.getLong(0));
-			result.setWorkdayID(cursor.getLong(1));
-			result.setTimeStamp(cursor.getLong(2));
+			do {
+				result = new Checkin();
+				result.setCheckinID(cursor.getLong(0));
+				result.setWorkdayID(cursor.getLong(1));
+				result.setTimeStamp(cursor.getLong(2));
+				checkinList.add(result);
+			} while ( cursor.moveToNext() );
 		}
 		
-		return result;
+		return checkinList;
 	}
 	
 	/**
@@ -153,6 +173,26 @@ public class DatabaseManager {
 		return value;
 	}
 
+	/**
+	 * Insert a new row into Workday table
+	 * Put's false for isClosed.
+	 * @param Workday
+	 * Get dailyMark and workedTime from workday instance
+	 * @return the row ID of the newly inserted row, or -1 if failure
+	 */
+	public long addWorkday(Workday workday) {
+		long value = -1;
+		ContentValues values = createWorkdayValues(workday.getDailyMark(), workday.getWorkedTime(), false);
+		value = mDataBase.insert(WORKDAY_TABLE, null, values);
+		return value;
+	}
+	
+	/**
+	 * @param dailyMark
+	 * @param workedHours
+	 * @param isClosed
+	 * @return
+	 */
 	public ContentValues createWorkdayValues(int dailyMark, int workedHours, boolean isClosed) {
 		ContentValues values = new ContentValues();
 		if ( dailyMark < 0 || workedHours < 0) 
@@ -166,157 +206,39 @@ public class DatabaseManager {
 		return values;
 	}
 	
-	public int deleteWorkday(long id) {
-		int value = mDataBase.delete(WORKDAY_TABLE, WORKDAY_ID + "=" + id, null);
+	/**
+	 * Removes the specified Workday from database
+	 * By Cascade, removes the associated Checkins
+	 * @param workDay
+	 * @return the number of affected rows affected if a where clause is passed
+	 */
+	public int deleteWorkday(long workdayID) {
+		int value = mDataBase.delete(WORKDAY_TABLE, WORKDAY_ID + "=" + workdayID, null);
 		return value;
 	}
 	
-	public Workday getWorkdayData(long wordayID){
+	/**
+	 * @param workdayID
+	 * @return Workday object with all values
+	 */
+	public Workday getWorkday(long workdayID){
 		Workday result = null;
 		Cursor cursor;
+		List<Checkin> checkinList = getCheckinListFromWorkday(workdayID);
 		
 		cursor = mDataBase.query(WORKDAY_TABLE, new String [] {WORKDAY_WORK_DATE, WORKDAY_WORKED_HOURS, WORKDAY_DAILY_MARK, WORKDAY_IS_CLOSED}, 
-				WORKDAY_ID + "=" + wordayID, null, null, null, null);
+				WORKDAY_ID + "=" + workdayID, null, null, null, null);
 		
 		cursor.moveToFirst();
 		
 		if ( !cursor.isAfterLast() ) {
 			result = new Workday();
 			result.setDailyMark(cursor.getInt(2));
-			//result.setHasOpenCheckin(cursor.getInt(3));
-			result.setHasOpenCheckin(false);
+			result.setHasOpenCheckin(cursor.getInt(3) != 0);
 			result.setWorkedTime(cursor.getInt(1));
+			result.setCheckinList(checkinList);
 		}
 		return result;
-	}
-
-	/**********************************************************************
-	 * UPDATING A ROW IN THE DATABASE TABLE
-	 * 
-	 * This is an example of how to update a row in the database table using
-	 * this class. You should edit this method to suit your needs.
-	 * 
-	 * @param rowID
-	 *            the SQLite database identifier for the row to update.
-	 * @param rowStringOne
-	 *            the new value for the row's first column
-	 * @param rowStringTwo
-	 *            the new value for the row's second column
-	 */
-	public void updateRow(long rowID, String rowStringOne, String rowStringTwo) {
-		// this is a key value pair holder used by android's SQLite functions
-		ContentValues values = new ContentValues();
-		values.put(TABLE_ROW_ONE, rowStringOne);
-		values.put(TABLE_ROW_TWO, rowStringTwo);
-
-		// ask the database object to update the database row of given rowID
-		try {
-			mDataBase.update("", values, TABLE_ROW_ID + "=" + rowID, null);
-		} catch (Exception e) {
-			Log.e("DB Error", e.toString());
-			e.printStackTrace();
-		}
-	}
-
-	/**********************************************************************
-	 * RETRIEVING A ROW FROM THE DATABASE TABLE
-	 * 
-	 * This is an example of how to retrieve a row from a database table using
-	 * this class. You should edit this method to suit your needs.
-	 * 
-	 * @param rowID
-	 *            the id of the row to retrieve
-	 * @return an array containing the data from the row
-	 */
-	public ArrayList<Object> getRowAsArray(long rowID) {
-		// create an array list to store data from the database row.
-		// I would recommend creating a JavaBean compliant object
-		// to store this data instead. That way you can ensure
-		// data types are correct.
-		ArrayList<Object> rowArray = new ArrayList<Object>();
-		Cursor cursor;	
-
-		try {
-			// this is a database call that creates a "cursor" object.
-			// the cursor object store the information collected from the
-			// database and is used to iterate through the data.
-			cursor = mDataBase.query("", new String[] { TABLE_ROW_ID, TABLE_ROW_ONE, TABLE_ROW_TWO }, TABLE_ROW_ID
-					+ "=" + rowID, null, null, null, null, null);
-
-			// move the pointer to position zero in the cursor.
-			cursor.moveToFirst();
-
-			// if there is data available after the cursor's pointer, add
-			// it to the ArrayList that will be returned by the method.
-			if (!cursor.isAfterLast()) {
-				do {
-					rowArray.add(cursor.getLong(0));
-					rowArray.add(cursor.getString(1));
-					rowArray.add(cursor.getString(2));
-				} while (cursor.moveToNext());
-			}
-
-			// let java know that you are through with the cursor.
-			cursor.close();
-		} catch (SQLException e) {
-			Log.e("DB ERROR", e.toString());
-			e.printStackTrace();
-		}
-
-		// return the ArrayList containing the given row from the database.
-		return rowArray;
-	}
-
-	/**********************************************************************
-	 * RETRIEVING ALL ROWS FROM THE DATABASE TABLE
-	 * 
-	 * This is an example of how to retrieve all data from a database table
-	 * using this class. You should edit this method to suit your needs.
-	 * 
-	 * the key is automatically assigned by the database
-	 */
-
-	public ArrayList<ArrayList<Object>> getAllRowsAsArrays() {
-		// create an ArrayList that will hold all of the data collected from
-		// the database.
-		ArrayList<ArrayList<Object>> dataArrays = new ArrayList<ArrayList<Object>>();
-
-		// this is a database call that creates a "cursor" object.
-		// the cursor object store the information collected from the
-		// database and is used to iterate through the data.
-		Cursor cursor;
-
-		try {
-			// ask the database object to create the cursor.
-			cursor = mDataBase.query("", new String[] { TABLE_ROW_ID, TABLE_ROW_ONE, TABLE_ROW_TWO }, null, null,
-					null, null, null);
-
-			// move the cursor's pointer to position zero.
-			cursor.moveToFirst();
-
-			// if there is data after the current cursor position, add it
-			// to the ArrayList.
-			if (!cursor.isAfterLast()) {
-				do {
-					ArrayList<Object> dataList = new ArrayList<Object>();
-
-					dataList.add(cursor.getLong(0));
-					dataList.add(cursor.getString(1));
-					dataList.add(cursor.getString(2));
-
-					dataArrays.add(dataList);
-				}
-				// move the cursor's pointer up one position.
-				while (cursor.moveToNext());
-			}
-		} catch (SQLException e) {
-			Log.e("DB Error", e.toString());
-			e.printStackTrace();
-		}
-
-		// return the ArrayList that holds the data collected from
-		// the database.
-		return dataArrays;
 	}
 
 	class DatabaseHelper extends SQLiteOpenHelper {
@@ -365,14 +287,4 @@ public class DatabaseManager {
 
 	}
 
-	public void close() {
-		if (mDataBase.isOpen()) {
-			mDataBase.close();
-		}
-	}
-
-	public void getWorkday(long id) {
-		// TODO Auto-generated method stub
-		
-	}
 }
