@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_key_notification_enabled"
+        android:summaryOff="@string/enable_all_notifications"
+        android:summaryOn="@string/disable_all_notifications"
+        android:title="@string/enable_disable_notification" />
+
+    <PreferenceCategory android:title="@string/in_out_category" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="pref_key_notification_enabled"
+            android:key="pref_key_notification_in_enabled"
+            android:summaryOff="@string/enable_in_notifications"
+            android:summaryOn="@string/disable_in_notifications"
+            android:title="@string/entry_points" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="pref_key_notification_enabled"
+            android:key="pref_key_notification_out_enabled"
+            android:summaryOff="@string/enable_out_notifications"
+            android:summaryOn="@string/disable_out_notifications"
+            android:title="@string/output_points" />
+
+        <ListPreference
+            android:dependency="pref_key_notification_enabled"
+            android:entries="@array/when_array"
+            android:entryValues="@array/when_array"
+            android:title="@string/notification_precede_time" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/bussines_daily_goal_category" >
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="pref_key_notification_enabled"
+            android:key="pref_key_notification_bussineshour_enabled"
+            android:summaryOff="@string/enable_bussinerhour_notifications"
+            android:summaryOn="@string/disable_bussinerhour_notifications"
+            android:title="@string/bussinesshour_notification" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:dependency="pref_key_notification_bussineshour_enabled"
+            android:key="pref_key_notification_bussines_daily_enabled"
+            android:summary="@string/bussines_daily__notifications"
+            android:title="@string/bussines_daily_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="pref_key_notification_enabled"
+            android:key="pref_key_notification_dailygoal_enabled"
+            android:summaryOff="@string/enable_dailygoal_notifications"
+            android:summaryOn="@string/disable_dailygoal_notifications"
+            android:title="@string/daily_notfication" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/maxhour_notification_category">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:dependency="pref_key_notification_enabled"
+            android:key="pref_key_notification_maxhour_enabled"
+            android:summaryOff="@string/enable_maxhour_notifications"
+            android:summaryOn="@string/disable_maxhour_notifications"
+            android:title="@string/maxhour_notification" />
+    </PreferenceCategory>
+
+</PreferenceScreen>
