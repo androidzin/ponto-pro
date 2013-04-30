@@ -3,14 +3,18 @@ package br.com.androidzin.pontopro.database;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import br.com.androidzin.pontopro.exception.InvalidDateOrder;
 import br.com.androidzin.pontopro.model.Checkin;
 import br.com.androidzin.pontopro.model.Workday;
 
@@ -34,6 +38,7 @@ public class DatabaseManager {
 	private final String TABLE_ROW_ID = "id";
 	private final String TABLE_ROW_ONE = "table_row_one";
 	private final String TABLE_ROW_TWO = "table_row_two";
+	private DateTimeFormatter parser = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 	
 
 	public DatabaseManager(Context context) {
@@ -71,7 +76,7 @@ public class DatabaseManager {
 	private ContentValues createCheckinValues(long workdayID) {
 		ContentValues values = new ContentValues();
 		values.put(CHECKINS_WORKDAY_ID, workdayID);
-		values.put(CHECKINS_CHECKIN_HOUR, System.currentTimeMillis());
+		//values.put(CHECKINS_CHECKIN_HOUR, System.currentTimeMillis());
 		return values;
 	}
 	
@@ -103,7 +108,7 @@ public class DatabaseManager {
 			result = new Checkin();
 			result.setCheckinID(cursor.getLong(0));
 			result.setWorkdayID(cursor.getLong(1));
-			result.setTimeStamp(cursor.getLong(2));
+			result.setTimeStamp(cursor.getString(2));
 		}
 		return result;
 	}
@@ -127,7 +132,7 @@ public class DatabaseManager {
 				result = new Checkin();
 				result.setCheckinID(cursor.getLong(0));
 				result.setWorkdayID(cursor.getLong(1));
-				result.setTimeStamp(cursor.getLong(2));
+				result.setTimeStamp(cursor.getString(2));
 				checkinList.add(result);
 			} while ( cursor.moveToNext() );
 		}
@@ -135,6 +140,65 @@ public class DatabaseManager {
 		return checkinList;
 	}
 	
+	
+	/**
+	 * ISO Date Format
+	 * 	yyyy-MM-dd HH:mm:ss
+	 * @param ISOdate
+	 * @return A List with all checkins from the specific workday in ISO Date
+	 */
+	public List<Checkin> getCheckinListFromWorkday(DateTime ISOdate) {
+		String today = parser.print(ISOdate);
+		Checkin result = null;
+		ArrayList<Checkin> checkinList = new ArrayList<Checkin>();
+		Cursor cursor;
+		cursor = mDataBase.rawQuery("select * from " + CHECKINS_TABLE + " where " + CHECKINS_CHECKIN_HOUR + "=" + "'" + today + "'", null);
+		cursor.moveToFirst();
+		if ( !cursor.isAfterLast()) {
+			do {
+				result = new Checkin();
+				result.setCheckinID(cursor.getLong(0));
+				result.setWorkdayID(cursor.getLong(1));
+				result.setTimeStamp(cursor.getString(2));
+				checkinList.add(result);
+			} while ( cursor.moveToNext() );
+		}
+		
+		return checkinList;
+	}
+	
+	/**
+	 * @param ISOdateFrom
+	 * @param ISOdateTo
+	 * @return A List with all checkins from the specific workday in ISO Date
+	 * @throws Exception
+	 */
+	public List<Checkin> getCheckinListFromPeriod(DateTime ISOdateFrom, DateTime ISOdateTo) throws InvalidDateOrder {
+		if ( ISOdateFrom.isAfter(ISOdateTo)) {
+			throw new InvalidDateOrder();
+		}
+		String from = parser.print(ISOdateFrom);
+		String to = parser.print(ISOdateTo);
+		Checkin result = null;
+		ArrayList<Checkin> checkinList = new ArrayList<Checkin>();
+		Cursor cursor;
+		cursor = mDataBase.rawQuery("select * from " + CHECKINS_TABLE + " where " 
+									+ CHECKINS_CHECKIN_HOUR + ">=" + "'" + from + "'" + " AND "
+									+ CHECKINS_CHECKIN_HOUR + "<=" + "'" + to + "'", null);
+		cursor.moveToFirst();
+		if ( !cursor.isAfterLast()) {
+			do {
+				result = new Checkin();
+				result.setCheckinID(cursor.getLong(0));
+				result.setWorkdayID(cursor.getLong(1));
+				result.setTimeStamp(cursor.getString(2));
+				checkinList.add(result);
+			} while ( cursor.moveToNext() );
+		}
+		
+		return checkinList;
+	}
+
 	/**
 	 * Insert a new row into Workday table
 	 * Put's 0 for workedHours, dailyMark and false for isClosed.
@@ -244,7 +308,7 @@ public class DatabaseManager {
 	class DatabaseHelper extends SQLiteOpenHelper {
 
 		private static final String DB_NAME = "pontoPro";
-		private static final int DB_VERSION = 1;
+		private static final int DB_VERSION = 3;
 		
 		private String createWorkdayTable = "create table workday (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
 							+ "workDate DATE,"
@@ -254,7 +318,7 @@ public class DatabaseManager {
 							+ ");";
 		private String createCheckinTable = "create table checkins (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
 							+ "workdayID LONG,"
-							+ "checkinHour DATE,"
+							+ "checkinHour DATE DEFAULT (datetime('now','localtime')),"
 							+ "FOREIGN KEY (workdayID) REFERENCES workday(_id) ON DELETE CASCADE ON UPDATE CASCADE"
 							+ ");";
 
@@ -274,7 +338,11 @@ public class DatabaseManager {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			// TODO Auto-generated method stub
+			db.execSQL("drop table " + CHECKINS_TABLE);
+			db.execSQL("drop table " + WORKDAY_TABLE);
+			
+			db.execSQL(createWorkdayTable);
+			db.execSQL(createCheckinTable);
 		}
 		
 		@Override
@@ -286,5 +354,6 @@ public class DatabaseManager {
 		}
 
 	}
+
 
 }

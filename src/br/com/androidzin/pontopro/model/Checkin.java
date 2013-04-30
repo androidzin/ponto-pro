@@ -2,7 +2,7 @@ package br.com.androidzin.pontopro.model;
 
 public class Checkin {
 
-	private long timeStamp;
+	private String timeStamp;
 	private long checkinID;
 	private long workdayID;
 
@@ -22,11 +22,11 @@ public class Checkin {
 		this.workdayID = workdayID;
 	}
 
-	public long getTimeStamp() {
+	public String getTimeStamp() {
 		return timeStamp;
 	}
 
-	public void setTimeStamp(long timeStamp) {
+	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
 }

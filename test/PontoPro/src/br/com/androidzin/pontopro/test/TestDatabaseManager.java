@@ -2,6 +2,8 @@ package br.com.androidzin.pontopro.test;
 
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import android.content.ContentValues;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
@@ -111,6 +113,24 @@ public class TestDatabaseManager extends AndroidTestCase {
 	
 	public void testSelectCheckinFromWorkdayNotNull(){
 		List<Checkin> list = databaseManager.getCheckinListFromWorkday(workdayID);
+		for ( Checkin c : list) {
+			assertNotNull(c);
+		}
+	}
+	
+	public void testSelectCheckinFromDate(){
+		DateTime now = new DateTime();
+		List<Checkin> list = databaseManager.getCheckinListFromWorkday(now);
+		for ( Checkin c : list) {
+			assertNotNull(c);
+		}
+	}
+	
+	
+	public void testSelectCheckinFromPeriod() throws Exception{
+		DateTime now = new DateTime();
+		DateTime weekAgo = now.minusWeeks(1);
+		List<Checkin> list = databaseManager.getCheckinListFromPeriod(weekAgo, now);
 		for ( Checkin c : list) {
 			assertNotNull(c);
 		}
