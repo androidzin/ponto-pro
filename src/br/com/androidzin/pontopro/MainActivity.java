@@ -1,5 +1,7 @@
 package br.com.androidzin.pontopro;
 
+import android.content.Intent;
+import android.media.audiofx.BassBoost.Settings;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,9 +10,11 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import br.com.androidzin.pontopro.database.DatabaseManager;
+import br.com.androidzin.pontopro.settings.SettingsActivity;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 public class MainActivity extends SherlockFragmentActivity{
 
@@ -59,9 +63,17 @@ public class MainActivity extends SherlockFragmentActivity{
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getSupportMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if(item.getItemId() == R.id.action_settings){
+			startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+			return true;
+		}
+		return false;
 	}
 
 	@Override

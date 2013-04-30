@@ -1,0 +1,18 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference 
+        android:title="@string/prefs_bussines_hour"
+        android:summary="@string/prefs_summ_bussiner_hour"  >
+        <intent 
+            android:targetPackage="br.com.androidzin.pontopro"
+            android:targetClass="br.com.androidzin.pontopro.settings.SettingsActivity"
+            android:action="br.com.androidzin.pontopro.settings.BUSSINER_HOUR" />
+    </Preference>
+    <Preference 
+        android:title="@string/prefs_notification"
+        android:summary="@string/prefs_summ_notification"  >
+        <intent 
+            android:targetPackage="br.com.androidzin.pontopro"
+            android:targetClass="br.com.androidzin.pontopro.settings.SettingsActivity"
+            android:action="br.com.androidzin.pontopro.settings.NOTIFICATION" />
+    </Preference>
+</PreferenceScreen>

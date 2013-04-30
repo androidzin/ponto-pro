@@ -22,5 +22,40 @@
     <string name="zerohour">00:00</string>
     <string name="define_daily_goal">Qual sua meta hoje?</string>
     
+    <!--  Settings -->
+    <string name="prefs_bussines_hour">Expediente</string>
+    <string name="prefs_summ_bussiner_hour">Configurações de expediente</string>
+    <string name="prefs_notification">Notificações</string>
+    <string name="prefs_summ_notification">Configurações de notificação</string>
+    
+    <string name="in_out_category">Pontos de entrada e saída</string>
+    <string name="enable_disable_notification">Habilitar/Desabilitar nofiticações</string>
+    <string name="enable_all_notifications">Habilitar todas as notificações</string>
+    <string name="disable_all_notifications">Desativar todas as notificações</string>
+    <string name="entry_points">Pontos de entrada</string>
+    <string name="disable_in_notifications">Desativar lembretes sobre pontos de entradas</string>
+    <string name="enable_in_notifications">Ativar lembretes sobre pontos de entradas</string>
+    <string name="output_points">Pontos de saida</string>
+    <string name="enable_out_notifications">Ativar lembretes sobre pontos de saida</string>
+    <string name="disable_out_notifications">Desativar lembretes sobre pontos de saida</string>
+    
+    <string name="bussines_daily_goal_category">Expediente e meta diária</string>
+    <string name="bussinesshour_notification">Expediente cumprido</string>
+    <string name="enable_bussinerhour_notifications">Ativar aviso de expediente cumprido</string>
+    <string name="disable_bussinerhour_notifications">Desativar aviso de expediente cumprido</string>
+    
+    <string name="bussines_daily__notifications">Tocar mesmo quando houver meta diária</string>
+    <string name="bussines_daily_title">Expediente vs Meta diária</string>
+
+    <string name="daily_notfication">Meta diária alcançada</string>
+    <string name="enable_dailygoal_notifications">Ativar aviso sobre meta diária alcançada</string>
+    <string name="disable_dailygoal_notifications">Desativar aviso sobre meta diária alcançada</string>
+    
+    <string name="maxhour_notification_category">Limite diário de horas</string>
+    <string name="maxhour_notification">Carga horária máxima</string>
+    <string name="enable_maxhour_notifications">Avisar 30min antes</string>
+    <string name="disable_maxhour_notifications">Desativar aviso sobre limite de horas trabalhas alcançado</string>
+    <string name="amount_time_before_notification">Define quando o usuário será notificado</string>
+    <string name="notification_precede_time">Antecedência dos avisos</string>
 
 </resources>
