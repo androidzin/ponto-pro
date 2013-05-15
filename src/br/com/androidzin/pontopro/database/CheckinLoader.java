@@ -3,9 +3,12 @@ package br.com.androidzin.pontopro.database;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
+import br.com.androidzin.pontopro.exception.InvalidDateOrder;
 import br.com.androidzin.pontopro.model.Checkin;
 
 public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
@@ -13,9 +16,19 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 	// We hold a reference to the Loader’s data here.
 	private List<Checkin> mData;
 	public static final String ACTION_SELECTOR_CHANGED = "pontopro.date.selector";
-	private static final String TAG = null;
+	private static final String TAG = "LOADER";
 	private NavigationSelectorListener mObserver;
 	
+	private String choice;
+	public static enum RANGE{TODAY("Hoje"), WEEKLY("Semanal"), MONTHLY("Mensal"), OTHER("Outros");
+		
+		private String value;
+	
+		private RANGE(String string) {
+			value = string;
+		}
+		
+	};
 
 	public CheckinLoader(Context context) {
 		// Loaders may be used across multiple Activitys (assuming they aren't
@@ -25,15 +38,28 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 		// The superclass constructor will store a reference to the Application
 		// Context instead, and can be retrieved with a call to getContext().
 		super(context);
+		choice = RANGE.TODAY.value;
 	}
 
 	public synchronized void setIntervalToGet(String stringExtra) {
-		// TODO Auto-generated method stub
 		// Handle the data do load
+		choice = stringExtra;
 	}
 	
 	public synchronized String getIntervalToGet(){
-		return "";
+		return choice;
+	}
+	
+	private synchronized DateTime getFromDate(){
+		DateTime date = new DateTime();
+		if ( choice.equalsIgnoreCase(RANGE.TODAY.value)) {
+			return date.minusHours(1);
+		} else if (choice.equalsIgnoreCase(RANGE.MONTHLY.value) ) {
+			return date.minusMonths(1);
+		} else if (choice.equalsIgnoreCase(RANGE.WEEKLY.value) ) {
+			return date.minusWeeks(1);
+		}
+		return date;
 	}
 
 	@Override
@@ -46,13 +72,20 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 
 		// TODO: Perform the query here and add the results to 'data'.
 		DatabaseManager databaseManager = new DatabaseManager(getContext());
+		DateTime now = new DateTime();
+		DateTime from = getFromDate();
+		try {
+			data = databaseManager.getCheckinListFromPeriod(from, now);
+		} catch (InvalidDateOrder e) {
+			e.printStackTrace();
+		}
 		return data;
 	}
 
 	@Override
 	protected void onStartLoading() {
 		// TODO Auto-generated method stub
-
+		Log.i(TAG, "On start loading... ");
 		if (mData != null) {
 			// Deliver any previously loaded data immediately.
 			Log.i(TAG, "+++ Delivering previously loaded data to the client...");
@@ -60,8 +93,9 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 		}
 
 		// register listening for updates
-		if (mObserver != null) {
+		if (mObserver == null) {
 			mObserver = new NavigationSelectorListener(this);
+			Log.i(TAG, "Creating listenerval... ");
 		}
 		if (takeContentChanged()) {
 			// When the observer detects a new installed application, it will

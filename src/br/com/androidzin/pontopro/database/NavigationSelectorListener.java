@@ -9,7 +9,7 @@ import android.util.Log;
 public class NavigationSelectorListener extends BroadcastReceiver {
 
 	//private static final String TAG = NavigationSelectorListener.class.getCanonicalName();
-	private static final String TAG = "Loader";
+	private static final String TAG = "LOADER";
 	private CheckinLoader mLoader;
 	
 	public NavigationSelectorListener(CheckinLoader loader) {
