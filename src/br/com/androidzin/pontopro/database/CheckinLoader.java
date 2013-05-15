@@ -13,21 +13,19 @@ import br.com.androidzin.pontopro.model.Checkin;
 
 public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 
-	// We hold a reference to the Loader’s data here.
 	private List<Checkin> mData;
 	public static final String ACTION_SELECTOR_CHANGED = "pontopro.date.selector";
 	private static final String TAG = "LOADER";
 	private NavigationSelectorListener mObserver;
-	
 	private String choice;
-	public static enum RANGE{TODAY("Hoje"), WEEKLY("Semanal"), MONTHLY("Mensal"), OTHER("Outros");
-		
+
+	public static enum RANGE {
+		TODAY("Hoje"), WEEKLY("Semanal"), MONTHLY("Mensal"), OTHER("Outros");
 		private String value;
-	
+
 		private RANGE(String string) {
 			value = string;
 		}
-		
 	};
 
 	public CheckinLoader(Context context) {
@@ -42,21 +40,20 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 	}
 
 	public synchronized void setIntervalToGet(String stringExtra) {
-		// Handle the data do load
 		choice = stringExtra;
 	}
-	
-	public synchronized String getIntervalToGet(){
+
+	public synchronized String getIntervalToGet() {
 		return choice;
 	}
-	
-	private synchronized DateTime getFromDate(){
+
+	private synchronized DateTime getFromDate() {
 		DateTime date = new DateTime();
-		if ( choice.equalsIgnoreCase(RANGE.TODAY.value)) {
+		if (choice.equalsIgnoreCase(RANGE.TODAY.value)) {
 			return date.minusHours(1);
-		} else if (choice.equalsIgnoreCase(RANGE.MONTHLY.value) ) {
+		} else if (choice.equalsIgnoreCase(RANGE.MONTHLY.value)) {
 			return date.minusMonths(1);
-		} else if (choice.equalsIgnoreCase(RANGE.WEEKLY.value) ) {
+		} else if (choice.equalsIgnoreCase(RANGE.WEEKLY.value)) {
 			return date.minusWeeks(1);
 		}
 		return date;
@@ -64,13 +61,11 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 
 	@Override
 	public List<Checkin> loadInBackground() {
-		// TODO Auto-generated method stub
 		// This method is called on a background thread and should generate a
 		// new set of data to be delivered back to the client.
 		Log.i(TAG, "+++ loadInBackground() called! +++");
 		List<Checkin> data = new ArrayList<Checkin>();
 
-		// TODO: Perform the query here and add the results to 'data'.
 		DatabaseManager databaseManager = new DatabaseManager(getContext());
 		DateTime now = new DateTime();
 		DateTime from = getFromDate();
@@ -84,7 +79,6 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 
 	@Override
 	protected void onStartLoading() {
-		// TODO Auto-generated method stub
 		Log.i(TAG, "On start loading... ");
 		if (mData != null) {
 			// Deliver any previously loaded data immediately.
@@ -105,12 +99,14 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 			// takeContentChanged() to return true. If this is ever the case (or
 			// if
 			// the current data is null), we force a new load.
-			Log.i(TAG, "+++ A content change has been detected... so force load! +++");
+			Log.i(TAG,
+					"+++ A content change has been detected... so force load! +++");
 			forceLoad();
 		} else if (mData == null) {
 			// If the current data is null... then we should make it non-null!
 			// :)
-			Log.i(TAG, "+++ The current data is data is null... so force load! +++");
+			Log.i(TAG,
+					"+++ The current data is data is null... so force load! +++");
 			forceLoad();
 		}
 
