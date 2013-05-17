@@ -10,9 +10,9 @@ public class NavigationSelectorListener extends BroadcastReceiver {
 
 	//private static final String TAG = NavigationSelectorListener.class.getCanonicalName();
 	private static final String TAG = "LOADER";
-	private CheckinLoader mLoader;
+	private WorkdayLoader mLoader;
 	
-	public NavigationSelectorListener(CheckinLoader loader) {
+	public NavigationSelectorListener(WorkdayLoader loader) {
 		mLoader = loader;
 		IntentFilter filter = new IntentFilter(CheckinLoader.ACTION_SELECTOR_CHANGED);
 	    mLoader.getContext().registerReceiver(this, filter);

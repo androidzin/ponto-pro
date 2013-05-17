@@ -8,13 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import br.com.androidzin.pontopro.model.Checkin;
+import br.com.androidzin.pontopro.model.Workday;
 
-public class CheckinListAdapter extends ArrayAdapter<Checkin> {
+public class WorkdayListAdapter extends ArrayAdapter<Workday> {
 
 	private LayoutInflater mInflater;
 
-	public CheckinListAdapter(Context context) {
+	public WorkdayListAdapter(Context context) {
 		super(context, android.R.layout.simple_list_item_2);
 		mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -27,13 +27,12 @@ public class CheckinListAdapter extends ArrayAdapter<Checkin> {
 		} else {
 			view = convertView;
 		}
-		Checkin checkin = getItem(position);
-		((TextView) view.findViewById(R.id.checkinText)).setText(checkin
-				.toString());
+		Workday workday = getItem(position);
+		((TextView) view.findViewById(R.id.checkinText)).setText(String.valueOf(workday.getWorkdayID()));
 		return view;
 	}
 
-	public void setData(List<Checkin> data) {
+	public void setData(List<Workday> data) {
 		clear();
 		if (data != null) {
 			for (int i = 0; i < data.size(); i++) {
@@ -41,5 +40,4 @@ public class CheckinListAdapter extends ArrayAdapter<Checkin> {
 			}
 		}
 	}
-
 }

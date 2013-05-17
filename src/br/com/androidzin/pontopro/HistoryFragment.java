@@ -10,24 +10,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 import br.com.androidzin.pontopro.database.CheckinLoader;
-import br.com.androidzin.pontopro.model.Checkin;
+import br.com.androidzin.pontopro.database.WorkdayLoader;
+import br.com.androidzin.pontopro.model.Workday;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockListFragment;
 
 public class HistoryFragment extends SherlockListFragment implements
-		OnNavigationListener, LoaderCallbacks<List<Checkin>> {
+		OnNavigationListener, LoaderCallbacks<List<Workday>> {
 
-	private static final String TAG = null;
+	private static final String TAG = HistoryFragment.class.getCanonicalName();
 	private SpinnerAdapter mSpinnerAdapter;
 	private MainActivity mActivity;
 
-	private CheckinListAdapter mAdapter;
+	private WorkdayListAdapter mAdapter;
 	// The Loader's id (this id is specific to the ListFragment's LoaderManager)
 	private static final int LOADER_ID = 1;
 
@@ -40,11 +43,23 @@ public class HistoryFragment extends SherlockListFragment implements
 		mActivity = (MainActivity) getSherlockActivity();
 
 		getLoaderManager().initLoader(LOADER_ID, null, this);
-		mAdapter = new CheckinListAdapter(getActivity());
+		mAdapter = new WorkdayListAdapter(getActivity());
 		setListAdapter(mAdapter);
-		//setListShown(false);
 		return inflater.inflate(R.layout.history_fragment, container, false);
 
+	}
+	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		getListView().setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
+				Intent intent = new Intent(getActivity(), DetailedCheckinFragment.class);
+				intent.putExtra("workdayID", mAdapter.getItem(pos).getWorkdayID());
+				startActivity(intent);
+			}
+		});
 	}
 
 	@Override
@@ -97,29 +112,20 @@ public class HistoryFragment extends SherlockListFragment implements
 	}
 
 	@Override
-	public Loader<List<Checkin>> onCreateLoader(int id, Bundle args) {
+	public Loader<List<Workday>> onCreateLoader(int id, Bundle args) {
 		Log.i(TAG, "+++ onCreateLoader() called! +++");
-		return new CheckinLoader(getActivity());
+		return new WorkdayLoader(getActivity());
 	}
 
 	@Override
-	public void onLoadFinished(Loader<List<Checkin>> loader, List<Checkin> data) {
-		// TODO Auto-generated method stub
+	public void onLoadFinished(Loader<List<Workday>> loader, List<Workday> data) {
 		// show data on screen
 		Log.i(TAG, "+++ onLoadFinished() called! +++");
 		mAdapter.setData(data);
-
-		if (isResumed()) {
-			//setListShown(true);
-		} else {
-			//setListShownNoAnimation(true);
-		}
 	}
 
 	@Override
-	public void onLoaderReset(Loader<List<Checkin>> loader) {
-		// TODO Auto-generated method stub
-		// adatper.setData(null)
+	public void onLoaderReset(Loader<List<Workday>> loader) {
 		mAdapter.setData(null);
 	}
 

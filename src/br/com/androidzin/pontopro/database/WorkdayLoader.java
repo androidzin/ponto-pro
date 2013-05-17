@@ -1,21 +1,35 @@
 package br.com.androidzin.pontopro.database;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
-import br.com.androidzin.pontopro.model.Checkin;
+import br.com.androidzin.pontopro.exception.InvalidDateOrder;
+import br.com.androidzin.pontopro.model.Workday;
 
-public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
+public class WorkdayLoader extends AsyncTaskLoader<List<Workday>> {
 
-	private List<Checkin> mData;
+	private List<Workday> mData;
 	public static final String ACTION_SELECTOR_CHANGED = "pontopro.date.selector";
 	private static final String TAG = "LOADER";
-	private long workday;
+	private NavigationSelectorListener mObserver;
+	private String choice;
 	private DatabaseManager databaseManager;
+
+	public static enum RANGE {
+		TODAY("Hoje"), WEEKLY("Semanal"), MONTHLY("Mensal"), OTHER("Outros");
+		private String value;
+
+		private RANGE(String string) {
+			value = string;
+		}
+	};
 	
-	public CheckinLoader(Context context, long workdayID) {
+	public WorkdayLoader(Context context) {
 		// Loaders may be used across multiple Activitys (assuming they aren't
 		// bound to the LoaderManager), so NEVER hold a reference to the context
 		// directly. Doing so will cause you to leak an entire Activity's
@@ -23,18 +37,47 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 		// The superclass constructor will store a reference to the Application
 		// Context instead, and can be retrieved with a call to getContext().
 		super(context);
-		workday = workdayID;	
+		choice = RANGE.TODAY.value;
+	}
+	
+	public synchronized void setIntervalToGet(String stringExtra) {
+		choice = stringExtra;
 	}
 
+	public synchronized String getIntervalToGet() {
+		return choice;
+	}
+	
+	private synchronized DateTime getFromDate() {
+		DateTime date = new DateTime();
+		if (choice.equalsIgnoreCase(RANGE.TODAY.value)) {
+			return date.minusHours(1);
+		} else if (choice.equalsIgnoreCase(RANGE.MONTHLY.value)) {
+			return date.minusMonths(1);
+		} else if (choice.equalsIgnoreCase(RANGE.WEEKLY.value)) {
+			return date.minusWeeks(1);
+		}
+		return date;
+	}
+	
 	@Override
-	public List<Checkin> loadInBackground() {
+	public List<Workday> loadInBackground() {
 		// This method is called on a background thread and should generate a
 		// new set of data to be delivered back to the client.
 		Log.i(TAG, "+++ loadInBackground() called! +++");
+		List<Workday> data = new ArrayList<Workday>();
+	
 		databaseManager = new DatabaseManager(getContext());
-		return databaseManager.getCheckinListFromWorkday(workday);
+		DateTime now = new DateTime();
+		DateTime from = getFromDate();
+		try {
+			data = databaseManager.getWorkdayListFromPeriod(from, now);
+		} catch (InvalidDateOrder e) {
+			e.printStackTrace();
+		}
+		return data;
 	}
-
+	
 	@Override
 	protected void onStartLoading() {
 		Log.i(TAG, "On start loading... ");
@@ -43,7 +86,12 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 			Log.i(TAG, "+++ Delivering previously loaded data to the client...");
 			deliverResult(mData);
 		}
-		
+
+		// register listening for updates
+		if (mObserver == null) {
+			mObserver = new NavigationSelectorListener(this);
+			Log.i(TAG, "Creating listenerval... ");
+		}
 		if (takeContentChanged()) {
 			// When the observer detects a new installed application, it will
 			// call
@@ -65,9 +113,9 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 
 		super.onStartLoading();
 	}
-
+	
 	@Override
-	public void deliverResult(List<Checkin> data) {
+	public void deliverResult(List<Workday> data) {
 		if (isReset()) {
 			// The Loader has been reset; ignore the result and invalidate the
 			// data.
@@ -77,7 +125,7 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 
 		// Hold a reference to the old data so it doesn't get garbage collected.
 		// We must protect it until the new data has been delivered.
-		List<Checkin> oldData = mData;
+		List<Workday> oldData = mData;
 		mData = data;
 
 		if (isStarted()) {
@@ -91,7 +139,7 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 			releaseResources(oldData);
 		}
 	}
-
+	
 	@Override
 	protected void onStopLoading() {
 		// The Loader is in a stopped state, so we should attempt to cancel the
@@ -102,7 +150,7 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 		// should still monitor the data source for changes so that the Loader
 		// will know to force a new load if it is ever started again.
 	}
-
+	
 	@Override
 	protected void onReset() {
 		// Ensure the loader has been stopped.
@@ -113,19 +161,25 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 			releaseResources(mData);
 			mData = null;
 		}
-	}
 
+		// The Loader is being reset, so we should stop monitoring for changes.
+		if (mObserver != null) {
+			getContext().unregisterReceiver(mObserver);
+			mObserver = null;
+		}
+
+	}
+	
 	@Override
-	public void onCanceled(List<Checkin> data) {
+	public void onCanceled(List<Workday> data) {
 		// Attempt to cancel the current asynchronous load.
 		super.onCanceled(data);
-
 		// The load has been canceled, so we should release the resources
 		// associated with 'data'.
 		releaseResources(data);
 	}
 
-	private void releaseResources(List<Checkin> data) {
+	private void releaseResources(List<Workday> data) {
 		databaseManager.close();
 	}
 

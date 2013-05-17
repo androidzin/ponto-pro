@@ -7,6 +7,7 @@ public class Workday {
 
 	private long workdayID;
 	private List<Checkin> mCheckinList;
+	private String timeStamp;
 	private boolean hasOpenCheckin;
 	private int workedTime; // minutes
 	private int dailyMark; // minutes
@@ -84,5 +85,21 @@ public class Workday {
 		}
 		Workday other = (Workday) theOther;
 		return other.getWorkdayID() == other.getWorkdayID();
+	}
+
+	public void setTimeStamp(String string) {
+		timeStamp = string;
+	}
+
+	public void setWorkedHours(int worked) {
+		workedTime = worked;
+	}
+
+	public void setClosed(int open) {
+		hasOpenCheckin = Boolean.FALSE;
+	}
+
+	public void setDailyMak(int mark) {
+		dailyMark = mark;
 	}
 }

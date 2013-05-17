@@ -263,7 +263,7 @@ public class DatabaseManager {
 			throw new NumberFormatException();
 
 		values.put(WORKDAY_DAILY_MARK, dailyMark);
-		values.put(WORKDAY_WORK_DATE, System.currentTimeMillis());
+		//values.put(WORKDAY_WORK_DATE, System.currentTimeMillis());
 		values.put(WORKDAY_WORKED_HOURS, workedHours);
 		values.put(WORKDAY_IS_CLOSED, isClosed); 
 		
@@ -304,14 +304,49 @@ public class DatabaseManager {
 		}
 		return result;
 	}
+	
+	/**
+	 * @param ISOdateFrom
+	 * @param ISOdateTo
+	 * @return A List with all workdays from the specific workday in ISO Date
+	 * @throws Exception
+	 */
+	public List<Workday> getWorkdayListFromPeriod(DateTime ISOdateFrom, DateTime ISOdateTo) throws InvalidDateOrder {
+		if ( ISOdateFrom.isAfter(ISOdateTo)) {
+			throw new InvalidDateOrder();
+		}
+		String from = parser.print(ISOdateFrom);
+		String to = parser.print(ISOdateTo);
+		Workday result = null;
+		ArrayList<Workday> checkinList = new ArrayList<Workday>();
+		Cursor cursor;
+		cursor = mDataBase.rawQuery("select * from " + WORKDAY_TABLE + " where " 
+									+ WORKDAY_WORK_DATE + ">=" + "'" + from + "'" + " AND "
+									+ WORKDAY_WORK_DATE + "<=" + "'" + to + "'", null);
+		cursor.moveToFirst();
+		if ( !cursor.isAfterLast()) {
+			do {
+				result = new Workday();
+				result.setWorkdayID(cursor.getLong(0));
+				result.setTimeStamp(cursor.getString(1));	
+				result.setWorkedHours(cursor.getInt(2));
+				result.setClosed(cursor.getInt(3));
+				result.setDailyMak(cursor.getInt(4));
+				checkinList.add(result);
+			} while ( cursor.moveToNext() );
+		}
+		
+		return checkinList;
+	}
+
 
 	class DatabaseHelper extends SQLiteOpenHelper {
 
 		private static final String DB_NAME = "pontoPro";
-		private static final int DB_VERSION = 3;
+		private static final int DB_VERSION = 1;
 		
 		private String createWorkdayTable = "create table workday (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
-							+ "workDate DATE,"
+							+ "workDate DATE DEFAULT (datetime('now','localtime')),"
 							+ "workedHours INTEGER,"
 							+ "isClosed BOOLEAN,"
 							+ "dailyMark INTEGER"
@@ -354,6 +389,7 @@ public class DatabaseManager {
 		}
 
 	}
+
 
 
 }
