@@ -1,7 +1,6 @@
 package br.com.androidzin.pontopro;
 
 import android.content.Intent;
-import android.media.audiofx.BassBoost.Settings;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -88,7 +87,7 @@ public class MainActivity extends SherlockFragmentActivity{
 		public CheckinHistoryAdapter(FragmentManager fm) {
 			super(fm);
 			screens = new Fragment[2];
-			screens[0] = new CheckinFragement();
+			screens[0] = new CheckinFragment();
 			screens[1] = new HistoryFragment();
 		}
 

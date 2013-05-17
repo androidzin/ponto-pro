@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.MenuItem;
 
-public class CheckinFragement extends SherlockFragment implements OnTimeSetListener, Countable{
+public class CheckinFragment extends SherlockFragment implements OnTimeSetListener, Countable{
 	
 	private static final int ZERO = 0;
 	private static final int hoursInMilis = 3600000;
@@ -31,13 +31,14 @@ public class CheckinFragement extends SherlockFragment implements OnTimeSetListe
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
-		return inflater.inflate(R.layout.checkin_fragement, container, false);
+		return inflater.inflate(R.layout.checkin_fragment, container, false);
 	}
 	
 	public void onViewCreated(View view, Bundle savedInstanceState) {	
 		mDailyGoal = (TextView) view.findViewById(R.id.dailyGoalText);
 		mWorktimeRemaining = (TextView) view.findViewById(R.id.workTimeRemaining);
 		mDailyGoalBar = (ProgressBar) view.findViewById(R.id.dailyGoal);
+        timer = new CountDownTimer(CountDownTimer.ONE_SECOND, this);
 	}
 	
 	@Override
@@ -80,6 +81,9 @@ public class CheckinFragement extends SherlockFragment implements OnTimeSetListe
 		mDailyGoal.setVisibility(View.INVISIBLE);
 		mWorktimeRemaining.setVisibility(View.INVISIBLE);
 		mDailyGoalBar.setVisibility(View.INVISIBLE);
+        mWorktimeRemaining.setText(getFormatedString(0));
+        timer.stop();
+
 		
 	}
 
@@ -91,19 +95,25 @@ public class CheckinFragement extends SherlockFragment implements OnTimeSetListe
 	}
 
 	private void startCountDownTimer(long remainingTime) {
-		timer = new CountDownTimer(CountDownTimer.ONE_SECOND, remainingTime, this);
-		timer.start();
+		if (timer.isRunning()) {
+            timer.stop();
+        }
+        timer.start(remainingTime);
 	}
 
 	@Override
 	public void onTick(long milisElapsedTime, long millisUntilFinished) {
-		mWorktimeRemaining.setText(String.format("%02d:%02d:%02d",
-				millisUntilFinished/hoursInMilis, 
-				(millisUntilFinished%hoursInMilis)/minutesInMilis,
-				(millisUntilFinished%minutesInMilis)/CountDownTimer.ONE_SECOND));
+		mWorktimeRemaining.setText(getFormatedString(millisUntilFinished));
 	}
 
-	@Override
+    private String getFormatedString(long millisUntilFinished) {
+        return String.format("%02d:%02d:%02d",
+                millisUntilFinished/hoursInMilis,
+                (millisUntilFinished%hoursInMilis)/minutesInMilis,
+                (millisUntilFinished%minutesInMilis)/ CountDownTimer.ONE_SECOND);
+    }
+
+    @Override
 	public void onFinish() {
 		Toast.makeText(getSherlockActivity(), "Terminou", Toast.LENGTH_SHORT).show();
 	}

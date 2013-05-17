@@ -26,7 +26,7 @@ public class MainMenuFragment extends SherlockListFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		lastAdded = 0;
-		addFragment(new CheckinFragement(), false);
+		addFragment(new CheckinFragment(), false);
 	}
 	
 	@Override
@@ -46,7 +46,7 @@ public class MainMenuFragment extends SherlockListFragment {
 			switch(position)
 			{
 				case 0:
-					newFragment = new CheckinFragement();
+					newFragment = new CheckinFragment();
 				break;
 				
 				case 1:

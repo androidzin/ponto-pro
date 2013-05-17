@@ -20,3 +20,8 @@ lint.xml
 .classpath
 .project
 
+#AndroidStudio files
+.idea
+.settings
+*.iml
+*.gradle
