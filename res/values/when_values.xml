@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="when_array">
-        <item>Nenhum</item>
-        <item>10 minutos</item>
-        <item>15 minutos</item>
-        <item>30 minutos</item>
+        <item>@string/never</item>
+        <item>@string/ten_minutes</item>
+        <item>@string/fifteen_minutes</item>
+        <item>@string/thirty_minutes</item>
     </string-array>
-    
-    <array name="when_array_values">
+
+    <string-array name="when_array_values">
         <item>0</item>
         <item>10</item>
         <item>15</item>
         <item>30</item>
-    </array>
+    </string-array>
 </resources>

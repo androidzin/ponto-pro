@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="working_time">
+        <item>@string/four_hours</item>
+        <item>@string/six_hours</item>
+        <item>@string/eight_hours</item>
+    </string-array>
+
+    <string-array name="working_time_values">
+        <item>4</item>
+        <item>6</item>
+        <item>8</item>
+    </string-array>
+
+</resources>

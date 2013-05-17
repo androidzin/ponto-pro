@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="eating_time">
+        <item>@string/one_hour</item>
+        <item>@string/one_and_half_hour</item>
+        <item>@string/two_hours</item>
+    </string-array>
+
+    <string-array name="eating_time_values">
+        <item>1</item>
+        <item>15</item>
+        <item>2</item>
+    </string-array>
+</resources>

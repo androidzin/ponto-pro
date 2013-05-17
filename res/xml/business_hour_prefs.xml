@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/prefs_bussines_hour">
+
+        <ListPreference
+                android:entries="@array/when_array"
+                android:entryValues="@array/working_time_values"
+                android:title="@string/daily_working_hours" />
+
+        <ListPreference
+                android:entries="@array/eating_time"
+                android:entryValues="@array/eating_time_values"
+                android:title="@string/eating_time" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/checkins_time">
+
+    </PreferenceCategory>
+</PreferenceScreen>

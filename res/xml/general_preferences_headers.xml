@@ -1,6 +1,6 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
     <header 
-        android:fragment="br.com.androidzin.pontopro.settings.BussinessHourFragment"
+        android:fragment="br.com.androidzin.pontopro.settings.BusinessHourFragment"
         android:title="@string/prefs_bussines_hour"
         android:summary="@string/prefs_summ_bussiner_hour" />
     <header 

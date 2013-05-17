@@ -3,6 +3,5 @@
     <string-array name="menu_options">
         <item>@string/action_home</item>
         <item>@string/action_history</item>
-        <item>@string/action_settings</item>
     </string-array>
 </resources>

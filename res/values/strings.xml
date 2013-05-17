@@ -27,7 +27,8 @@
     <string name="prefs_summ_bussiner_hour">Configurações de expediente</string>
     <string name="prefs_notification">Notificações</string>
     <string name="prefs_summ_notification">Configurações de notificação</string>
-    
+
+    <!-- Notifcation Settings -->
     <string name="in_out_category">Pontos de entrada e saída</string>
     <string name="enable_disable_notification">Habilitar/Desabilitar nofiticações</string>
     <string name="enable_all_notifications">Habilitar todas as notificações</string>
@@ -39,13 +40,13 @@
     <string name="enable_out_notifications">Ativar lembretes sobre pontos de saida</string>
     <string name="disable_out_notifications">Desativar lembretes sobre pontos de saida</string>
     
-    <string name="bussines_daily_goal_category">Expediente e meta diária</string>
-    <string name="bussinesshour_notification">Expediente cumprido</string>
-    <string name="enable_bussinerhour_notifications">Ativar aviso de expediente cumprido</string>
-    <string name="disable_bussinerhour_notifications">Desativar aviso de expediente cumprido</string>
+    <string name="busines_daily_goal_category">Expediente e meta diária</string>
+    <string name="businesshour_notification">Expediente cumprido</string>
+    <string name="enable_businerhour_notifications">Ativar aviso de expediente cumprido</string>
+    <string name="disable_businerhour_notifications">Desativar aviso de expediente cumprido</string>
     
-    <string name="bussines_daily__notifications">Tocar mesmo quando houver meta diária</string>
-    <string name="bussines_daily_title">Expediente vs Meta diária</string>
+    <string name="busines_daily__notifications">Tocar mesmo quando houver meta diária</string>
+    <string name="busines_daily_title">Expediente vs Meta diária</string>
 
     <string name="daily_notfication">Meta diária alcançada</string>
     <string name="enable_dailygoal_notifications">Ativar aviso sobre meta diária alcançada</string>
@@ -57,5 +58,22 @@
     <string name="disable_maxhour_notifications">Desativar aviso sobre limite de horas trabalhas alcançado</string>
     <string name="amount_time_before_notification">Define quando o usuário será notificado</string>
     <string name="notification_precede_time">Antecedência dos avisos</string>
+
+    <string name="never">Nenhum</string>
+    <string name="ten_minutes">10 minutos</string>
+    <string name="fifteen_minutes">15 minutos</string>
+    <string name="thirty_minutes">30 minutos</string>
+
+
+    <!-- Business hour settings -->
+    <string name="four_hours">Quatros horas</string>
+    <string name="six_hours">Seis horas</string>
+    <string name="eight_hours">Oito horas</string>
+    <string name="eating_time">Intervalo para almoço</string>
+    <string name="one_hour">Uma hora</string>
+    <string name="one_and_half_hour">Uma hora e meia</string>
+    <string name="two_hours">Duas horas</string>
+    <string name="checkins_time">Horário de batida</string>
+
 
 </resources>
