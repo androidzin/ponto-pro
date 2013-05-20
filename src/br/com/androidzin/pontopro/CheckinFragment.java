@@ -12,14 +12,13 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import br.com.androidzin.pontopro.util.Constants;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.MenuItem;
 
 public class CheckinFragment extends SherlockFragment implements OnTimeSetListener, Countable{
 	
-	private static final int ZERO = 0;
-	private static final int hoursInMilis = 3600000;
-	private static final int minutesInMilis = 60000;
+
 	
 	private boolean hasDailyGoal;
 	private TextView mDailyGoal, mWorktimeRemaining;
@@ -60,7 +59,7 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	private void showDailyGoalDialog() {
 		hasDailyGoal = true;
 		Dialog newFragment = 
-				new TimePickerDialog(getActivity(), this, ZERO, ZERO, true);
+				new TimePickerDialog(getActivity(), this, Constants.ZERO, Constants.ZERO, true);
 		newFragment.show();
 		showDailyGoalUI();
 	}
@@ -90,7 +89,7 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	@Override
 	public void onTimeSet(TimePicker view, int hour, int minute) {
 		mWorktimeRemaining.setText(String.format("%02d:%02d:00", hour, minute));
-		long remainingTime = hour*hoursInMilis + minute * minutesInMilis;
+		long remainingTime = hour*Constants.hoursInMilis + minute * Constants.minutesInMilis;
 		startCountDownTimer(remainingTime);
 	}
 
@@ -108,9 +107,9 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 
     private String getFormatedString(long millisUntilFinished) {
         return String.format("%02d:%02d:%02d",
-                millisUntilFinished/hoursInMilis,
-                (millisUntilFinished%hoursInMilis)/minutesInMilis,
-                (millisUntilFinished%minutesInMilis)/ CountDownTimer.ONE_SECOND);
+                millisUntilFinished/ Constants.hoursInMilis,
+                (millisUntilFinished%Constants.hoursInMilis)/Constants.minutesInMilis,
+                (millisUntilFinished%Constants.minutesInMilis)/ CountDownTimer.ONE_SECOND);
     }
 
     @Override

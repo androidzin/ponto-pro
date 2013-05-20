@@ -79,9 +79,9 @@
     <string name="fifteen_number">15</string>
     <string name="thirty_number">30</string>
 
-    <string name="four_number">4</string>
-    <string name="six_number">6</string>
-    <string name="eight_number">8</string>
+    <string name="four_number">14400000</string>
+    <string name="six_number">21600000</string>
+    <string name="eight_number">28800000</string>
 
     <string name="one_number">3600000</string>
     <string name="one_and_half_number">5400000</string>
@@ -97,8 +97,7 @@
     <string name="two_hours">Duas horas</string>
     <string name="after_lunch_checkin">Volta do almoço</string>
     <string name="leaving_checkin">Saída</string>
-
-
+    <string name="hours">horas</string>
 
 
 </resources>
