@@ -59,13 +59,35 @@
     <string name="amount_time_before_notification">Define quando o usuário será notificado</string>
     <string name="notification_precede_time">Antecedência dos avisos</string>
 
+
+
+
+    <!-- Business hour settings -->
+    <string name="checkins_time">Horário de batida</string>
+    <string name="entered_checkin">Horário de entrada</string>
+    <string name="lunch_checkin">Saída para almoço</string>
+    <string name="invalid_interval">Intervalo inválido</string>
+
+    <!-- Array name and values -->
     <string name="never">Nenhum</string>
     <string name="ten_minutes">10 minutos</string>
     <string name="fifteen_minutes">15 minutos</string>
     <string name="thirty_minutes">30 minutos</string>
 
+    <string name="zero_number">0</string>
+    <string name="ten_number">10</string>
+    <string name="fifteen_number">15</string>
+    <string name="thirty_number">30</string>
 
-    <!-- Business hour settings -->
+    <string name="four_number">4</string>
+    <string name="six_number">6</string>
+    <string name="eight_number">8</string>
+
+    <string name="one_number">3600000</string>
+    <string name="one_and_half_number">5400000</string>
+    <string name="two_number">7200000</string>
+
+
     <string name="four_hours">Quatros horas</string>
     <string name="six_hours">Seis horas</string>
     <string name="eight_hours">Oito horas</string>
@@ -73,7 +95,10 @@
     <string name="one_hour">Uma hora</string>
     <string name="one_and_half_hour">Uma hora e meia</string>
     <string name="two_hours">Duas horas</string>
-    <string name="checkins_time">Horário de batida</string>
+    <string name="after_lunch_checkin">Volta do almoço</string>
+    <string name="leaving_checkin">Saída</string>
+
+
 
 
 </resources>

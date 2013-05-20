@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import com.actionbarsherlock.app.SherlockListFragment;
 
 public class MainMenuFragment extends SherlockListFragment {

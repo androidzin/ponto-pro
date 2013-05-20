@@ -8,9 +8,9 @@
     </string-array>
 
     <string-array name="when_array_values">
-        <item>0</item>
-        <item>10</item>
-        <item>15</item>
-        <item>30</item>
+        <item>@string/zero_number</item>
+        <item>@string/ten_number</item>
+        <item>@string/fifteen_number</item>
+        <item>@string/thirty_number</item>
     </string-array>
 </resources>

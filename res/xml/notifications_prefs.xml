@@ -29,25 +29,26 @@
             android:key="pref_time_before_notification"
             android:entries="@array/when_array"
             android:entryValues="@array/when_array"
+            android:defaultValue="@string/zero_number"
             android:title="@string/notification_precede_time" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/busines_daily_goal_category" >
         <CheckBoxPreference
-            android:defaultValue="true"
             android:dependency="pref_key_notification_enabled"
+            android:defaultValue="true"
             android:key="pref_key_notification_bussineshour_enabled"
             android:summaryOff="@string/enable_businerhour_notifications"
             android:summaryOn="@string/disable_businerhour_notifications"
             android:title="@string/businesshour_notification" />
         <CheckBoxPreference
-            android:defaultValue="false"
             android:dependency="pref_key_notification_bussineshour_enabled"
+            android:defaultValue="false"
             android:key="pref_key_notification_bussines_daily_enabled"
             android:summary="@string/busines_daily__notifications"
             android:title="@string/busines_daily_title" />
         <CheckBoxPreference
-            android:defaultValue="true"
             android:dependency="pref_key_notification_enabled"
+            android:defaultValue="true"
             android:key="pref_key_notification_dailygoal_enabled"
             android:summaryOff="@string/enable_dailygoal_notifications"
             android:summaryOn="@string/disable_dailygoal_notifications"
@@ -55,8 +56,8 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/maxhour_notification_category">
         <CheckBoxPreference
-            android:defaultValue="true"
             android:dependency="pref_key_notification_enabled"
+            android:defaultValue="true"
             android:key="pref_key_notification_maxhour_enabled"
             android:summaryOff="@string/enable_maxhour_notifications"
             android:summaryOn="@string/disable_maxhour_notifications"
