@@ -26,9 +26,6 @@
             android:key="pref_lunch_checkin"
             android:title="@string/lunch_checkin"/>
         <br.com.androidzin.pontopro.settings.TimePreferenceWithSummary
-            android:key="pref_after_lunch_checkin"
-            android:title="@string/after_lunch_checkin"/>
-        <br.com.androidzin.pontopro.settings.TimePreferenceWithSummary
             android:key="pref_leaving_checkin"
             android:title="@string/leaving_checkin"/>
     </PreferenceCategory>

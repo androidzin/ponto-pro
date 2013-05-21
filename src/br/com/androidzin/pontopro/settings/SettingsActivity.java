@@ -12,6 +12,8 @@ import android.widget.Toast;
 import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.util.Constants;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener,
@@ -45,7 +47,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                 addPreferencesFromResource(R.xml.business_hour_prefs);
                 PreferenceManager.setDefaultValues(this, R.xml.business_hour_prefs, false);
                 findPreference(LUNCH_CHECKIN_KEY).setOnPreferenceChangeListener(this);
-                findPreference(AFTER_LUNCH_CHECKIN_KEY).setOnPreferenceChangeListener(this);
+                findPreference(EATING_TIME_KEY).setOnPreferenceChangeListener(this);
                 business = true;
             } else {
                 addPreferencesFromResource(R.xml.general_preferences_headers_legacy);
@@ -81,27 +83,32 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Long workingTime = Long.parseLong(sharedPreferences.getString(WORKING_TIME_KEY, "0"));
+        Long eatingInterval = Long.parseLong(sharedPreferences.getString(EATING_TIME_KEY, "0"));
+        Long enteredCheckin = sharedPreferences.getLong(ENTERED_CHECKIN_KEY, 0);
+        Long leavingCheckin = sharedPreferences.getLong(LEAVING_CHECKIN_KEY, 0);
+
+        if(((leavingCheckin - enteredCheckin) - eatingInterval) - workingTime < 10000){
+            Toast.makeText(this, R.string.working_time_violation, Toast.LENGTH_SHORT).show();
+        }
 
     }
 
 
     @Override
-    public boolean onPreferenceChange(Preference preference, Object o) {
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
             SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
-            Long enteredCheckin = sharedPreferences.getLong(ENTERED_CHECKIN_KEY, 0);
+            Long eatingInterval = Long.parseLong(sharedPreferences.getString(EATING_TIME_KEY, "0"));
             Long lunchCheckin = sharedPreferences.getLong(LUNCH_CHECKIN_KEY, 0);
             Long afterLunchCheckin = sharedPreferences.getLong(AFTER_LUNCH_CHECKIN_KEY, 0);
-            Long leavingCheckin = sharedPreferences.getLong(LEAVING_CHECKIN_KEY, 0);
-            Long eatingInterval = Long.parseLong(sharedPreferences.getString(EATING_TIME_KEY, "0"));
 
             if(preference.getKey().equals(LUNCH_CHECKIN_KEY)){
-                afterLunchCheckin = Long.parseLong(o.toString()) + eatingInterval;
-                sharedPreferences.edit().putLong(AFTER_LUNCH_CHECKIN_KEY, afterLunchCheckin).commit();
-            } else if (preference.getKey().equals(AFTER_LUNCH_CHECKIN_KEY)) {
-                lunchCheckin = Long.parseLong(o.toString()) - eatingInterval;
-                sharedPreferences.edit().putLong(LUNCH_CHECKIN_KEY, lunchCheckin).commit();
+                lunchCheckin = Long.parseLong(newValue.toString());
+            } else if (preference.getKey().equals(EATING_TIME_KEY)) {
+                eatingInterval = Long.parseLong(newValue.toString());
             }
-
+            afterLunchCheckin = lunchCheckin + eatingInterval;
+            sharedPreferences.edit().putLong(AFTER_LUNCH_CHECKIN_KEY, afterLunchCheckin).commit();
             return true;
     }
 }
