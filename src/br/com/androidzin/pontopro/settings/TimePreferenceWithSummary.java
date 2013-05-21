@@ -13,21 +13,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class TimePreference extends DialogPreference {
+public class TimePreferenceWithSummary extends DialogPreference {
     private Calendar calendar;
     private TimePicker picker = null;
 
-    public TimePreference(Context ctxt) {
+    public TimePreferenceWithSummary(Context ctxt) {
         this(ctxt, null);
     }
 
-    public TimePreference(Context ctxt, AttributeSet attrs) {
+    public TimePreferenceWithSummary(Context ctxt, AttributeSet attrs) {
         this(ctxt, attrs, 0);
     }
 
-    public TimePreference(Context ctxt, AttributeSet attrs, int defStyle) {
+    public TimePreferenceWithSummary(Context ctxt, AttributeSet attrs, int defStyle) {
         super(ctxt, attrs, defStyle);
-
         setPositiveButtonText(R.string.ok);
         setNegativeButtonText(R.string.cancel);
         calendar = new GregorianCalendar();

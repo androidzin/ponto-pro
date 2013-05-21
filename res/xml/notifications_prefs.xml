@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBoxPreference
         android:defaultValue="true"
@@ -24,12 +24,12 @@
             android:summaryOn="@string/disable_out_notifications"
             android:title="@string/output_points" />
 
-        <ListPreference
+        <br.com.androidzin.pontopro.settings.ListPreferenceWithSummary
+            android:defaultValue="@string/zero_number"
             android:dependency="pref_key_notification_enabled"
             android:key="pref_time_before_notification"
             android:entries="@array/when_array"
-            android:entryValues="@array/when_array"
-            android:defaultValue="@string/zero_number"
+            android:entryValues="@array/when_array_values"
             android:title="@string/notification_precede_time" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/busines_daily_goal_category" >

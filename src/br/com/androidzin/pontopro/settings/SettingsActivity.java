@@ -6,6 +6,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
+import android.widget.BaseAdapter;
+import android.widget.Toast;
 import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.util.Constants;
 
@@ -14,15 +17,16 @@ import java.util.List;
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener{
 
-	static final String ACTION_PREFS_NOTIFICATION = "br.com.androidzin.pontopro.settings.NOTIFICATION";
+    static final String ACTION_PREFS_NOTIFICATION = "br.com.androidzin.pontopro.settings.NOTIFICATION";
 	static final String ACTION_PREFS_BUSSINESSHOUR = "br.com.androidzin.pontopro.settings.BUSSINER_HOUR";
-    static final String PREFS_PREFIX = "prefs_";
+    static final String PREFS_PREFIX = "pref_";
     static final String WORKING_TIME_KEY = PREFS_PREFIX.concat("working_time");
     static final String EATING_TIME_KEY = PREFS_PREFIX.concat("eating_time");
     static final String LEAVING_CHECKIN_KEY = PREFS_PREFIX.concat("leaving_checkin");
     static final String AFTER_LUNCH_CHECKIN_KEY = PREFS_PREFIX.concat("after_lunch_checkin");
     static final String LUNCH_CHECKIN_KEY = PREFS_PREFIX.concat("lunch_checkin");
     static final String ENTERED_CHECKIN_KEY = PREFS_PREFIX.concat("entered_checkin");
+    static final String PREF_KEY_NOTIFICATION_ENABLED_KEY = PREFS_PREFIX.concat("key_notification_enabled");
 
     boolean business = false;
 	
@@ -34,11 +38,12 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
 	    String action = getIntent().getAction();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
             if (action != null && action.equals(ACTION_PREFS_NOTIFICATION)) {
+                PreferenceManager.setDefaultValues(this, R.xml.notifications_prefs, false);
                 addPreferencesFromResource(R.xml.notifications_prefs);
             } else if (action != null && action.equals(ACTION_PREFS_BUSSINESSHOUR)){
                 addPreferencesFromResource(R.xml.business_hour_prefs);
+                PreferenceManager.setDefaultValues(this, R.xml.business_hour_prefs, false);
                 findPreference(LUNCH_CHECKIN_KEY).setOnPreferenceChangeListener(this);
                 findPreference(AFTER_LUNCH_CHECKIN_KEY).setOnPreferenceChangeListener(this);
                 business = true;
@@ -52,11 +57,18 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     protected void onResume() {
         super.onResume();
-        if(business){
-            findPreference(WORKING_TIME_KEY).setSummary(
-                    getPreferenceManager().getSharedPreferences().getString(WORKING_TIME_KEY, ""));
-            findPreference(EATING_TIME_KEY).setSummary(
-                    getPreferenceManager().getSharedPreferences().getString(EATING_TIME_KEY, ""));
+        if(findPreference(WORKING_TIME_KEY) != null || findPreference(PREF_KEY_NOTIFICATION_ENABLED_KEY) != null)
+        {
+            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(findPreference(WORKING_TIME_KEY) != null || findPreference(PREF_KEY_NOTIFICATION_ENABLED_KEY) != null)
+        {
+            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         }
     }
 
@@ -69,15 +81,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(business) {
-            if(sharedPreferences.contains(key)){
-                if(key.equals(WORKING_TIME_KEY) || key.equals(EATING_TIME_KEY)) {
-                    String currentValue = sharedPreferences.getString(key, "");
-                    Long value = Long.parseLong(currentValue)/ Constants.hoursInMilis;
-                    findPreference(key).setSummary(value.toString().concat(" "+getString(R.string.hours)));
-                }
-            }
-        }
+
     }
 
 
@@ -91,13 +95,13 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             Long eatingInterval = Long.parseLong(sharedPreferences.getString(EATING_TIME_KEY, "0"));
 
             if(preference.getKey().equals(LUNCH_CHECKIN_KEY)){
-                afterLunchCheckin += eatingInterval;
+                afterLunchCheckin = Long.parseLong(o.toString()) + eatingInterval;
                 sharedPreferences.edit().putLong(AFTER_LUNCH_CHECKIN_KEY, afterLunchCheckin).commit();
-                findPreference(AFTER_LUNCH_CHECKIN_KEY).setSummary(afterLunchCheckin.toString());
             } else if (preference.getKey().equals(AFTER_LUNCH_CHECKIN_KEY)) {
-                lunchCheckin -= eatingInterval;
+                lunchCheckin = Long.parseLong(o.toString()) - eatingInterval;
                 sharedPreferences.edit().putLong(LUNCH_CHECKIN_KEY, lunchCheckin).commit();
             }
+
             return true;
     }
 }

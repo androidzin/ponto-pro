@@ -4,36 +4,32 @@
 
     <PreferenceCategory android:title="@string/prefs_bussines_hour">
 
-        <ListPreference
+        <br.com.androidzin.pontopro.settings.ListPreferenceWithSummary
                 android:defaultValue="@string/eight_number"
-                android:key="prefs_working_time"
+                android:key="pref_working_time"
                 android:entries="@array/working_time"
                 android:entryValues="@array/working_time_values"
                 android:title="@string/daily_working_hours" />
 
-        <ListPreference
+        <br.com.androidzin.pontopro.settings.ListPreferenceWithSummary
                 android:defaultValue="@string/one_number"
-                android:key="prefs_eating_time"
+                android:key="pref_eating_time"
                 android:entries="@array/eating_time"
                 android:entryValues="@array/eating_time_values"
                 android:title="@string/eating_time" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/checkins_time">
-        <br.com.androidzin.pontopro.settings.TimePreference
-            android:defaultValue="@string/zero_number"
-            android:key="prefs_entered_checkin"
+        <br.com.androidzin.pontopro.settings.TimePreferenceWithSummary
+            android:key="pref_entered_checkin"
             android:title="@string/entered_checkin"/>
-        <br.com.androidzin.pontopro.settings.TimePreference
-            android:defaultValue="@string/zero_number"
-            android:key="prefs_lunch_checkin"
+        <br.com.androidzin.pontopro.settings.TimePreferenceWithSummary
+            android:key="pref_lunch_checkin"
             android:title="@string/lunch_checkin"/>
-        <br.com.androidzin.pontopro.settings.TimePreference
-                android:defaultValue="@string/zero_number"
-                android:key="prefs_after_lunch_checkin"
-                android:title="@string/after_lunch_checkin"/>
-        <br.com.androidzin.pontopro.settings.TimePreference
-                android:defaultValue="@string/zero_number"
-                android:key="prefs_leaving_checkin"
-                android:title="@string/leaving_checkin"/>
+        <br.com.androidzin.pontopro.settings.TimePreferenceWithSummary
+            android:key="pref_after_lunch_checkin"
+            android:title="@string/after_lunch_checkin"/>
+        <br.com.androidzin.pontopro.settings.TimePreferenceWithSummary
+            android:key="pref_leaving_checkin"
+            android:title="@string/leaving_checkin"/>
     </PreferenceCategory>
 </PreferenceScreen>

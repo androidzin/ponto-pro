@@ -1,5 +1,6 @@
 package br.com.androidzin.pontopro.settings;
 
+import android.preference.PreferenceManager;
 import br.com.androidzin.pontopro.R;
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -13,5 +14,6 @@ public class NotificationFragment extends PreferenceFragment {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.notifications_prefs);
+        PreferenceManager.setDefaultValues(getActivity(), R.xml.notifications_prefs, false);
 	}
 }
