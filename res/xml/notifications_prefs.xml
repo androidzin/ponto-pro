@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:key="pref_category_notification" android:persistent="false">>
 
     <CheckBoxPreference
         android:defaultValue="true"
@@ -32,27 +33,27 @@
             android:entryValues="@array/when_array_values"
             android:title="@string/notification_precede_time" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/busines_daily_goal_category" >
+    <PreferenceCategory android:title="@string/business_daily_goal_category" >
         <CheckBoxPreference
             android:dependency="pref_key_notification_enabled"
             android:defaultValue="true"
             android:key="pref_key_notification_bussineshour_enabled"
-            android:summaryOff="@string/enable_businerhour_notifications"
-            android:summaryOn="@string/disable_businerhour_notifications"
-            android:title="@string/businesshour_notification" />
+            android:summaryOff="@string/enable_business_hour_notifications"
+            android:summaryOn="@string/disable_business_hour_notifications"
+            android:title="@string/business_hour_notification" />
         <CheckBoxPreference
             android:dependency="pref_key_notification_bussineshour_enabled"
             android:defaultValue="false"
             android:key="pref_key_notification_bussines_daily_enabled"
-            android:summary="@string/busines_daily__notifications"
-            android:title="@string/busines_daily_title" />
+            android:summary="@string/business_daily__notifications"
+            android:title="@string/business_daily_title" />
         <CheckBoxPreference
             android:dependency="pref_key_notification_enabled"
             android:defaultValue="true"
             android:key="pref_key_notification_dailygoal_enabled"
             android:summaryOff="@string/enable_dailygoal_notifications"
             android:summaryOn="@string/disable_dailygoal_notifications"
-            android:title="@string/daily_notfication" />
+            android:title="@string/daily_notification" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/maxhour_notification_category">
         <CheckBoxPreference

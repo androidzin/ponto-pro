@@ -1,10 +1,10 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
     <header 
         android:fragment="br.com.androidzin.pontopro.settings.BusinessHourFragment"
-        android:title="@string/prefs_bussines_hour"
-        android:summary="@string/prefs_summ_bussiner_hour" />
+        android:title="@string/pref_business_hour"
+        android:summary="@string/pref_summ_business_hour" />
     <header 
         android:fragment="br.com.androidzin.pontopro.settings.NotificationFragment"
-        android:title="@string/prefs_notification"
-        android:summary="@string/prefs_summ_notification" />
+        android:title="@string/pref_notification"
+        android:summary="@string/pref_summ_notification" />
 </preference-headers>

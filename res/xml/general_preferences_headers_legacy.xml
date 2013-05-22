@@ -1,15 +1,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference 
-        android:title="@string/prefs_bussines_hour"
-        android:summary="@string/prefs_summ_bussiner_hour"  >
+        android:title="@string/pref_business_hour"
+        android:summary="@string/pref_summ_business_hour"  >
         <intent 
             android:targetPackage="br.com.androidzin.pontopro"
             android:targetClass="br.com.androidzin.pontopro.settings.SettingsActivity"
             android:action="br.com.androidzin.pontopro.settings.BUSSINER_HOUR" />
     </Preference>
     <Preference 
-        android:title="@string/prefs_notification"
-        android:summary="@string/prefs_summ_notification"  >
+        android:title="@string/pref_notification"
+        android:summary="@string/pref_summ_notification"  >
         <intent 
             android:targetPackage="br.com.androidzin.pontopro"
             android:targetClass="br.com.androidzin.pontopro.settings.SettingsActivity"

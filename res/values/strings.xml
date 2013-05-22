@@ -23,10 +23,10 @@
     <string name="define_daily_goal">Qual sua meta hoje?</string>
     
     <!--  Settings -->
-    <string name="prefs_bussines_hour">Expediente</string>
-    <string name="prefs_summ_bussiner_hour">Configurações de expediente</string>
-    <string name="prefs_notification">Notificações</string>
-    <string name="prefs_summ_notification">Configurações de notificação</string>
+    <string name="pref_business_hour">Expediente</string>
+    <string name="pref_summ_business_hour">Configurações de expediente</string>
+    <string name="pref_notification">Notificações</string>
+    <string name="pref_summ_notification">Configurações de notificação</string>
 
     <!-- Notifcation Settings -->
     <string name="in_out_category">Pontos de entrada e saída</string>
@@ -40,15 +40,15 @@
     <string name="enable_out_notifications">Ativar lembretes sobre pontos de saida</string>
     <string name="disable_out_notifications">Desativar lembretes sobre pontos de saida</string>
     
-    <string name="busines_daily_goal_category">Expediente e meta diária</string>
-    <string name="businesshour_notification">Expediente cumprido</string>
-    <string name="enable_businerhour_notifications">Ativar aviso de expediente cumprido</string>
-    <string name="disable_businerhour_notifications">Desativar aviso de expediente cumprido</string>
+    <string name="business_daily_goal_category">Expediente e meta diária</string>
+    <string name="business_hour_notification">Expediente cumprido</string>
+    <string name="enable_business_hour_notifications">Ativar aviso de expediente cumprido</string>
+    <string name="disable_business_hour_notifications">Desativar aviso de expediente cumprido</string>
     
-    <string name="busines_daily__notifications">Tocar mesmo quando houver meta diária</string>
-    <string name="busines_daily_title">Expediente vs Meta diária</string>
+    <string name="business_daily__notifications">Tocar mesmo quando houver meta diária</string>
+    <string name="business_daily_title">Expediente vs Meta diária</string>
 
-    <string name="daily_notfication">Meta diária alcançada</string>
+    <string name="daily_notification">Meta diária alcançada</string>
     <string name="enable_dailygoal_notifications">Ativar aviso sobre meta diária alcançada</string>
     <string name="disable_dailygoal_notifications">Desativar aviso sobre meta diária alcançada</string>
     
