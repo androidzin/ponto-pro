@@ -2,6 +2,7 @@ package br.com.androidzin.pontopro.settings;
 
 import android.annotation.TargetApi;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -105,5 +106,10 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             afterLunchCheckin = lunchCheckin + eatingInterval;
             sharedPreferences.edit().putLong(AFTER_LUNCH_CHECKIN_KEY, afterLunchCheckin).commit();
             return true;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 }
