@@ -7,13 +7,9 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.widget.BaseAdapter;
 import android.widget.Toast;
 import br.com.androidzin.pontopro.R;
-import br.com.androidzin.pontopro.util.Constants;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener,
@@ -29,14 +25,11 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     static final String LUNCH_CHECKIN_KEY = PREFS_PREFIX.concat("lunch_checkin");
     static final String ENTERED_CHECKIN_KEY = PREFS_PREFIX.concat("entered_checkin");
     static final String PREF_KEY_NOTIFICATION_ENABLED_KEY = PREFS_PREFIX.concat("key_notification_enabled");
+    public static final String PREF_CATEGORY_BUSINESS_KEY = "pref_category_business";
 
-    boolean business = false;
-	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-
-
 
 	    String action = getIntent().getAction();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -48,7 +41,6 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
                 PreferenceManager.setDefaultValues(this, R.xml.business_hour_prefs, false);
                 findPreference(LUNCH_CHECKIN_KEY).setOnPreferenceChangeListener(this);
                 findPreference(EATING_TIME_KEY).setOnPreferenceChangeListener(this);
-                business = true;
             } else {
                 addPreferencesFromResource(R.xml.general_preferences_headers_legacy);
             }
@@ -83,13 +75,16 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Long workingTime = Long.parseLong(sharedPreferences.getString(WORKING_TIME_KEY, "0"));
-        Long eatingInterval = Long.parseLong(sharedPreferences.getString(EATING_TIME_KEY, "0"));
-        Long enteredCheckin = sharedPreferences.getLong(ENTERED_CHECKIN_KEY, 0);
-        Long leavingCheckin = sharedPreferences.getLong(LEAVING_CHECKIN_KEY, 0);
+        if(findPreference(PREF_CATEGORY_BUSINESS_KEY) != null && !key.equals(AFTER_LUNCH_CHECKIN_KEY))
+        {
+            Long workingTime = Long.parseLong(sharedPreferences.getString(WORKING_TIME_KEY, "0"));
+            Long eatingInterval = Long.parseLong(sharedPreferences.getString(EATING_TIME_KEY, "0"));
+            Long enteredCheckin = sharedPreferences.getLong(ENTERED_CHECKIN_KEY, 0);
+            Long leavingCheckin = sharedPreferences.getLong(LEAVING_CHECKIN_KEY, 0);
 
-        if(((leavingCheckin - enteredCheckin) - eatingInterval) - workingTime < 10000){
-            Toast.makeText(this, R.string.working_time_violation, Toast.LENGTH_SHORT).show();
+            if(((leavingCheckin - enteredCheckin) - eatingInterval) - workingTime < 10000){
+                Toast.makeText(this, R.string.working_time_violation, Toast.LENGTH_SHORT).show();
+            }
         }
 
     }
