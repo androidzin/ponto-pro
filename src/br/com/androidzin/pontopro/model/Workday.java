@@ -90,6 +90,10 @@ public class Workday {
 	public void setTimeStamp(String string) {
 		timeStamp = string;
 	}
+	
+	public String getStringDate(){
+		return timeStamp;
+	}
 
 	public void setWorkedHours(int worked) {
 		workedTime = worked;

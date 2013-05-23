@@ -44,13 +44,13 @@ public class CheckinFragement extends SherlockFragment implements OnTimeSetListe
 		mDailyGoalBar = (ProgressBar) view.findViewById(R.id.dailyGoal);
 		doCheckin = (Button) view.findViewById(R.id.doCheckin);
 		
-		workdayID = databaseManager.addWorkday();
+		/*workdayID = databaseManager.addWorkday();
 		doCheckin.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				databaseManager.addCheckin(workdayID);
 			}
-		});
+		});*/
 	}
 	
 	@Override
