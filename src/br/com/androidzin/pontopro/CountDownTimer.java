@@ -38,10 +38,11 @@ public class CountDownTimer{
 
     }
 
-    public void start(long time)
+    public void start(long time) throws NullPointerException
     {
         synchronized (lock){
             this.totalTime = time;
+            this.milisElapsed = 0;
         }
         play();
     }

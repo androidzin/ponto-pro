@@ -97,11 +97,15 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 		if (timer.isRunning()) {
             timer.stop();
         }
-        timer.start(remainingTime);
+        try {
+            timer.start(remainingTime);
+        } catch (NullPointerException e){
+            Toast.makeText(getSherlockActivity(), R.string.no_time_selected, Toast.LENGTH_SHORT).show();
+        }
 	}
 
 	@Override
-	public void onTick(long milisElapsedTime, long millisUntilFinished) {
+	public void onTick(long millisElapsedTime, long millisUntilFinished) {
 		mWorktimeRemaining.setText(getFormatedString(millisUntilFinished));
 	}
 
@@ -114,6 +118,6 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 
     @Override
 	public void onFinish() {
-		Toast.makeText(getSherlockActivity(), "Terminou", Toast.LENGTH_SHORT).show();
+		Toast.makeText(getSherlockActivity(), R.string.test_timefinished, Toast.LENGTH_SHORT).show();
 	}
 }

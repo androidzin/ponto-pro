@@ -11,14 +11,16 @@ public class CountDownLogicTest extends AndroidTestCase{
     private CountDownTimer countDownTimer;
     private boolean success = false;
     private int count = 0;
+    private long elapsedTime;
 
     protected void setUp() throws Exception {
         super.setUp();
 
         countDownTimer = new CountDownTimer(1000, new Countable() {
             @Override
-            public void onTick(long milisElapsedTime, long millisUntilFinished) {
+            public void onTick(long millisElapsedTime, long millisUntilFinished) {
                 count++;
+                elapsedTime = millisElapsedTime;
             }
 
             @Override
@@ -74,6 +76,7 @@ public class CountDownLogicTest extends AndroidTestCase{
 
         assertTrue( (t2-t1) == -t1);
         assertTrue( (t3-t1) < 200);
+        assertTrue(elapsedTime < 1000);
 
     }
 }
