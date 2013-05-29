@@ -26,6 +26,13 @@ public class Workday {
 	public void setCheckinList(List<Checkin> checkinList) {
 		this.mCheckinList = checkinList;
 	}
+	
+	public boolean hasWorked(){
+		if ( workedTime > dailyMark ) {
+			return true;
+		}
+		return false;
+	}
 
 	public boolean hasOpenCheckin() {
 		return hasOpenCheckin;
