@@ -1,5 +1,16 @@
 package br.com.androidzin.pontopro.data;
 
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.CHECKINS_CHECKIN_HOUR;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.CHECKINS_ID;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.CHECKINS_TABLE;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.CHECKINS_WORKDAY_ID;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.WORKDAY_DAILY_MARK;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.WORKDAY_ID;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.WORKDAY_IS_CLOSED;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.WORKDAY_TABLE;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.WORKDAY_WORKED_HOURS;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.WORKDAY_WORK_DATE;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +23,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import br.com.androidzin.pontopro.data.provider.PontoProContract;
 import br.com.androidzin.pontopro.exception.InvalidDateOrder;
 import br.com.androidzin.pontopro.model.Checkin;
 import br.com.androidzin.pontopro.model.Workday;
-import static br.com.androidzin.pontopro.data.PontoProContract.*;
 
 public class DatabaseManager {
 

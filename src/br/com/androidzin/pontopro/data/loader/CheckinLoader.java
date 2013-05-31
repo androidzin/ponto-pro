@@ -33,7 +33,9 @@ public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
 		// new set of data to be delivered back to the client.
 		Log.i(TAG, "+++ loadInBackground() called! +++");
 		databaseManager = new DatabaseManager(getContext());
-		return databaseManager.getCheckinListFromWorkday(workday);
+		List<Checkin> list =databaseManager.getCheckinListFromWorkday(workday); 
+		databaseManager.close();
+		return list;
 	}
 
 	@Override

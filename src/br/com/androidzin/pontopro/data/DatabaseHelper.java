@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import static br.com.androidzin.pontopro.data.PontoProContract.*;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.*;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 

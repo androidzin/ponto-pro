@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import br.com.androidzin.pontopro.data.DatabaseManager;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.MenuItem;
@@ -28,13 +27,11 @@ public class CheckinFragement extends SherlockFragment implements OnTimeSetListe
 	private ProgressBar mDailyGoalBar;
 	private CountDownTimer timer;
 	private Button doCheckin;
-	private DatabaseManager databaseManager;
-	long workdayID;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
-		databaseManager = new DatabaseManager(getActivity());
 		return inflater.inflate(R.layout.checkin_fragement, container, false);
 	}
 	
@@ -43,14 +40,6 @@ public class CheckinFragement extends SherlockFragment implements OnTimeSetListe
 		mWorktimeRemaining = (TextView) view.findViewById(R.id.workTimeRemaining);
 		mDailyGoalBar = (ProgressBar) view.findViewById(R.id.dailyGoal);
 		doCheckin = (Button) view.findViewById(R.id.doCheckin);
-		
-		workdayID = databaseManager.addWorkday();
-		doCheckin.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				databaseManager.addCheckin(workdayID);
-			}
-		});
 	}
 	
 	@Override

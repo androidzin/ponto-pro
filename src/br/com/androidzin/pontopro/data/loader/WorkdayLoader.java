@@ -53,7 +53,7 @@ public class WorkdayLoader extends AsyncTaskLoader<List<Workday>> {
 	private synchronized DateTime getFromDate() {
 		DateTime date = new DateTime();
 		if (choice.equalsIgnoreCase(RANGE.TODAY.value)) {
-			return date.minusHours(1);
+			return date.minusHours(23);
 		} else if (choice.equalsIgnoreCase(RANGE.MONTHLY.value)) {
 			return date.minusMonths(1);
 		} else if (choice.equalsIgnoreCase(RANGE.WEEKLY.value)) {
@@ -77,6 +77,7 @@ public class WorkdayLoader extends AsyncTaskLoader<List<Workday>> {
 		} catch (InvalidDateOrder e) {
 			e.printStackTrace();
 		}
+		databaseManager.close();
 		return data;
 	}
 	
