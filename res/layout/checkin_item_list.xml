@@ -9,6 +9,8 @@
         android:layout_gravity="center_vertical"
         android:layout_width="0dip"
         android:layout_weight="1.0"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:textIsSelectable="false" />
 
 </LinearLayout>
