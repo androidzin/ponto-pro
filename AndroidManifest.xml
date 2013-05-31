@@ -22,8 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".settings.SettingsActivity"/>
-        <activity android:name=".DetailedCheckinFragment"/>
+        <activity android:name=".settings.SettingsActivity" />
+        <activity android:name=".DetailedCheckinFragment" />
+
+        <provider
+            android:authorities="br.com.androidzin.pontopro.data.provider"
+            android:exported="false"
+            android:name=".data.provider.PontoProContentProvider"></provider>
+            
     </application>
 
 </manifest>

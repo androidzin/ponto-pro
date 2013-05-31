@@ -1,5 +1,7 @@
-package br.com.androidzin.pontopro.database;
+package br.com.androidzin.pontopro.data;
 
+import br.com.androidzin.pontopro.data.loader.CheckinLoader;
+import br.com.androidzin.pontopro.data.loader.WorkdayLoader;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

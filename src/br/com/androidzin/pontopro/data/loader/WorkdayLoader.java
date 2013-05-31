@@ -1,4 +1,4 @@
-package br.com.androidzin.pontopro.database;
+package br.com.androidzin.pontopro.data.loader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,8 @@ import org.joda.time.DateTime;
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
+import br.com.androidzin.pontopro.data.DatabaseManager;
+import br.com.androidzin.pontopro.data.NavigationSelectorListener;
 import br.com.androidzin.pontopro.exception.InvalidDateOrder;
 import br.com.androidzin.pontopro.model.Workday;
 

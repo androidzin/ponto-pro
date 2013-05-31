@@ -7,7 +7,7 @@ import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.widget.ListView;
-import br.com.androidzin.pontopro.database.CheckinLoader;
+import br.com.androidzin.pontopro.data.loader.CheckinLoader;
 import br.com.androidzin.pontopro.model.Checkin;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;

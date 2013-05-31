@@ -1,6 +1,9 @@
 package br.com.androidzin.pontopro;
 
+import java.net.URI;
+
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,7 +11,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import br.com.androidzin.pontopro.database.DatabaseManager;
+import br.com.androidzin.pontopro.data.DatabaseManager;
+import br.com.androidzin.pontopro.data.PontoProContract;
+import br.com.androidzin.pontopro.data.provider.PontoProContentProvider;
 import br.com.androidzin.pontopro.settings.SettingsActivity;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -71,6 +76,13 @@ public class MainActivity extends SherlockFragmentActivity{
 		if(item.getItemId() == R.id.action_settings){
 			startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
 			return true;
+		} else if (item.getItemId() == R.id.action_teste) {
+			getContentResolver().query(
+					Uri.withAppendedPath(PontoProContentProvider.CONTENT_URI, "workday/1/checkin"), 
+					new String[]{PontoProContract.WORKDAY_ID}, 
+					PontoProContract.CHECKINS_WORKDAY_ID, 
+					new String[]{"1"}, 
+					null);
 		}
 		return false;
 	}

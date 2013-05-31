@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import br.com.androidzin.pontopro.database.DatabaseManager;
+import br.com.androidzin.pontopro.data.DatabaseManager;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.MenuItem;
@@ -44,13 +44,13 @@ public class CheckinFragement extends SherlockFragment implements OnTimeSetListe
 		mDailyGoalBar = (ProgressBar) view.findViewById(R.id.dailyGoal);
 		doCheckin = (Button) view.findViewById(R.id.doCheckin);
 		
-		/*workdayID = databaseManager.addWorkday();
+		workdayID = databaseManager.addWorkday();
 		doCheckin.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				databaseManager.addCheckin(workdayID);
 			}
-		});*/
+		});
 	}
 	
 	@Override

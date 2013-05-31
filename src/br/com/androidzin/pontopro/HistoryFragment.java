@@ -18,8 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
-import br.com.androidzin.pontopro.database.CheckinLoader;
-import br.com.androidzin.pontopro.database.WorkdayLoader;
+import br.com.androidzin.pontopro.data.loader.CheckinLoader;
+import br.com.androidzin.pontopro.data.loader.WorkdayLoader;
 import br.com.androidzin.pontopro.model.Workday;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -105,7 +105,6 @@ public class HistoryFragment extends SherlockListFragment implements
 		}, new ImageLoader() {
 			@Override
 			public void loadImage(String url, ImageView view) {
-				Log.e("SYS", url);
 				if ( url.equals("NO")) {
 					view.setImageDrawable(getResources().getDrawable(R.drawable.error));
 				} else {

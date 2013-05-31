@@ -1,10 +1,11 @@
-package br.com.androidzin.pontopro.database;
+package br.com.androidzin.pontopro.data.loader;
 
 import java.util.List;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
+import br.com.androidzin.pontopro.data.DatabaseManager;
 import br.com.androidzin.pontopro.model.Checkin;
 
 public class CheckinLoader extends AsyncTaskLoader<List<Checkin>> {
