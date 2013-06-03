@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dip"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:background="@drawable/background_gradient"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:orientation="horizontal" >
+
+    <!--  android:background="#F25933" -->
+    <View
+        android:id="@+id/workdayStatusLabel"
+        android:layout_width="8dip"
+        android:layout_height="fill_parent"
+        android:background="#8DBF41" />
+
+    <TextView
+        android:id="@+id/workdayHours"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_marginLeft="20dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:scaleType="fitXY"
+        android:text="08:00h"
+        android:textColor="#FFFFFF" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/workdayDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_weight="2"
+        android:ellipsize="end"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:singleLine="true"
+        android:text="TextView"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp" >
+    </TextView>
+
+    <!--
+         <ImageView
+        android:id="@+id/workdaySuccessTime"
+        android:layout_width="0dip"
+        android:layout_height="48dip"
+        android:layout_gravity="center_horizontal|right"
+        android:layout_weight="2"
+        android:src="@drawable/checkbox" />
+    -->
+
+
+    <!--
+    <ImageView
+        android:id="@+id/workdayFailureTime"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@+id/workdayDate"
+        android:src="@drawable/error" />
+
+    
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/workdayHours"
+        android:layout_toRightOf="@+id/workdayDate"
+        android:ellipsize="end"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:gravity="right"
+        android:singleLine="true"
+        android:text="TextView"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#000000"
+        android:textSize="14dip" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/description"
+        android:layout_toRightOf="@+id/image"
+        android:gravity="right"
+        android:singleLine="true"
+        android:text="Small Text"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#000000"
+        android:textSize="16dip" />
+    -->
+
+</LinearLayout>

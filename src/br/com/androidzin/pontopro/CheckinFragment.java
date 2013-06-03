@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -18,14 +19,16 @@ import com.actionbarsherlock.view.MenuItem;
 
 public class CheckinFragment extends SherlockFragment implements OnTimeSetListener, Countable{
 	
-
+	private static final int ZERO = 0;
+	private static final int hoursInMilis = 3600000;
+	private static final int minutesInMilis = 60000;
 	
 	private boolean hasDailyGoal;
 	private TextView mDailyGoal, mWorktimeRemaining;
 	private ProgressBar mDailyGoalBar;
 	private CountDownTimer timer;
-	
-	
+	private Button doCheckin;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 		mWorktimeRemaining = (TextView) view.findViewById(R.id.workTimeRemaining);
 		mDailyGoalBar = (ProgressBar) view.findViewById(R.id.dailyGoal);
         timer = new CountDownTimer(CountDownTimer.ONE_SECOND, this);
+		doCheckin = (Button) view.findViewById(R.id.doCheckin);
 	}
 	
 	@Override
