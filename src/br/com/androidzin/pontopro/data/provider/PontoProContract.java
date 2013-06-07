@@ -4,6 +4,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import android.content.ContentValues;
+import android.net.Uri;
 
 public final class PontoProContract {
 	public static final String CHECKINS_ID = "_id";
@@ -17,6 +18,9 @@ public final class PontoProContract {
 	public static final String WORKDAY_WORKED_HOURS = "workedHours";
 	public static final String WORKDAY_IS_CLOSED = "isClosed";
 	public static final String WORKDAY_DAILY_MARK = "dailyMark";
+	
+	public static final String AUTHORITY = "br.com.androidzin.pontopro.data.provider";
+	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
 	public static DateTimeFormatter parser = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 	

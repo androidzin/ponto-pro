@@ -9,15 +9,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.AUTHORITY;
 import br.com.androidzin.pontopro.data.DatabaseHelper;
 
 public class PontoProContentProvider extends ContentProvider {
 
 	static final String TAG = "ProviderDemo";
-
-	static final String AUTHORITY = "br.com.androidzin.pontopro.data.provider";
-	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
-	
 	private DatabaseHelper mHelper;
 
 	private static final int WORKDAY_ID = 1;
@@ -52,6 +49,7 @@ public class PontoProContentProvider extends ContentProvider {
 	public static final String WORKDAY_DAILY_MARK = "dailyMark";
 	
 	private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+	
 
     static {
         sURIMatcher.addURI(AUTHORITY, "workday/#", WORKDAY_ID);
@@ -63,12 +61,16 @@ public class PontoProContentProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, "workday/interval/other", WORKDAY_INTERVAL_OTHER);
         
         sURIMatcher.addURI(AUTHORITY, "workday/insert", WORKDAY_INSERT);
-        sURIMatcher.addURI(AUTHORITY, "workday/update", WORKDAY_INTERVAL_OTHER);
+        //sURIMatcher.addURI(AUTHORITY, "workday/update", WORKDAY_INTERVAL_OTHER);
         
         sURIMatcher.addURI(AUTHORITY, "checkin/#", CHECKIN_ID);
         sURIMatcher.addURI(AUTHORITY, "checkin/all", CHECKIN_ALL);
         
         sURIMatcher.addURI(AUTHORITY, "checkin/insert", CHECKIN_INSERT);
+    }
+    
+    public DatabaseHelper getHelperToTest(){
+    	return mHelper;
     }
 
 	@Override
@@ -110,15 +112,27 @@ public class PontoProContentProvider extends ContentProvider {
 	@Override
 	public int delete(Uri uri, String where, String[] whereArgs) {
 		int count = 0;
+		String whereClause ;
 		switch (sURIMatcher.match(uri)) {
 			case WORKDAY_ID:
-				String whereClause = PontoProContract.WORKDAY_ID + "=" + uri.getLastPathSegment() + 
-									 (!TextUtils.isEmpty(where) ? " AND ("  + where + ")" : "");
+				whereClause =  PontoProContract.WORKDAY_ID + "=" + uri.getLastPathSegment();
+				if ( where != null ){
+					whereClause = whereClause + " AND " + where ;
+				}
 				count = mHelper.getWritableDatabase().delete(PontoProContract.WORKDAY_TABLE, whereClause, whereArgs);
 				break;
-	
+
 			case WORKDAY_ALL:
 				count = mHelper.getWritableDatabase().delete(PontoProContract.WORKDAY_TABLE, where, whereArgs);
+				break;
+				
+				
+			case CHECKIN_ID:
+				whereClause =  PontoProContract.CHECKINS_ID + "=" + uri.getLastPathSegment();
+				if ( where != null ){
+					whereClause = whereClause + " AND " + where ;
+				}
+				count = mHelper.getWritableDatabase().delete(PontoProContract.CHECKINS_TABLE, whereClause, whereArgs);
 				break;
 				
 			case CHECKIN_ALL:
@@ -126,9 +140,11 @@ public class PontoProContentProvider extends ContentProvider {
 				break;
 				
 			case WORKDAY_CHECKINS:
-				 whereClause = PontoProContract.CHECKINS_WORKDAY_ID + "=" + uri.getLastPathSegment() + 
-				 (!TextUtils.isEmpty(where) ? " AND ("  + where + ")" : "");
-				 count = mHelper.getWritableDatabase().delete(PontoProContract.CHECKINS_TABLE, whereClause, whereArgs);
+				whereClause = PontoProContract.CHECKINS_WORKDAY_ID + "=" + uri.getLastPathSegment() ;
+				if ( where != null ){
+					whereClause = whereClause + " AND " + where ;
+               	}
+ 				count = mHelper.getWritableDatabase().delete(PontoProContract.CHECKINS_TABLE, whereClause, whereArgs);
 				break;
 			default:
 				break;
@@ -170,6 +186,15 @@ public class PontoProContentProvider extends ContentProvider {
 				queryBuilder.appendWhere(PontoProContract.WORKDAY_WORK_DATE + ">= ? AND ");
 				queryBuilder.appendWhere(PontoProContract.WORKDAY_WORK_DATE + "<= ?");
 				break;
+				
+			case CHECKIN_ALL:
+				queryBuilder.setTables(CHECKINS_TABLE);
+				break;
+				
+			case CHECKIN_ID:
+				queryBuilder.setTables(CHECKINS_TABLE);
+				queryBuilder.appendWhere(PontoProContract.CHECKINS_ID + "=" + uri.getLastPathSegment());
+				break;
 			
 			default:
 				throw new IllegalArgumentException("Unsupported URI: " + uri);
@@ -183,10 +208,13 @@ public class PontoProContentProvider extends ContentProvider {
 	@Override
 	public int update(Uri uri, ContentValues values, String where, String[] whereArgs) {
 		int count = 0;
+		String whereClause ;
 		switch (sURIMatcher.match(uri)) {
 			case WORKDAY_ID:
-				String whereClause = PontoProContract.WORKDAY_ID + "=" + uri.getLastPathSegment() + 
-									 (!TextUtils.isEmpty(where) ? " AND ("  + where + ")" : "");
+				whereClause = PontoProContract.WORKDAY_ID + "=" + uri.getLastPathSegment();
+				if ( where != null ){
+					whereClause = whereClause + " AND " + where ;
+               	}
 				count = mHelper.getWritableDatabase().update(PontoProContract.WORKDAY_TABLE, values, whereClause, whereArgs);
 				break;
 	
@@ -194,15 +222,26 @@ public class PontoProContentProvider extends ContentProvider {
 				count = mHelper.getWritableDatabase().update(PontoProContract.WORKDAY_TABLE, values, where, whereArgs);
 				break;
 				
+			case CHECKIN_ID:
+				whereClause = PontoProContract.CHECKINS_ID + "=" + uri.getLastPathSegment();
+				if ( where != null ){
+					whereClause = whereClause + " AND " + where ;
+               	}
+				count = mHelper.getWritableDatabase().update(PontoProContract.CHECKINS_TABLE, values, whereClause, whereArgs);
+				break;
+				
 			case CHECKIN_ALL:
 				count = mHelper.getWritableDatabase().update(PontoProContract.CHECKINS_TABLE, values, where, whereArgs);
 				break;
 				
 			case WORKDAY_CHECKINS:
-				 whereClause = PontoProContract.CHECKINS_WORKDAY_ID + "=" + uri.getLastPathSegment() + 
-				 (!TextUtils.isEmpty(where) ? " AND ("  + where + ")" : "");
-				 count = mHelper.getWritableDatabase().update(PontoProContract.CHECKINS_TABLE, values, whereClause, whereArgs);
+				whereClause = PontoProContract.CHECKINS_WORKDAY_ID + "=" + uri.getLastPathSegment();
+				if ( where != null ){
+					whereClause = whereClause + " AND " + where ;
+               	}
+				count = mHelper.getWritableDatabase().update(PontoProContract.CHECKINS_TABLE, values, whereClause, whereArgs);
 				break;
+				
 			default:
 				break;
 		}
