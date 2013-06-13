@@ -26,9 +26,12 @@ import com.actionbarsherlock.app.SherlockListFragment;
 public class HistoryFragment extends SherlockListFragment implements
 		OnNavigationListener, LoaderCallbacks<List<Workday>> {
 
-	private static final String TAG = HistoryFragment.class.getCanonicalName();
-	private SpinnerAdapter mSpinnerAdapter;
+    private static final String TAG = HistoryFragment.class.getCanonicalName();
+    public static final String WORKDAY_ID = "workdayID";
+    public static final String CHOICE = "choice";
+    private SpinnerAdapter mSpinnerAdapter;
 	private MainActivity mActivity;
+    private boolean isTablet;
 
 	private WorkdayListAdapter mAdapter;
 	// The Loader's id (this id is specific to the ListFragment's LoaderManager)
@@ -41,6 +44,8 @@ public class HistoryFragment extends SherlockListFragment implements
 				R.array.history_options,
 				android.R.layout.simple_spinner_dropdown_item);
 		mActivity = (MainActivity) getSherlockActivity();
+
+        isTablet = mActivity.getResources().getBoolean(R.bool.is_tablet);
 
 		getLoaderManager().initLoader(LOADER_ID, null, this);
 		mAdapter = new WorkdayListAdapter(getActivity());
@@ -55,7 +60,7 @@ public class HistoryFragment extends SherlockListFragment implements
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
 				Intent intent = new Intent(getActivity(), DetailedCheckinFragment.class);
-				intent.putExtra("workdayID", ((Workday) mAdapter.getItem(pos)).getWorkdayID());
+				intent.putExtra(WORKDAY_ID, ((Workday) mAdapter.getItem(pos)).getWorkdayID());
 				startActivity(intent);
 			}
 		});
@@ -64,7 +69,7 @@ public class HistoryFragment extends SherlockListFragment implements
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (mActivity != null && mActivity.isTablet()) {
+		if (mActivity != null && isTablet) {
 			ActionBar bar = getSherlockActivity().getSupportActionBar();
 			bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 			bar.setListNavigationCallbacks(mSpinnerAdapter, this);
@@ -83,14 +88,14 @@ public class HistoryFragment extends SherlockListFragment implements
 
 	private void fireBroadcast(String choice) {
 		Intent intent = new Intent(CheckinLoader.ACTION_SELECTOR_CHANGED);
-		intent.putExtra("choice", choice);
+		intent.putExtra(CHOICE, choice);
 		getActivity().sendBroadcast(intent);
 	}
 
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
-		if (mActivity != null && !mActivity.isTablet()) {
+		if (mActivity != null && !isTablet) {
 			ActionBar bar = mActivity.getSupportActionBar();
 			if (isVisibleToUser) {
 				bar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -104,7 +109,7 @@ public class HistoryFragment extends SherlockListFragment implements
 	@Override
 	public void onStop() {
 		super.onStop();
-		if (mActivity != null && mActivity.isTablet()) {
+		if (mActivity != null && isTablet) {
 			ActionBar bar = mActivity.getSupportActionBar();
 			bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		}
