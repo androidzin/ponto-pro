@@ -9,6 +9,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import br.com.androidzin.pontopro.R;
+import static br.com.androidzin.pontopro.settings.BusinessHourCommom.*;
 
 import java.util.List;
 
@@ -33,8 +34,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             } else if (action != null && action.equals(ACTION_PREFS_BUSSINESSHOUR)){
                 addPreferencesFromResource(R.xml.business_hour_prefs);
                 PreferenceManager.setDefaultValues(this, R.xml.business_hour_prefs, false);
-                findPreference(BusinessHourFragment.LUNCH_CHECKIN_KEY).setOnPreferenceChangeListener(this);
-                findPreference(BusinessHourFragment.EATING_TIME_KEY).setOnPreferenceChangeListener(this);
+                findPreference(LUNCH_CHECKIN_KEY).setOnPreferenceChangeListener(this);
+                findPreference(EATING_TIME_KEY).setOnPreferenceChangeListener(this);
             } else {
                 addPreferencesFromResource(R.xml.general_preferences_headers_legacy);
             }
@@ -45,7 +46,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     protected void onResume() {
         super.onResume();
-        if(findPreference(BusinessHourFragment.WORKING_TIME_KEY) != null || findPreference(PREF_KEY_NOTIFICATION_ENABLED_KEY) != null)
+        if(findPreference(WORKING_TIME_KEY) != null || findPreference(PREF_KEY_NOTIFICATION_ENABLED_KEY) != null)
         {
             getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         }
@@ -54,7 +55,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     protected void onPause() {
         super.onPause();
-        if(findPreference(BusinessHourFragment.WORKING_TIME_KEY) != null || findPreference(PREF_KEY_NOTIFICATION_ENABLED_KEY) != null)
+        if(findPreference(WORKING_TIME_KEY) != null || findPreference(PREF_KEY_NOTIFICATION_ENABLED_KEY) != null)
         {
             getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         }
@@ -71,7 +72,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if(findPreference(PREF_CATEGORY_BUSINESS_KEY) != null)
         {
-            BusinessHourFragment.verifyAndNotifyWorkingTimeViolation(sharedPreferences, this, key);
+            verifyAndNotifyWorkingTimeViolation(sharedPreferences, this, key);
         }
 
     }
@@ -79,7 +80,7 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
-        return BusinessHourFragment.adjustAfterLunchTime(preference, newValue, sharedPreferences);
+        return adjustAfterLunchTime(preference, newValue, sharedPreferences);
     }
 
 
