@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.text.format.DateFormat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
 
@@ -44,6 +45,7 @@ public class TimePreferenceWithSummary extends DialogPreference {
         super.onBindDialogView(v);
         picker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
         picker.setCurrentMinute(calendar.get(Calendar.MINUTE));
+        calendar.clear();
     }
 
     @Override
