@@ -14,7 +14,7 @@
                 android:title="@string/daily_working_hours" />
 
         <br.com.androidzin.pontopro.settings.ListPreferenceWithSummary
-                android:defaultValue="@string/one_number"
+                android:defaultValue="@string/one_hour_value"
                 android:key="pref_eating_time"
                 android:entries="@array/eating_time"
                 android:entryValues="@array/eating_time_values"

@@ -7,8 +7,8 @@
     </string-array>
 
     <string-array name="eating_time_values">
-        <item>@string/one_number</item>
-        <item>@string/one_and_half_number</item>
-        <item>@string/two_number</item>
+        <item>@string/one_hour_value</item>
+        <item>@string/one_and_half_hour_value</item>
+        <item>@string/two_hour_value</item>
     </string-array>
 </resources>

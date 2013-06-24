@@ -84,9 +84,9 @@
     <string name="six_number">21600000</string>
     <string name="eight_number">28800000</string>
 
-    <string name="one_number">3600000</string>
-    <string name="one_and_half_number">5400000</string>
-    <string name="two_number">7200000</string>
+    <string name="one_hour_value">3600000</string>
+    <string name="one_and_half_hour_value">5400000</string>
+    <string name="two_hour_value">7200000</string>
 
 
     <string name="four_hours">Quatros horas</string>
