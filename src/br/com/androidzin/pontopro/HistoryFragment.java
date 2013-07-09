@@ -1,11 +1,18 @@
 package br.com.androidzin.pontopro;
 
-import java.util.List;
+import org.joda.time.DateTime;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,15 +23,14 @@ import android.widget.ArrayAdapter;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 import br.com.androidzin.pontopro.data.loader.CheckinLoader;
-import br.com.androidzin.pontopro.data.loader.WorkdayLoader;
-import br.com.androidzin.pontopro.model.Workday;
+import br.com.androidzin.pontopro.data.provider.PontoProContract;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockListFragment;
 
 public class HistoryFragment extends SherlockListFragment implements
-		OnNavigationListener, LoaderCallbacks<List<Workday>> {
+		OnNavigationListener, LoaderCallbacks<Cursor> {
 
     private static final String TAG = HistoryFragment.class.getCanonicalName();
     public static final String WORKDAY_ID = "workdayID";
@@ -34,6 +40,7 @@ public class HistoryFragment extends SherlockListFragment implements
     private boolean isTablet;
 
 	private WorkdayListAdapter mAdapter;
+	private SimpleCursorAdapter mCursorAdapter;
 	// The Loader's id (this id is specific to the ListFragment's LoaderManager)
 	private static final int LOADER_ID = 1;
 
@@ -48,9 +55,36 @@ public class HistoryFragment extends SherlockListFragment implements
         isTablet = mActivity.getResources().getBoolean(R.bool.is_tablet);
 
 		getLoaderManager().initLoader(LOADER_ID, null, this);
-		mAdapter = new WorkdayListAdapter(getActivity());
-		setListAdapter(mAdapter);
+		mCursorAdapter = new SimpleCursorAdapter(getActivity(), 
+				R.layout.workday_list_item, 
+				null,
+				new String[]{PontoProContract.WORKDAY_WORKED_HOURS, PontoProContract.WORKDAY_WORK_DATE}, 
+				new int[]{R.id.workdayHours, R.id.workdayDate}, 
+				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+		
+		mCursorAdapter.setViewBinder(new CustomBinder());
+		//mAdapter = new WorkdayListAdapter(getActivity());
+		//setListAdapter(mAdapter);
+		setListAdapter(mCursorAdapter);
 		return inflater.inflate(R.layout.history_fragment, container, false);
+	}
+	
+	class CustomBinder implements ViewBinder {
+
+		@Override
+		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+			if ( columnIndex == cursor.getColumnIndex(PontoProContract.WORKDAY_WORKED_HOURS)) {
+				int workedHours = cursor.getInt(columnIndex);
+				if (workedHours > 640 ) {
+					view.setBackgroundColor(Color.parseColor("#8DBF41"));
+				} else{ 
+					view.setBackgroundColor(Color.parseColor("#F25933"));
+				}
+				return true;
+			}
+			return false;
+		}
+		 	
 	}
 	
 	@Override
@@ -59,9 +93,9 @@ public class HistoryFragment extends SherlockListFragment implements
 		getListView().setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-				Intent intent = new Intent(getActivity(), DetailedCheckinFragment.class);
-				intent.putExtra(WORKDAY_ID, ((Workday) mAdapter.getItem(pos)).getWorkdayID());
-				startActivity(intent);
+				//Intent intent = new Intent(getActivity(), DetailedCheckinFragment.class);
+				//intent.putExtra(WORKDAY_ID, ((Workday) mAdapter.getItem(pos)).getWorkdayID());
+				//startActivity(intent);
 			}
 		});
 	}
@@ -116,21 +150,32 @@ public class HistoryFragment extends SherlockListFragment implements
 	}
 
 	@Override
-	public Loader<List<Workday>> onCreateLoader(int id, Bundle args) {
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 		Log.i(TAG, "+++ onCreateLoader() called! +++");
-		return new WorkdayLoader(getActivity());
+		//return new WorkdayLoader(getActivity());
+		DateTime date = new DateTime();
+		String t = PontoProContract.parser.print(date);
+		return new CursorLoader(getActivity(),
+				Uri.withAppendedPath(PontoProContract.CONTENT_URI , "workday/all"),
+				null,
+				null,
+				null,
+				null);
+		
 	}
 
 	@Override
-	public void onLoadFinished(Loader<List<Workday>> loader, List<Workday> data) {
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		// show data on screen
 		Log.i(TAG, "+++ onLoadFinished() called! +++");
-		mAdapter.setData(data);
+		//mAdapter.setData(data);
+		mCursorAdapter.swapCursor(cursor);
 	}
 
 	@Override
-	public void onLoaderReset(Loader<List<Workday>> loader) {
-		mAdapter.setData(null);
+	public void onLoaderReset(Loader<Cursor> loader) {
+		//mAdapter.setData(null);
+		mCursorAdapter.swapCursor(null);
 	}
 
 }
