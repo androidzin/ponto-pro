@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -12,7 +11,6 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter.ViewBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,29 +60,10 @@ public class HistoryFragment extends SherlockListFragment implements
 				new int[]{R.id.workdayHours, R.id.workdayDate}, 
 				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 		
-		mCursorAdapter.setViewBinder(new CustomBinder());
 		//mAdapter = new WorkdayListAdapter(getActivity());
 		//setListAdapter(mAdapter);
 		setListAdapter(mCursorAdapter);
 		return inflater.inflate(R.layout.history_fragment, container, false);
-	}
-	
-	class CustomBinder implements ViewBinder {
-
-		@Override
-		public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-			if ( columnIndex == cursor.getColumnIndex(PontoProContract.WORKDAY_WORKED_HOURS)) {
-				int workedHours = cursor.getInt(columnIndex);
-				if (workedHours > 640 ) {
-					view.setBackgroundColor(Color.parseColor("#8DBF41"));
-				} else{ 
-					view.setBackgroundColor(Color.parseColor("#F25933"));
-				}
-				return true;
-			}
-			return false;
-		}
-		 	
 	}
 	
 	@Override
