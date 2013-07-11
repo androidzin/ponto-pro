@@ -9,18 +9,14 @@ import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
-import br.com.androidzin.pontopro.data.loader.CheckinLoader;
 import br.com.androidzin.pontopro.data.provider.PontoProContract;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -38,47 +34,53 @@ public class HistoryFragment extends SherlockListFragment implements
     private boolean isTablet;
 
 	private WorkdayListAdapter mAdapter;
-	private SimpleCursorAdapter mCursorAdapter;
-	// The Loader's id (this id is specific to the ListFragment's LoaderManager)
+	private String baseDate;
+	private String todayDate; 
+	private DateTime today = new DateTime();
 	private static final int LOADER_ID = 1;
 
+	public static enum RANGE {
+		TODAY("Hoje"), WEEKLY("Semanal"), MONTHLY("Mensal"), OTHER("Outros");
+		private String value;
+		private RANGE(String string) {
+			value = string;
+		}
+	};
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		
+		mActivity = (MainActivity) getSherlockActivity();
+
+		isTablet = mActivity.getResources().getBoolean(R.bool.is_tablet);
+		
+		baseDate = PontoProContract.parser.print(today.minusHours(23));
+		todayDate = PontoProContract.parser.print(today);
+		
 		mSpinnerAdapter = ArrayAdapter.createFromResource(getActivity(),
 				R.array.history_options,
 				android.R.layout.simple_spinner_dropdown_item);
-		mActivity = (MainActivity) getSherlockActivity();
-
-        isTablet = mActivity.getResources().getBoolean(R.bool.is_tablet);
-
-		getLoaderManager().initLoader(LOADER_ID, null, this);
-		mCursorAdapter = new SimpleCursorAdapter(getActivity(), 
-				R.layout.workday_list_item, 
-				null,
-				new String[]{PontoProContract.WORKDAY_WORKED_HOURS, PontoProContract.WORKDAY_WORK_DATE}, 
-				new int[]{R.id.workdayHours, R.id.workdayDate}, 
-				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 		
-		//mAdapter = new WorkdayListAdapter(getActivity());
-		//setListAdapter(mAdapter);
-		setListAdapter(mCursorAdapter);
+		getLoaderManager().initLoader(LOADER_ID, null, this);
+		mAdapter = new WorkdayListAdapter(getActivity(), 
+				null, 
+				R.layout.workday_list_item,
+				new String[]{PontoProContract.WORKDAY_WORKED_HOURS, PontoProContract.WORKDAY_WORK_DATE}, 
+				new int[]{R.id.workdayHours, R.id.workdayDate} );
+		setListAdapter(mAdapter);
+		
 		return inflater.inflate(R.layout.history_fragment, container, false);
 	}
 	
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
-		getListView().setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-				//Intent intent = new Intent(getActivity(), DetailedCheckinFragment.class);
-				//intent.putExtra(WORKDAY_ID, ((Workday) mAdapter.getItem(pos)).getWorkdayID());
-				//startActivity(intent);
-			}
-		});
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		super.onListItemClick(l, v, position, id);
+		Intent intent = new Intent(getActivity(), DetailedCheckinFragment.class);
+		intent.putExtra(WORKDAY_ID, mAdapter.getItemId(position));
+		startActivity(intent);
 	}
-
+	
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -91,18 +93,24 @@ public class HistoryFragment extends SherlockListFragment implements
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		String[] strings = getResources().getStringArray(
-				R.array.history_options);
-		Toast.makeText(getActivity(), strings[itemPosition], Toast.LENGTH_SHORT)
-				.show();
-		fireBroadcast(strings[itemPosition]);
+		String[] strings = getResources().getStringArray(R.array.history_options);
+		updateBaseDate(strings[itemPosition]);
+		Toast.makeText(getActivity(), strings[itemPosition], Toast.LENGTH_SHORT).show();
+		getLoaderManager().restartLoader(LOADER_ID, null, this);
 		return true;
 	}
-
-	private void fireBroadcast(String choice) {
-		Intent intent = new Intent(CheckinLoader.ACTION_SELECTOR_CHANGED);
-		intent.putExtra(CHOICE, choice);
-		getActivity().sendBroadcast(intent);
+	
+	private void updateBaseDate(String choice) {
+		DateTime date = new DateTime();
+		DateTime newDate = null;
+		if (choice.equalsIgnoreCase(RANGE.TODAY.value)) {
+			newDate = date.minusHours(23);
+		} else if (choice.equalsIgnoreCase(RANGE.MONTHLY.value)) {
+			newDate = date.minusMonths(1);
+		} else if (choice.equalsIgnoreCase(RANGE.WEEKLY.value)) {
+			newDate = date.minusWeeks(1);
+		}
+		baseDate = PontoProContract.parser.print(newDate);
 	}
 
 	@Override
@@ -130,31 +138,28 @@ public class HistoryFragment extends SherlockListFragment implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-		Log.i(TAG, "+++ onCreateLoader() called! +++");
-		//return new WorkdayLoader(getActivity());
-		DateTime date = new DateTime();
-		String t = PontoProContract.parser.print(date);
+		if ( BuildConfig.DEBUG) {
+			Log.i(TAG, "+++ onCreateLoader() called! +++");
+		}
 		return new CursorLoader(getActivity(),
-				Uri.withAppendedPath(PontoProContract.CONTENT_URI , "workday/all"),
+				Uri.withAppendedPath(PontoProContract.CONTENT_URI , "workday/interval"),
 				null,
 				null,
-				null,
+				new String[]{baseDate, todayDate},
 				null);
-		
 	}
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-		// show data on screen
-		Log.i(TAG, "+++ onLoadFinished() called! +++");
-		//mAdapter.setData(data);
-		mCursorAdapter.swapCursor(cursor);
+		if ( BuildConfig.DEBUG) {
+			Log.i(TAG, "+++ onLoadFinished() called! +++");
+		}
+		mAdapter.swapCursor(cursor);
 	}
 
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
-		//mAdapter.setData(null);
-		mCursorAdapter.swapCursor(null);
+		mAdapter.swapCursor(null);
 	}
 
 }

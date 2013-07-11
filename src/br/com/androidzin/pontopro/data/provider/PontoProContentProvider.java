@@ -1,5 +1,6 @@
 package br.com.androidzin.pontopro.data.provider;
 
+import static br.com.androidzin.pontopro.data.provider.PontoProContract.AUTHORITY;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -8,8 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.text.TextUtils;
-import static br.com.androidzin.pontopro.data.provider.PontoProContract.AUTHORITY;
 import br.com.androidzin.pontopro.data.DatabaseHelper;
 
 public class PontoProContentProvider extends ContentProvider {
@@ -21,10 +20,6 @@ public class PontoProContentProvider extends ContentProvider {
 	private static final int WORKDAY_ALL = 2;
 	private static final int WORKDAY_CHECKINS = 3;
 	
-	private static final int WORKDAY_INTERVAL_TODAY = 4;
-	private static final int WORKDAY_INTERVAL_WEEK = 5;
-	private static final int WORKDAY_INTERVAL_MONTH = 6;
-	private static final int WORKDAY_INTERVAL_OTHER = 7;
 	private static final int WORKDAY_INTERVAL= 12;
 	
 	private static final int CHECKIN_ID = 8;
@@ -57,10 +52,6 @@ public class PontoProContentProvider extends ContentProvider {
         sURIMatcher.addURI(AUTHORITY, "workday/all", WORKDAY_ALL);
         sURIMatcher.addURI(AUTHORITY, "workday/checkin/#", WORKDAY_CHECKINS);
         sURIMatcher.addURI(AUTHORITY, "workday/interval", WORKDAY_INTERVAL);
-        /*sURIMatcher.addURI(AUTHORITY, "workday/interval/today", WORKDAY_INTERVAL_TODAY);
-        sURIMatcher.addURI(AUTHORITY, "workday/interval/week", WORKDAY_INTERVAL_WEEK);
-        sURIMatcher.addURI(AUTHORITY, "workday/interval/month", WORKDAY_INTERVAL_MONTH);
-        sURIMatcher.addURI(AUTHORITY, "workday/interval/other", WORKDAY_INTERVAL_OTHER);*/
         
         sURIMatcher.addURI(AUTHORITY, "workday/insert", WORKDAY_INSERT);
         //sURIMatcher.addURI(AUTHORITY, "workday/update", WORKDAY_INTERVAL_OTHER);
@@ -181,10 +172,6 @@ public class PontoProContentProvider extends ContentProvider {
 				break;
 				
 			case WORKDAY_INTERVAL:
-			case WORKDAY_INTERVAL_WEEK:
-			case WORKDAY_INTERVAL_TODAY:
-			case WORKDAY_INTERVAL_MONTH:
-			case WORKDAY_INTERVAL_OTHER:
 				queryBuilder.setTables(WORKDAY_TABLE);
 				queryBuilder.appendWhere(PontoProContract.WORKDAY_WORK_DATE + ">= ? AND ");
 				queryBuilder.appendWhere(PontoProContract.WORKDAY_WORK_DATE + "<= ?");
@@ -265,10 +252,7 @@ public class PontoProContentProvider extends ContentProvider {
 			case WORKDAY_ALL:
 				return WORKDAY_TYPE;
 				
-			case WORKDAY_INTERVAL_TODAY:
-			case WORKDAY_INTERVAL_WEEK:
-			case WORKDAY_INTERVAL_MONTH:
-			case WORKDAY_INTERVAL_OTHER:
+			case WORKDAY_INTERVAL:
 				return WORKDAY_INTERVAL_TYPE;
 				
 			case CHECKIN_ID:
