@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
+import android.widget.Toast;
+
 import br.com.androidzin.pontopro.R;
 import static br.com.androidzin.pontopro.settings.BusinessHourCommom.*;
 
@@ -21,8 +24,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     static final String PREFS_PREFIX = "pref_";
     static final String PREF_KEY_NOTIFICATION_ENABLED_KEY = PREFS_PREFIX.concat("key_notification_enabled");
     static final String PREF_CATEGORY_BUSINESS_KEY = PREFS_PREFIX.concat("category_business");
+    private boolean hasError = false;
 
-	@Override
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
 
@@ -80,12 +84,29 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
-        return adjustAfterLunchTime(preference, newValue, sharedPreferences);
+        if(verifyTimeSettings(preference, newValue, sharedPreferences) == false){
+            hasError = true;
+            return false;
+        }
+        return true;
     }
 
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+    }
+
+   void setHasError(boolean hasError) {
+        this.hasError = hasError;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!hasError){
+            super.onBackPressed();
+        } else {
+        	Toast.makeText(this, R.string.generic_settings_error, Toast.LENGTH_LONG).show();
+        }
     }
 }

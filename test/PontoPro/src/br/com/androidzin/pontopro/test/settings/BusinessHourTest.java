@@ -36,7 +36,7 @@ public class BusinessHourTest extends ActivityInstrumentationTestCase2<SettingsA
         editor.putLong(BusinessHourCommom.LUNCH_CHECKIN_KEY, Constants.hoursInMilis*12);
         editor.putLong(BusinessHourCommom.AFTER_LUNCH_CHECKIN_KEY, -100);
         editor.putLong(BusinessHourCommom.LEAVING_CHECKIN_KEY, Constants.hoursInMilis*17);
-        editor.putString(BusinessHourCommom.WORKING_TIME_KEY, getActivity().getString(R.string.eight_number));
+        editor.putString(BusinessHourCommom.WORKING_TIME_KEY, getActivity().getString(R.string.eight_hour_value));
         editor.putString(BusinessHourCommom.EATING_TIME_KEY, getActivity().getString(R.string.one_and_half_hour_value));
         editor.apply();
 

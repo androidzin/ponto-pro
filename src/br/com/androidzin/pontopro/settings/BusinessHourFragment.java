@@ -1,14 +1,13 @@
 package br.com.androidzin.pontopro.settings;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
+
 import br.com.androidzin.pontopro.R;
 import static br.com.androidzin.pontopro.settings.BusinessHourCommom.*;
 
@@ -16,8 +15,7 @@ import static br.com.androidzin.pontopro.settings.BusinessHourCommom.*;
 public class BusinessHourFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceChangeListener{
 
-
-
+    private SettingsActivity mSettingsActivity;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +23,8 @@ public class BusinessHourFragment extends PreferenceFragment implements SharedPr
         PreferenceManager.setDefaultValues(getActivity(), R.xml.business_hour_prefs, false);
         findPreference(LUNCH_CHECKIN_KEY).setOnPreferenceChangeListener(this);
         findPreference(EATING_TIME_KEY).setOnPreferenceChangeListener(this);
+
+        mSettingsActivity = (SettingsActivity) getActivity();
     }
 
     @Override
@@ -41,13 +41,16 @@ public class BusinessHourFragment extends PreferenceFragment implements SharedPr
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-           verifyAndNotifyWorkingTimeViolation(sharedPreferences, getActivity(), key);
+          verifyAndNotifyWorkingTimeViolation(sharedPreferences, getActivity(), key);
     }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        return adjustAfterLunchTime(preference, newValue, getPreferenceManager().getSharedPreferences());
+        if(verifyTimeSettings(preference, newValue, getPreferenceManager().getSharedPreferences()) == false){
+            mSettingsActivity.setHasError(true);
+            return false;
+        }
+        return true;
     }
-
 
 }

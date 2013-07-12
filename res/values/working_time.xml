@@ -7,9 +7,9 @@
     </string-array>
 
     <string-array name="working_time_values">
-        <item>@string/four_number</item>
-        <item>@string/six_number</item>
-        <item>@string/eight_number</item>
+        <item>@string/four_hour_value</item>
+        <item>@string/six_hour_value</item>
+        <item>@string/eight_hour_value</item>
     </string-array>
 
 </resources>

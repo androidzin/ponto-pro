@@ -7,7 +7,7 @@
 
 
         <br.com.androidzin.pontopro.settings.ListPreferenceWithSummary
-                android:defaultValue="@string/eight_number"
+                android:defaultValue="@string/eight_hour_value"
                 android:key="pref_working_time"
                 android:entries="@array/working_time"
                 android:entryValues="@array/working_time_values"
