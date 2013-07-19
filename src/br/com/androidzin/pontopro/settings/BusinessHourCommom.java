@@ -12,11 +12,18 @@ public class BusinessHourCommom {
 
     public static final String WORKING_TIME_KEY = SettingsActivity.PREFS_PREFIX.concat("working_time");
     public static final String EATING_TIME_KEY = SettingsActivity.PREFS_PREFIX.concat("eating_time");
-    public static final String LEAVING_CHECKIN_KEY = SettingsActivity.PREFS_PREFIX.concat("leaving_checkin");
     public static final String AFTER_LUNCH_CHECKIN_KEY = SettingsActivity.PREFS_PREFIX.concat("after_lunch_checkin");
-    public static final String LUNCH_CHECKIN_KEY = SettingsActivity.PREFS_PREFIX.concat("lunch_checkin");
-    public static final String ENTERED_CHECKIN_KEY = SettingsActivity.PREFS_PREFIX.concat("entered_checkin");
 
+    public static final String ERROR_SUFFIX = "-error";
+
+    public static final String ENTERED_CHECKIN_KEY = SettingsActivity.PREFS_PREFIX.concat("entered_checkin");
+    public static final String ENTERED_CHECKIN_ERROR = SettingsActivity.PREFS_PREFIX.concat("entered_checkin").concat(ERROR_SUFFIX);
+
+    public static final String LUNCH_CHECKIN_KEY = SettingsActivity.PREFS_PREFIX.concat("lunch_checkin");
+    public static final String LUNCH_CHECKIN_ERROR = SettingsActivity.PREFS_PREFIX.concat("lunch_checkin").concat(ERROR_SUFFIX);
+
+    public static final String LEAVING_CHECKIN_KEY = SettingsActivity.PREFS_PREFIX.concat("leaving_checkin");
+    public static final String LEAVING_CHECKIN_ERROR = SettingsActivity.PREFS_PREFIX.concat("leaving_checkin").concat(ERROR_SUFFIX);
 
     public static boolean verifyAndNotifyWorkingTimeViolation(SharedPreferences sharedPreferences, Context context, String key) {
         if(!key.equals(AFTER_LUNCH_CHECKIN_KEY))

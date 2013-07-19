@@ -21,7 +21,9 @@ public class BusinessHourFragment extends PreferenceFragment implements SharedPr
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.business_hour_prefs);
         PreferenceManager.setDefaultValues(getActivity(), R.xml.business_hour_prefs, false);
+        findPreference(ENTERED_CHECKIN_KEY).setOnPreferenceChangeListener(this);
         findPreference(LUNCH_CHECKIN_KEY).setOnPreferenceChangeListener(this);
+        findPreference(LEAVING_CHECKIN_KEY).setOnPreferenceChangeListener(this);
         findPreference(EATING_TIME_KEY).setOnPreferenceChangeListener(this);
 
         mSettingsActivity = (SettingsActivity) getActivity();
@@ -46,11 +48,10 @@ public class BusinessHourFragment extends PreferenceFragment implements SharedPr
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
-        if(verifyTimeSettings(preference, newValue, getPreferenceManager().getSharedPreferences()) == false){
-            mSettingsActivity.setHasError(true);
-            return false;
-        }
-        return true;
+        SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
+        boolean result = verifyTimeSettings(preference, newValue, sharedPreferences);
+        mSettingsActivity.setHasError(sharedPreferences, preference, !result);
+        return  result;
     }
 
 }

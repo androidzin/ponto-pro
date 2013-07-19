@@ -36,8 +36,14 @@ public class BusinessHourTest extends ActivityInstrumentationTestCase2<SettingsA
         editor.putLong(BusinessHourCommom.LUNCH_CHECKIN_KEY, Constants.hoursInMilis*12);
         editor.putLong(BusinessHourCommom.AFTER_LUNCH_CHECKIN_KEY, -100);
         editor.putLong(BusinessHourCommom.LEAVING_CHECKIN_KEY, Constants.hoursInMilis*17);
+
+        editor.putBoolean(BusinessHourCommom.ENTERED_CHECKIN_ERROR, false);
+        editor.putBoolean(BusinessHourCommom.LUNCH_CHECKIN_ERROR, false);
+        editor.putBoolean(BusinessHourCommom.LEAVING_CHECKIN_ERROR, false);
+
         editor.putString(BusinessHourCommom.WORKING_TIME_KEY, getActivity().getString(R.string.eight_hour_value));
         editor.putString(BusinessHourCommom.EATING_TIME_KEY, getActivity().getString(R.string.one_and_half_hour_value));
+
         editor.apply();
 
     }
@@ -48,7 +54,7 @@ public class BusinessHourTest extends ActivityInstrumentationTestCase2<SettingsA
         solo.clickOnText(mActivity.getString(R.string.eating_time));
         solo.clickOnText(mActivity.getString(R.string.two_hours));
 
-        solo.sleep(1000);
+        solo.sleep(3000);
 
         Long lunchCheckin = sharedPreferences.getLong(BusinessHourCommom.LUNCH_CHECKIN_KEY, -1);
         Long afterLunchCheckin = sharedPreferences.getLong(BusinessHourCommom.AFTER_LUNCH_CHECKIN_KEY, -1);
@@ -67,7 +73,7 @@ public class BusinessHourTest extends ActivityInstrumentationTestCase2<SettingsA
         solo.clickOnText(mActivity.getString(R.string.eating_time));
         solo.clickOnText(mActivity.getString(R.string.one_hour));
 
-        solo.sleep(1000);
+        solo.sleep(3000);
 
         Long lunchCheckin = sharedPreferences.getLong(BusinessHourCommom.LUNCH_CHECKIN_KEY, -1);
         Long afterLunchCheckin = sharedPreferences.getLong(BusinessHourCommom.AFTER_LUNCH_CHECKIN_KEY, -1);
@@ -77,6 +83,21 @@ public class BusinessHourTest extends ActivityInstrumentationTestCase2<SettingsA
         Long newInterval = Long.valueOf(mActivity.getString(R.string.one_hour_value));
         Long currentInterval = afterLunchCheckin - lunchCheckin;
         assertEquals(newInterval, currentInterval);
+
+    }
+
+    public void testEnteredCheckinAfterLunchCheckin(){
+        final SettingsActivity mActivity = getActivity();
+        solo.clickOnText(mActivity.getString(R.string.pref_business_hour));
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(BusinessHourCommom.ENTERED_CHECKIN_KEY, Constants.hoursInMilis*16);
+        editor.commit();
+
+        solo.goBack();
+
+        assertEquals(1, mActivity.getAttempts());
+        boolean hasError = sharedPreferences.getBoolean(BusinessHourCommom.ENTERED_CHECKIN_ERROR, false);
+        assertEquals(true, hasError);
 
     }
 

@@ -8,12 +8,13 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Toast;
 
 import br.com.androidzin.pontopro.R;
 import static br.com.androidzin.pontopro.settings.BusinessHourCommom.*;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class SettingsActivity extends PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener,
@@ -24,7 +25,8 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     static final String PREFS_PREFIX = "pref_";
     static final String PREF_KEY_NOTIFICATION_ENABLED_KEY = PREFS_PREFIX.concat("key_notification_enabled");
     static final String PREF_CATEGORY_BUSINESS_KEY = PREFS_PREFIX.concat("category_business");
-    private boolean hasError = false;
+    private HashMap<String, Boolean> errors;
+    private int attempts = 0;
 
     @Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -38,12 +40,17 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
             } else if (action != null && action.equals(ACTION_PREFS_BUSSINESSHOUR)){
                 addPreferencesFromResource(R.xml.business_hour_prefs);
                 PreferenceManager.setDefaultValues(this, R.xml.business_hour_prefs, false);
+                findPreference(ENTERED_CHECKIN_KEY).setOnPreferenceChangeListener(this);
                 findPreference(LUNCH_CHECKIN_KEY).setOnPreferenceChangeListener(this);
+                findPreference(LEAVING_CHECKIN_KEY).setOnPreferenceChangeListener(this);
                 findPreference(EATING_TIME_KEY).setOnPreferenceChangeListener(this);
+                errors = new HashMap<String, Boolean>();
             } else {
                 addPreferencesFromResource(R.xml.general_preferences_headers_legacy);
             }
         }
+
+        errors = new HashMap<String, Boolean>();
 
 	}
 
@@ -84,11 +91,9 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
-        if(verifyTimeSettings(preference, newValue, sharedPreferences) == false){
-            hasError = true;
-            return false;
-        }
-        return true;
+        boolean result = verifyTimeSettings(preference, newValue, sharedPreferences);
+        setHasError(sharedPreferences, preference, !result);
+        return  result;
     }
 
 
@@ -97,16 +102,38 @@ public class SettingsActivity extends PreferenceActivity implements SharedPrefer
         super.onConfigurationChanged(newConfig);
     }
 
-   void setHasError(boolean hasError) {
-        this.hasError = hasError;
+   void setHasError(SharedPreferences sharedPreferences, Preference preference, Boolean hasError) {
+       errors.put(preference.getKey(), hasError);
+       sharedPreferences.edit().putBoolean(preference.getKey().concat(BusinessHourCommom.ERROR_SUFFIX), hasError);
+    }
+
+    boolean hasErrors(){
+        Iterator<String> keys = errors.keySet().iterator();
+        while(keys.hasNext()){
+            String key = keys.next();
+            if(errors.get(key) == true){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void saveErrors() {
+
+    }
+
+
+    public int getAttempts() {
+        return  attempts;
     }
 
     @Override
     public void onBackPressed() {
-        if(!hasError){
-            super.onBackPressed();
+        if(hasErrors() && attempts == 0){
+            Toast.makeText(this, R.string.generic_settings_error, Toast.LENGTH_LONG).show();
+            attempts++;
         } else {
-        	Toast.makeText(this, R.string.generic_settings_error, Toast.LENGTH_LONG).show();
+            super.onBackPressed();
         }
     }
 }
