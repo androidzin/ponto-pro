@@ -3,7 +3,10 @@ package br.com.androidzin.pontopro.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.Preference;
+import android.util.Log;
 import android.widget.Toast;
+
+import java.lang.reflect.GenericSignatureFormatError;
 
 import br.com.androidzin.pontopro.R;
 
@@ -14,7 +17,7 @@ public class BusinessHourCommom {
     public static final String EATING_TIME_KEY = SettingsActivity.PREFS_PREFIX.concat("eating_time");
     public static final String AFTER_LUNCH_CHECKIN_KEY = SettingsActivity.PREFS_PREFIX.concat("after_lunch_checkin");
 
-    public static final String ERROR_SUFFIX = "-error";
+    public static final String ERROR_SUFFIX = "_error";
 
     public static final String ENTERED_CHECKIN_KEY = SettingsActivity.PREFS_PREFIX.concat("entered_checkin");
     public static final String ENTERED_CHECKIN_ERROR = SettingsActivity.PREFS_PREFIX.concat("entered_checkin").concat(ERROR_SUFFIX);
@@ -41,41 +44,48 @@ public class BusinessHourCommom {
         return true;
     }
 
-    private static boolean hasWorkingTimeViolation(Long enteredCheckin, Long leavingCheckin,
+    public static boolean hasWorkingTimeViolation(Long enteredCheckin, Long leavingCheckin,
                                                    Long workingTime, Long eatingInterval) {
         long workedHours = (leavingCheckin - enteredCheckin) - eatingInterval;
-        return ((workedHours - workingTime) < 10000);
+        return ((workingTime - workedHours) < 10000);
     }
 
     public static boolean verifyTimeSettings(Preference preference, Object newValue, SharedPreferences sharedPreferences) {
+        boolean shouldUpdate = verifyCheckinsTime(preference, newValue, sharedPreferences);
+        if(shouldUpdate) {
+            if(preference.getKey().equals(LUNCH_CHECKIN_KEY) || preference.getKey().equals(EATING_TIME_KEY)) {
+                adjustAndSaveAfterLunchTime(preference, newValue, sharedPreferences);
+            }
+            return  true;
+        }
+        return false;
+    }
+
+    private static boolean verifyCheckinsTime(Preference preference, Object newValue, SharedPreferences sharedPreferences) {
         Long enteredCheckin = sharedPreferences.getLong(ENTERED_CHECKIN_KEY, 0);
         Long lunchCheckin = sharedPreferences.getLong(LUNCH_CHECKIN_KEY, 0);
         Long leavingCheckin = sharedPreferences.getLong(LEAVING_CHECKIN_KEY, 0);
         Long newLongValue = Long.valueOf(newValue.toString());
 
-        if ((preference.getKey().equals(ENTERED_CHECKIN_KEY) &&
-                isValidEnteredTime(newLongValue, lunchCheckin,
-                        leavingCheckin)) ||
-            (preference.getKey().equals(LUNCH_CHECKIN_KEY) &&
-                isValidLunchTime(newLongValue, enteredCheckin,
-                        leavingCheckin)) ||
-            (preference.getKey().equals(LEAVING_CHECKIN_KEY) &&
-                isValidLeavingTime(newLongValue, enteredCheckin,
-                    lunchCheckin)))
-        {
-
-            sharedPreferences.edit().putLong(preference.getKey(), newLongValue);
-            if(preference.getKey().equals(LUNCH_CHECKIN_KEY) || preference.getKey().equals(EATING_TIME_KEY)){
-                adjustAndSaveAfterLunchTime(preference, newValue, sharedPreferences);
-            }
-            return true;
-        }
-        return false;
+        return isNewCheckinValid(preference.getKey(), enteredCheckin, lunchCheckin, leavingCheckin, newLongValue);
     }
-        
+
+    public static boolean isNewCheckinValid(String preferenceKey, Long enteredCheckin, Long lunchCheckin, Long leavingCheckin, Long newLongValue) {
+        if (preferenceKey.equals(ENTERED_CHECKIN_KEY)){
+            return isValidEnteredTime(newLongValue, lunchCheckin,
+                    leavingCheckin);
+        } else if(preferenceKey.equals(LUNCH_CHECKIN_KEY)){
+            return isValidLunchTime(newLongValue, enteredCheckin,
+                    leavingCheckin);
+        } else if(preferenceKey.equals(LEAVING_CHECKIN_KEY)){
+            return isValidLeavingTime(newLongValue, enteredCheckin,
+                                lunchCheckin);
+        }
+        return true;
+    }
+
     private static boolean isValidEnteredTime(Long newValue,
     		Long lunchCheckin, Long leavingCheckin) {
-    	
     	return newValue < lunchCheckin && newValue < leavingCheckin;
     }
     

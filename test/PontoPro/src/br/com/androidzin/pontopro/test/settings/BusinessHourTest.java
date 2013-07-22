@@ -1,108 +1,107 @@
 package br.com.androidzin.pontopro.test.settings;
 
-import android.content.SharedPreferences;
-import android.test.ActivityInstrumentationTestCase2;
-
-import com.jayway.android.robotium.solo.Solo;
+import junit.framework.TestCase;
 
 import br.com.androidzin.pontopro.settings.BusinessHourCommom;
-import br.com.androidzin.pontopro.settings.SettingsActivity;
-import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.util.Constants;
 
-public class BusinessHourTest extends ActivityInstrumentationTestCase2<SettingsActivity>{
+public class BusinessHourTest extends TestCase{
 
-    private Solo solo;
-    private SharedPreferences sharedPreferences;
+    public void testEnteredCheckinValidator(){
 
-    public  BusinessHourTest() {
-        super(SettingsActivity.class);
-    }
-    public BusinessHourTest(Class<SettingsActivity> activityClass) {
-        super(SettingsActivity.class);
-    }
+        final String enteredCheckinKey = BusinessHourCommom.ENTERED_CHECKIN_KEY;
+        assertEquals(false,
+                BusinessHourCommom.isNewCheckinValid(enteredCheckinKey,
+                        Long.MAX_VALUE,
+                        Long.valueOf(Constants.hoursInMilis * 10),
+                        Long.MAX_VALUE,
+                        Long.valueOf(Constants.hoursInMilis * 11)));
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        solo = new Solo(getInstrumentation(), getActivity());
-        sharedPreferences = getActivity().getPreferenceManager().getDefaultSharedPreferences(getActivity());
-        populateSharedPreferences(sharedPreferences);
-    }
+        assertEquals(false,
+                BusinessHourCommom.isNewCheckinValid(enteredCheckinKey,
+                        Long.MAX_VALUE,
+                        Long.valueOf(Constants.hoursInMilis*12),
+                        Long.valueOf(Constants.hoursInMilis*10),
+                        Long.valueOf(Constants.hoursInMilis*11)));
 
-    private void populateSharedPreferences(SharedPreferences sharedPreferences) {
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(BusinessHourCommom.ENTERED_CHECKIN_KEY, Constants.hoursInMilis*8);
-        editor.putLong(BusinessHourCommom.LUNCH_CHECKIN_KEY, Constants.hoursInMilis*12);
-        editor.putLong(BusinessHourCommom.AFTER_LUNCH_CHECKIN_KEY, -100);
-        editor.putLong(BusinessHourCommom.LEAVING_CHECKIN_KEY, Constants.hoursInMilis*17);
-
-        editor.putBoolean(BusinessHourCommom.ENTERED_CHECKIN_ERROR, false);
-        editor.putBoolean(BusinessHourCommom.LUNCH_CHECKIN_ERROR, false);
-        editor.putBoolean(BusinessHourCommom.LEAVING_CHECKIN_ERROR, false);
-
-        editor.putString(BusinessHourCommom.WORKING_TIME_KEY, getActivity().getString(R.string.eight_hour_value));
-        editor.putString(BusinessHourCommom.EATING_TIME_KEY, getActivity().getString(R.string.one_and_half_hour_value));
-
-        editor.apply();
-
+        assertEquals(true,
+                BusinessHourCommom.isNewCheckinValid(enteredCheckinKey,
+                        Long.MAX_VALUE,
+                        Long.valueOf(Constants.hoursInMilis*10),
+                        Long.valueOf(Constants.hoursInMilis*12),
+                        Long.valueOf(Constants.hoursInMilis)));
     }
 
-    public void testIncreaseEatingTimeInterval(){
-        final SettingsActivity mActivity = getActivity();
-        solo.clickOnText(mActivity.getString(R.string.pref_business_hour));
-        solo.clickOnText(mActivity.getString(R.string.eating_time));
-        solo.clickOnText(mActivity.getString(R.string.two_hours));
+    public void testLunchCheckinValidator(){
 
-        solo.sleep(3000);
+        final String lunchCheckinKey = BusinessHourCommom.LUNCH_CHECKIN_KEY;
+        assertEquals(false,
+                BusinessHourCommom.isNewCheckinValid(lunchCheckinKey,
+                        Long.valueOf(Constants.hoursInMilis*10),
+                        Long.MAX_VALUE,
+                        Long.valueOf(Constants.hoursInMilis*11),
+                        Long.valueOf(Constants.hoursInMilis*12)));
 
-        Long lunchCheckin = sharedPreferences.getLong(BusinessHourCommom.LUNCH_CHECKIN_KEY, -1);
-        Long afterLunchCheckin = sharedPreferences.getLong(BusinessHourCommom.AFTER_LUNCH_CHECKIN_KEY, -1);
-        assertTrue(lunchCheckin != -1);
-        assertTrue(afterLunchCheckin != -1);
+        assertEquals(false,
+                BusinessHourCommom.isNewCheckinValid(lunchCheckinKey,
+                Long.valueOf(Constants.hoursInMilis*14),
+                Long.MAX_VALUE,
+                Long.valueOf(Constants.hoursInMilis*16),
+                Long.valueOf(Constants.hoursInMilis*12)));
 
-        Long newInterval = Long.valueOf(mActivity.getString(R.string.two_hour_value));
-        Long currentInterval = afterLunchCheckin - lunchCheckin;
-        assertEquals(newInterval, currentInterval);
-
+        assertEquals(true,
+                BusinessHourCommom.isNewCheckinValid(lunchCheckinKey,
+                        Long.valueOf(Constants.hoursInMilis*10),
+                        Long.MAX_VALUE,
+                        Long.valueOf(Constants.hoursInMilis*12),
+                        Long.valueOf(Constants.hoursInMilis*11)));
     }
 
-    public void testDecreaseEatingTimeInterval(){
-        final SettingsActivity mActivity = getActivity();
-        solo.clickOnText(mActivity.getString(R.string.pref_business_hour));
-        solo.clickOnText(mActivity.getString(R.string.eating_time));
-        solo.clickOnText(mActivity.getString(R.string.one_hour));
+    public void testLeavingCheckinValidator(){
 
-        solo.sleep(3000);
+        final String leavingCheckinKey = BusinessHourCommom.LEAVING_CHECKIN_KEY;
+        assertEquals(false,
+                BusinessHourCommom.isNewCheckinValid(leavingCheckinKey,
+                        Long.valueOf(Constants.hoursInMilis*10),
+                        Long.valueOf(Constants.hoursInMilis*16),
+                        Long.MAX_VALUE,
+                        Long.valueOf(Constants.hoursInMilis*12)));
 
-        Long lunchCheckin = sharedPreferences.getLong(BusinessHourCommom.LUNCH_CHECKIN_KEY, -1);
-        Long afterLunchCheckin = sharedPreferences.getLong(BusinessHourCommom.AFTER_LUNCH_CHECKIN_KEY, -1);
-        assertTrue(lunchCheckin != -1);
-        assertTrue(afterLunchCheckin != -1);
+        assertEquals(false,
+                BusinessHourCommom.isNewCheckinValid(leavingCheckinKey,
+                        Long.valueOf(Constants.hoursInMilis*16),
+                        Long.valueOf(Constants.hoursInMilis*13),
+                        Long.MAX_VALUE,
+                        Long.valueOf(Constants.hoursInMilis*12)));
 
-        Long newInterval = Long.valueOf(mActivity.getString(R.string.one_hour_value));
-        Long currentInterval = afterLunchCheckin - lunchCheckin;
-        assertEquals(newInterval, currentInterval);
+        assertEquals(true,
+                BusinessHourCommom.isNewCheckinValid(leavingCheckinKey,
+                        Long.valueOf(Constants.hoursInMilis*10),
+                        Long.valueOf(Constants.hoursInMilis*11),
+                        Long.MAX_VALUE,
+                        Long.valueOf(Constants.hoursInMilis*12)));
 
-    }
-
-    public void testEnteredCheckinAfterLunchCheckin(){
-        final SettingsActivity mActivity = getActivity();
-        solo.clickOnText(mActivity.getString(R.string.pref_business_hour));
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(BusinessHourCommom.ENTERED_CHECKIN_KEY, Constants.hoursInMilis*16);
-        editor.commit();
-
-        solo.goBack();
-
-        assertEquals(1, mActivity.getAttempts());
-        boolean hasError = sharedPreferences.getBoolean(BusinessHourCommom.ENTERED_CHECKIN_ERROR, false);
-        assertEquals(true, hasError);
 
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        solo.finishOpenedActivities();
+    public void testHasWorkingTimeViolation(){
+        final Long enteredCheckin = Long.valueOf(Constants.hoursInMilis * 8);
+        final Long leavingCheckin = Long.valueOf(Constants.hoursInMilis * 17);
+        final Long workingTime = Long.valueOf(Constants.hoursInMilis * 8);
+        final Long eatingInterval1 = Long.valueOf(Constants.hoursInMilis);
+        final Long eatingInterval2 = Long.valueOf(Constants.hoursInMilis*2);
+
+        assertEquals(true,
+                BusinessHourCommom.hasWorkingTimeViolation(enteredCheckin,
+                        leavingCheckin,
+                        workingTime,
+                        eatingInterval1));
+
+        assertEquals(false,
+                BusinessHourCommom.hasWorkingTimeViolation(enteredCheckin,
+                        leavingCheckin,
+                        workingTime,
+                        eatingInterval2));
     }
+
 }
