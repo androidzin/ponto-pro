@@ -9,6 +9,7 @@ import android.widget.Toast;
 import java.lang.reflect.GenericSignatureFormatError;
 
 import br.com.androidzin.pontopro.R;
+import br.com.androidzin.pontopro.util.Constants;
 
 
 public class BusinessHourCommom {
@@ -47,7 +48,7 @@ public class BusinessHourCommom {
     public static boolean hasWorkingTimeViolation(Long enteredCheckin, Long leavingCheckin,
                                                    Long workingTime, Long eatingInterval) {
         long workedHours = (leavingCheckin - enteredCheckin) - eatingInterval;
-        return ((workingTime - workedHours) < 10000);
+        return (workingTime - workedHours > 10000);
     }
 
     public static boolean verifyTimeSettings(Preference preference, Object newValue, SharedPreferences sharedPreferences) {
@@ -56,9 +57,8 @@ public class BusinessHourCommom {
             if(preference.getKey().equals(LUNCH_CHECKIN_KEY) || preference.getKey().equals(EATING_TIME_KEY)) {
                 adjustAndSaveAfterLunchTime(preference, newValue, sharedPreferences);
             }
-            return  true;
         }
-        return false;
+        return shouldUpdate;
     }
 
     private static boolean verifyCheckinsTime(Preference preference, Object newValue, SharedPreferences sharedPreferences) {

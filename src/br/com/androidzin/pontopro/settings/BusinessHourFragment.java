@@ -9,7 +9,13 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
 import br.com.androidzin.pontopro.R;
-import static br.com.androidzin.pontopro.settings.BusinessHourCommom.*;
+
+import static br.com.androidzin.pontopro.settings.BusinessHourCommom.EATING_TIME_KEY;
+import static br.com.androidzin.pontopro.settings.BusinessHourCommom.ENTERED_CHECKIN_KEY;
+import static br.com.androidzin.pontopro.settings.BusinessHourCommom.LEAVING_CHECKIN_KEY;
+import static br.com.androidzin.pontopro.settings.BusinessHourCommom.LUNCH_CHECKIN_KEY;
+import static br.com.androidzin.pontopro.settings.BusinessHourCommom.verifyAndNotifyWorkingTimeViolation;
+import static br.com.androidzin.pontopro.settings.BusinessHourCommom.verifyTimeSettings;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class BusinessHourFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener,
