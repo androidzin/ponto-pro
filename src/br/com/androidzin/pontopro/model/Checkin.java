@@ -6,6 +6,14 @@ public class Checkin {
 	private long checkinID;
 	private long workdayID;
 
+	public Checkin() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public Checkin(long workdayID){
+		this.workdayID = workdayID;
+	}
+	
 	public long getCheckinID() {
 		return checkinID;
 	}

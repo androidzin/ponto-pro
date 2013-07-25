@@ -15,8 +15,17 @@ public class Workday {
 	public Workday() {
 		workedTime = 0;
 		dailyMark = 0;
+		workdayID = 0;
 		hasOpenCheckin = false;
 		mCheckinList = new ArrayList<Checkin>();
+	}
+	
+	public boolean started(){
+		if ( workdayID != 0){
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public List<Checkin> getCheckinList() {
