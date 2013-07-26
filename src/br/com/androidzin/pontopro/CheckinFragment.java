@@ -16,11 +16,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import br.com.androidzin.pontopro.data.provider.PontoProContract;
 import br.com.androidzin.pontopro.model.Checkin;
+import br.com.androidzin.pontopro.model.Checkin.CheckinListener;
+import br.com.androidzin.pontopro.model.Checkin.CheckinType;
+import br.com.androidzin.pontopro.model.Today;
 import br.com.androidzin.pontopro.model.Workday;
 import br.com.androidzin.pontopro.util.Constants;
+
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.MenuItem;
 
@@ -36,12 +39,11 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	private CountDownTimer timer;
 	private Button doCheckin;
 	
-	private Workday today = new Workday();
+	private Today mToday = new Today();
 	private SharedPreferences mSharedPreferences;
 	private String workdayPrefFile = "pontopro.workday_file";
-	private String workdayPrefID = "workdayID";
-	private String workdayPrefOpenCheckin  = "workdayOpenCheckin";
-	private String workdayPrefWorkedTime = "workdayWorkedTime";
+	
+	private CheckinListener mCheckinListener;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,19 +54,13 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	@Override
 	public void onPause() {
 		super.onPause();
-		mSharedPreferences.edit().putLong(workdayPrefID, today.getWorkdayID());
-		mSharedPreferences.edit().putBoolean(workdayPrefOpenCheckin, today.hasOpenCheckin());
-		mSharedPreferences.edit().putInt(workdayPrefWorkedTime, today.getWorkedTime());
-		
-		mSharedPreferences.edit().commit();
+		mToday.store(mSharedPreferences);
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
-		long workdayID = mSharedPreferences.getLong(workdayPrefID, 0);
-		today.setWorkdayID(workdayID);
-		today.setHasOpenCheckin(mSharedPreferences.getBoolean(workdayPrefOpenCheckin, true));
+		mToday.retrieve(mSharedPreferences);
 	}
 	
 	@Override
@@ -78,18 +74,25 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.doCheckin:
-			if (today.started()) {
+			if (mToday.started()) {
 				// retrieve workday data from sharedPref
 				// create checkin data
 				// append to workday
-				Checkin checkin = new Checkin(mSharedPreferences.getLong(workdayPrefID, 0));
-				checkin.setTimeStamp(String.valueOf(System.currentTimeMillis()));
-				today.addCheckin(checkin);
-				
+				mToday.refreshData(mSharedPreferences);
+				mCheckinListener.onCheckinDone(CheckinType.ENTERED, System.currentTimeMillis());
 			} else {
 				// insert workday into database
-				ContentValues values = PontoProContract.createWorkdayValues(0, 0, false);
-				getActivity().getContentResolver().insert(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "workday/insert"), values);
+				mToday.initData(mSharedPreferences);
+				/*ContentValues values = PontoProContract.createWorkdayValues(0, 0, false);
+				Uri created = getActivity().getContentResolver().insert(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "workday/insert"), values);
+				mToday.setWorkdayID(Long.valueOf(created.getLastPathSegment()));
+				mToday.setHasOpenCheckin(false);
+				mToday.setWorkedTime(0);
+				
+				Checkin checkin = new Checkin(mSharedPreferences.getLong(workdayPrefID, 0));
+				checkin.setTimeStamp(String.valueOf(System.currentTimeMillis()));
+				mToday.addCheckin(checkin);
+				mToday.updateWorkdayStatus();*/
 			}
 			break;
 

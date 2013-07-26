@@ -2,10 +2,18 @@ package br.com.androidzin.pontopro.model;
 
 public class Checkin {
 
+	public enum CheckinType {
+		ENTERED, LUNCH, AFTER_LUNCH, LEAVING, NOT_VALID
+	}
+	
+	public interface CheckinListener {
+		public void onCheckinDone(CheckinType checkin, long when);
+	}
+	
 	private String timeStamp;
 	private long checkinID;
 	private long workdayID;
-
+	
 	public Checkin() {
 		// TODO Auto-generated constructor stub
 	}
@@ -38,3 +46,5 @@ public class Checkin {
 		this.timeStamp = timeStamp;
 	}
 }
+
+
