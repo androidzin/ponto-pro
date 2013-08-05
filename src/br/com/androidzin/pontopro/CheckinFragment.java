@@ -17,11 +17,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import br.com.androidzin.pontopro.data.provider.PontoProContract;
-import br.com.androidzin.pontopro.model.Checkin;
 import br.com.androidzin.pontopro.model.Checkin.CheckinListener;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
 import br.com.androidzin.pontopro.model.Today;
-import br.com.androidzin.pontopro.model.Workday;
 import br.com.androidzin.pontopro.util.Constants;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -37,13 +35,13 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	private TextView mDailyGoal, mWorktimeRemaining;
 	private ProgressBar mDailyGoalBar;
 	private CountDownTimer timer;
-	private Button doCheckin;
 	
 	private Today mToday = new Today();
 	private SharedPreferences mSharedPreferences;
 	private String workdayPrefFile = "pontopro.workday_file";
 	
 	private CheckinListener mCheckinListener;
+	private Button doCheckin;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -82,21 +80,15 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 				mCheckinListener.onCheckinDone(CheckinType.ENTERED, System.currentTimeMillis());
 			} else {
 				// insert workday into database
-				mToday.initData(mSharedPreferences);
-				/*ContentValues values = PontoProContract.createWorkdayValues(0, 0, false);
+				ContentValues values = PontoProContract.createWorkdayValues(0, 0, false);
 				Uri created = getActivity().getContentResolver().insert(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "workday/insert"), values);
-				mToday.setWorkdayID(Long.valueOf(created.getLastPathSegment()));
-				mToday.setHasOpenCheckin(false);
-				mToday.setWorkedTime(0);
-				
-				Checkin checkin = new Checkin(mSharedPreferences.getLong(workdayPrefID, 0));
-				checkin.setTimeStamp(String.valueOf(System.currentTimeMillis()));
-				mToday.addCheckin(checkin);
-				mToday.updateWorkdayStatus();*/
+				mToday.initData(mSharedPreferences, created.getLastPathSegment());
 			}
+			Toast.makeText(getActivity(), "text", Toast.LENGTH_SHORT).show();
 			break;
 
 		default:
+			Toast.makeText(getActivity(), "text", Toast.LENGTH_SHORT).show();
 			break;
 		}
 	}
@@ -106,7 +98,8 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 		mWorktimeRemaining = (TextView) view.findViewById(R.id.workTimeRemaining);
 		mDailyGoalBar = (ProgressBar) view.findViewById(R.id.dailyGoal);
         timer = new CountDownTimer(CountDownTimer.ONE_SECOND, this);
-		doCheckin = (Button) view.findViewById(R.id.doCheckin);
+        doCheckin = (Button) view.findViewById(R.id.doCheckin);
+        doCheckin.setOnClickListener(this);
 	}
 	
 	@Override

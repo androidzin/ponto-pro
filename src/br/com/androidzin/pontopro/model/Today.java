@@ -1,7 +1,10 @@
 package br.com.androidzin.pontopro.model;
 
-import br.com.androidzin.pontopro.model.Checkin.CheckinType;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import br.com.androidzin.pontopro.data.provider.PontoProContract;
+import br.com.androidzin.pontopro.model.Checkin.CheckinType;
 
 public class Today extends Workday {
 	
@@ -58,6 +61,14 @@ public class Today extends Workday {
 		default:
 			break;
 		}
-		return CheckinType.NOT_VALID;
+		return CheckinType.ANY;
+	}
+
+	public void initData(SharedPreferences mSharedPreferences, String workdayID) {
+		setWorkdayID(Long.valueOf(workdayID));
+		setHasOpenCheckin(false);
+		setWorkedTime(0);
+		checkinCount = 0;
+		refreshData(mSharedPreferences);
 	}
 }
