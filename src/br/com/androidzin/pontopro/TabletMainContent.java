@@ -12,12 +12,7 @@ public class TabletMainContent extends MainContent{
     @Override
     public boolean onBackPressed() {
 
-        FragmentManager fragmentManager = mMainActivity.getSupportFragmentManager();
-        if(hasPreviousFragment(fragmentManager))
-        {
-            fragmentManager.popBackStack();
-            return true;
-        }
+
         return false;
     }
 
