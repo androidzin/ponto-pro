@@ -3,7 +3,7 @@ package br.com.androidzin.pontopro.model;
 public class Checkin {
 
 	public enum CheckinType {
-		ENTERED, LUNCH, AFTER_LUNCH, LEAVING, ANY
+		ENTERED, LUNCH, AFTER_LUNCH, LEAVING, ANY_ENTRANCE, ANY_LEAVING, ANY
 	}
 	
 	public interface CheckinListener {
@@ -13,6 +13,7 @@ public class Checkin {
 	private String timeStamp;
 	private long checkinID;
 	private long workdayID;
+	private CheckinType type;
 	
 	public Checkin() {
 		// TODO Auto-generated constructor stub

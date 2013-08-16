@@ -17,8 +17,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 import br.com.androidzin.pontopro.data.provider.PontoProContract;
-import br.com.androidzin.pontopro.model.Checkin.CheckinListener;
-import br.com.androidzin.pontopro.model.Checkin.CheckinType;
+import br.com.androidzin.pontopro.model.Checkin;
 import br.com.androidzin.pontopro.model.Today;
 import br.com.androidzin.pontopro.util.Constants;
 
@@ -40,7 +39,7 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	private SharedPreferences mSharedPreferences;
 	private String workdayPrefFile = "pontopro.workday_file";
 	
-	private CheckinListener mCheckinListener;
+	
 	private Button doCheckin;
 
 	@Override
@@ -52,13 +51,13 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	@Override
 	public void onPause() {
 		super.onPause();
-		mToday.store(mSharedPreferences);
+		mToday.save(mSharedPreferences);
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		mToday.retrieve(mSharedPreferences);
+		mToday.load(mSharedPreferences);
 	}
 	
 	@Override
@@ -72,19 +71,23 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.doCheckin:
-			if (mToday.started()) {
-				// retrieve workday data from sharedPref
-				// create checkin data
-				// append to workday
-				mToday.refreshData(mSharedPreferences);
-				mCheckinListener.onCheckinDone(CheckinType.ENTERED, System.currentTimeMillis());
-			} else {
-				// insert workday into database
+			if (!mToday.started()) {
 				ContentValues values = PontoProContract.createWorkdayValues(0, 0, false);
 				Uri created = getActivity().getContentResolver().insert(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "workday/insert"), values);
-				mToday.initData(mSharedPreferences, created.getLastPathSegment());
+				mToday.initData(mSharedPreferences, 
+						created.getLastPathSegment(), 
+						values.getAsInteger(PontoProContract.WORKDAY_WORKED_HOURS), 
+						values.getAsInteger(PontoProContract.WORKDAY_DAILY_MARK));
 			}
-			Toast.makeText(getActivity(), "text", Toast.LENGTH_SHORT).show();
+			// create checkin data
+			// append to workday
+			Checkin checkin = new Checkin();
+			checkin.setTimeStamp(String.valueOf(System.currentTimeMillis()));
+			checkin.setWorkdayID(mToday.getWorkdayID());
+			
+			mToday.addCheckin(checkin);
+			mToday.refreshData(mSharedPreferences, checkin);
+			
 			break;
 
 		default:
