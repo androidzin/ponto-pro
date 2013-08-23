@@ -11,6 +11,15 @@ public class Workday {
 	private boolean hasOpenCheckin;
 	private int workedTime; // minutes
 	private int dailyMark; // minutes
+	protected long initialTime;
+
+	public long getInitialTime() {
+		return initialTime;
+	}
+
+	public void setInitialTime(long initialTime) {
+		this.initialTime = initialTime;
+	}
 
 	public Workday() {
 		workedTime = 0;
@@ -20,7 +29,7 @@ public class Workday {
 		mCheckinList = new ArrayList<Checkin>();
 	}
 	
-	public boolean started(){
+	public boolean wasStarted(){
 		if ( workdayID != 0){
 			return true;
 		} else {

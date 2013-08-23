@@ -46,6 +46,15 @@ public class Checkin {
 	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
+
+	public int getCheckinIntType() {
+		return type.ordinal();
+	}
+	
+	public void setType(int ordinal){
+		if ( ordinal < CheckinType.values().length)
+			type = CheckinType.values()[ordinal];
+	}
 }
 
 

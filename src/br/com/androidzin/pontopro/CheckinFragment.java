@@ -39,13 +39,14 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	private SharedPreferences mSharedPreferences;
 	private String workdayPrefFile = "pontopro.workday_file";
 	
-	
 	private Button doCheckin;
+	private long ONE_DAY ;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mSharedPreferences = getActivity().getSharedPreferences(workdayPrefFile, Context.MODE_PRIVATE);
+		ONE_DAY = Long.valueOf(getResources().getString(R.string.twenty_four_hour_value));;
 	}
 	
 	@Override
@@ -71,22 +72,30 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.doCheckin:
-			if (!mToday.started()) {
-				ContentValues values = PontoProContract.createWorkdayValues(0, 0, false);
-				Uri created = getActivity().getContentResolver().insert(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "workday/insert"), values);
-				mToday.initData(mSharedPreferences, 
-						created.getLastPathSegment(), 
-						values.getAsInteger(PontoProContract.WORKDAY_WORKED_HOURS), 
-						values.getAsInteger(PontoProContract.WORKDAY_DAILY_MARK));
+			if ( sameDay() ) {
+				if (!mToday.wasStarted()) {
+					startToday();
+				}
+				// create checkin data
+				// append to workday
+				Checkin checkin = new Checkin();
+				checkin.setTimeStamp(String.valueOf(System.currentTimeMillis()));
+				checkin.setWorkdayID(mToday.getWorkdayID());
+				checkin.setType(mToday.getCheckinCounter());
+				
+				mToday.addCheckin(checkin);
+				mToday.refreshData(mSharedPreferences, checkin);
+			} else {
+				// TODO
+				// Save previous day data
+				mToday.computeWorkedHours();
+				mToday.saveWorkdayToDB(mSharedPreferences);
+				mToday.saveCheckinsToDB(mSharedPreferences);
+				
+				// Start new day
+				mToday = new Today();
+				startToday();
 			}
-			// create checkin data
-			// append to workday
-			Checkin checkin = new Checkin();
-			checkin.setTimeStamp(String.valueOf(System.currentTimeMillis()));
-			checkin.setWorkdayID(mToday.getWorkdayID());
-			
-			mToday.addCheckin(checkin);
-			mToday.refreshData(mSharedPreferences, checkin);
 			
 			break;
 
@@ -95,7 +104,26 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 			break;
 		}
 	}
+
+	private void startToday() {
+		ContentValues values = PontoProContract.createWorkdayValues(0, 0, false);
+		Uri created = getActivity().getContentResolver().insert(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "workday/insert"), values);
+		mToday.initData(mSharedPreferences, 
+				created.getLastPathSegment(), 
+				values.getAsInteger(PontoProContract.WORKDAY_WORKED_HOURS), 
+				values.getAsInteger(PontoProContract.WORKDAY_DAILY_MARK));
+	}
 	
+	private boolean sameDay() {
+		if (mToday.getInitialTime() == 0) {
+			return true;
+		}
+		if ( System.currentTimeMillis() - mToday.getInitialTime() < ONE_DAY ){
+			return true;
+		}
+		return false;
+	}
+
 	public void onViewCreated(View view, Bundle savedInstanceState) {	
 		mDailyGoal = (TextView) view.findViewById(R.id.dailyGoalText);
 		mWorktimeRemaining = (TextView) view.findViewById(R.id.workTimeRemaining);

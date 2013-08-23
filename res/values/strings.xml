@@ -87,6 +87,7 @@
     <string name="four_hour_value">14400000</string>
     <string name="six_hour_value">21600000</string>
     <string name="eight_hour_value">28800000</string>
+    <string name="twenty_four_hour_value">84600000</string>
     
     <string name="four_hours">Quatros horas</string>
     <string name="six_hours">Seis horas</string>
