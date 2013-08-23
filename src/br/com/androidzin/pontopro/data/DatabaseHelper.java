@@ -47,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL(createWorkdayTable);
 		db.execSQL(createCheckinTable);
 		
-		insertFromFile(db, mContext);
+		//insertFromFile(db, mContext);
 	}
 
 	@Override
