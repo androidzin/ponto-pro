@@ -101,7 +101,10 @@
     <string name="hours">horas</string>
     <string name="test_timefinished">Terminou</string>
     <string name="no_time_selected">Nenhuma meta selecionada</string>
-    <string name="generic_settings_error">Your current settings are inconsistent. Check it.</string>
+    <string name="generic_settings_error">Sua configuração contém erros. Verifique.</string>
 
 
+    <!--  Notifications -->
+    <string name="workday_complete_title">Hora de ir embora!</string>
+    <string name="workday_complete_message">Mais um dia de trabalho complete o/</string>
 </resources>

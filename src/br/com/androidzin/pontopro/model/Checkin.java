@@ -7,7 +7,7 @@ public class Checkin {
 	}
 	
 	public interface CheckinListener {
-		public void onCheckinDone(CheckinType checkin, long when);
+		public void onCheckinDone(CheckinType checkin, long when, long workedHours);
 	}
 	
 	private String timeStamp;

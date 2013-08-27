@@ -31,10 +31,10 @@ public class BusinessHourCommom {
     public static boolean verifyAndNotifyWorkingTimeViolation(SharedPreferences sharedPreferences, Context context, String key) {
         if(!key.equals(AFTER_LUNCH_CHECKIN_KEY))
         {
-            Long workingTime = Long.parseLong(sharedPreferences.getString(WORKING_TIME_KEY, "0"));
-            Long eatingInterval = Long.parseLong(sharedPreferences.getString(EATING_TIME_KEY, "0"));
-            Long enteredCheckin = sharedPreferences.getLong(ENTERED_CHECKIN_KEY, 0);
-            Long leavingCheckin = sharedPreferences.getLong(LEAVING_CHECKIN_KEY, 0);
+            Long workingTime = getWorkingTime(sharedPreferences);
+            Long eatingInterval = getEatingTimeInterval(sharedPreferences);
+            Long enteredCheckin = getEnteredCheckinTime(sharedPreferences);
+            Long leavingCheckin = getLeavingCheckinTime(sharedPreferences);
 
             if(hasWorkingTimeViolation(enteredCheckin, leavingCheckin, workingTime, eatingInterval)){
                 Toast.makeText(context, R.string.working_time_violation, Toast.LENGTH_SHORT).show();
@@ -43,6 +43,22 @@ public class BusinessHourCommom {
         }
         return true;
     }
+
+	public static long getLeavingCheckinTime(SharedPreferences sharedPreferences) {
+		return sharedPreferences.getLong(LEAVING_CHECKIN_KEY, 0);
+	}
+
+	public static long getEnteredCheckinTime(SharedPreferences sharedPreferences) {
+		return sharedPreferences.getLong(ENTERED_CHECKIN_KEY, 0);
+	}
+
+	public static long getEatingTimeInterval(SharedPreferences sharedPreferences) {
+		return Long.parseLong(sharedPreferences.getString(EATING_TIME_KEY, "0"));
+	}
+
+	public static long getWorkingTime(SharedPreferences sharedPreferences) {
+		return Long.parseLong(sharedPreferences.getString(WORKING_TIME_KEY, "0"));
+	}
 
     public static boolean hasWorkingTimeViolation(Long enteredCheckin, Long leavingCheckin,
                                                    Long workingTime, Long eatingInterval) {
@@ -62,9 +78,9 @@ public class BusinessHourCommom {
     }
 
     private static boolean verifyCheckinsTime(Preference preference, Object newValue, SharedPreferences sharedPreferences) {
-        Long enteredCheckin = sharedPreferences.getLong(ENTERED_CHECKIN_KEY, 0);
+        Long enteredCheckin = getEnteredCheckinTime(sharedPreferences);
         Long lunchCheckin = sharedPreferences.getLong(LUNCH_CHECKIN_KEY, 0);
-        Long leavingCheckin = sharedPreferences.getLong(LEAVING_CHECKIN_KEY, 0);
+        Long leavingCheckin = getLeavingCheckinTime(sharedPreferences);
         Long newLongValue = Long.valueOf(newValue.toString());
 
         return isNewCheckinValid(preference.getKey(), enteredCheckin, lunchCheckin, leavingCheckin, newLongValue);
@@ -100,7 +116,7 @@ public class BusinessHourCommom {
 	}
 
 	private static boolean adjustAndSaveAfterLunchTime(Preference preference, Object newValue, SharedPreferences sharedPreferences) {
-        Long eatingInterval = Long.parseLong(sharedPreferences.getString(EATING_TIME_KEY, "0"));
+        Long eatingInterval = getEatingTimeInterval(sharedPreferences);
         Long lunchCheckin = sharedPreferences.getLong(LUNCH_CHECKIN_KEY, 0);
 
         if(preference.getKey().equals(LUNCH_CHECKIN_KEY)){
