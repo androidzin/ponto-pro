@@ -30,7 +30,7 @@ public final class PontoProContract {
 	 * @param isClosed
 	 * @return
 	 */
-	public static ContentValues createWorkdayValues(int dailyMark, int workedHours, boolean isClosed) {
+	public static ContentValues createWorkdayValues(long dailyMark, long workedHours, boolean isClosed) {
 		ContentValues values = new ContentValues();
 		if ( dailyMark < 0 || workedHours < 0) 
 			throw new NumberFormatException();
@@ -43,10 +43,10 @@ public final class PontoProContract {
 		return values;
 	}
 	
-	public static ContentValues createCheckinValues(long workdayID) {
+	public static ContentValues createCheckinValues(long workdayID, long whenCheckedIn) {
 		ContentValues values = new ContentValues();
 		values.put(CHECKINS_WORKDAY_ID, workdayID);
-		//values.put(CHECKINS_CHECKIN_HOUR, System.currentTimeMillis()); - Database puts timestamp automatically
+		values.put(CHECKINS_CHECKIN_HOUR, whenCheckedIn); //- Database puts timestamp automatically
 		return values;
 	}
 }

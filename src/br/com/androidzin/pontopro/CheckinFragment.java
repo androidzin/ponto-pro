@@ -79,7 +79,8 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 				// create checkin data
 				// append to workday
 				Checkin checkin = new Checkin();
-				checkin.setTimeStamp(String.valueOf(System.currentTimeMillis()));
+				//checkin.setTimeStampSting(String.valueOf(System.currentTimeMillis()));
+				checkin.setTimeStamp(System.currentTimeMillis());
 				checkin.setWorkdayID(mToday.getWorkdayID());
 				checkin.setType(mToday.getCheckinCounter());
 				
@@ -89,8 +90,8 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 				// TODO
 				// Save previous day data
 				mToday.computeWorkedHours();
-				mToday.saveWorkdayToDB(mSharedPreferences);
-				mToday.saveCheckinsToDB(mSharedPreferences);
+				mToday.saveWorkdayToDB(getActivity());
+				mToday.saveCheckinsToDB(mSharedPreferences, getActivity());
 				
 				// Start new day
 				mToday = new Today();

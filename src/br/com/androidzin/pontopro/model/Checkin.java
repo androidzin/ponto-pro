@@ -10,10 +10,11 @@ public class Checkin {
 		public void onCheckinDone(CheckinType checkin, long when);
 	}
 	
-	private String timeStamp;
+	//private String timeStampString;
 	private long checkinID;
 	private long workdayID;
 	private CheckinType type;
+	private long timeStamp;
 	
 	public Checkin() {
 		// TODO Auto-generated constructor stub
@@ -39,13 +40,13 @@ public class Checkin {
 		this.workdayID = workdayID;
 	}
 
-	public String getTimeStamp() {
-		return timeStamp;
+	/*public String getTimeStampString() {
+		return timeStampString;
 	}
 
-	public void setTimeStamp(String timeStamp) {
-		this.timeStamp = timeStamp;
-	}
+	public void setTimeStampSting(String timeStamp) {
+		this.timeStampString = timeStamp;
+	}*/
 
 	public int getCheckinIntType() {
 		return type.ordinal();
@@ -55,6 +56,15 @@ public class Checkin {
 		if ( ordinal < CheckinType.values().length)
 			type = CheckinType.values()[ordinal];
 	}
+
+	public void setTimeStamp(long currentTimeMillis) {
+		this.timeStamp = currentTimeMillis;
+	}
+
+	public long getTime() {
+		return timeStamp;
+	}
+	
 }
 
 
