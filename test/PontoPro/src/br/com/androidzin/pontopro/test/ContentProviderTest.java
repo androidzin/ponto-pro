@@ -54,7 +54,7 @@ public class ContentProviderTest extends
 		databaseManager.insert(PontoProContract.WORKDAY_TABLE, null,
 				PontoProContract.createWorkdayValues(0, 0, false));
 		checkinID = databaseManager.insert(PontoProContract.CHECKINS_TABLE,
-				null, PontoProContract.createCheckinValues(workdayID));
+				null, PontoProContract.createCheckinValues(workdayID, 0));
 	}
 
 	@Override
@@ -241,7 +241,7 @@ public class ContentProviderTest extends
 
 	public void testCheckinInsertion() {
 		ContentValues checkinValues = PontoProContract
-				.createCheckinValues(workdayID);
+				.createCheckinValues(workdayID, 0);
 		Uri rowCheckin = mMockResolver.insert(Uri.withAppendedPath(
 				PontoProContract.CONTENT_URI, "checkin/insert"), checkinValues);
 

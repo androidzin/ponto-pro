@@ -5,12 +5,12 @@ import java.util.List;
 
 public class Workday {
 
-	private long workdayID;
-	private List<Checkin> mCheckinList;
+	protected long workdayID;
+	protected List<Checkin> mCheckinList;
 	private String timeStamp;
-	private boolean hasOpenCheckin;
-	private int workedTime; // minutes
-	private int dailyMark; // minutes
+	protected boolean hasOpenCheckin;
+	protected long workedTime; // minutes
+	protected long dailyMark; // minutes
 	protected long initialTime;
 
 	public long getInitialTime() {
@@ -60,7 +60,7 @@ public class Workday {
 		this.hasOpenCheckin = hasOpenCheckin;
 	}
 
-	public int getWorkedTime() {
+	public long getWorkedTime() {
 		return workedTime;
 	}
 
@@ -68,7 +68,7 @@ public class Workday {
 		this.workedTime = workedTime;
 	}
 
-	public int getDailyMark() {
+	public long getDailyMark() {
 		return dailyMark;
 	}
 
@@ -130,5 +130,9 @@ public class Workday {
 
 	public void setDailyMak(int mark) {
 		dailyMark = mark;
+	}
+	
+	public boolean isClosed(){
+		return !hasOpenCheckin();
 	}
 }

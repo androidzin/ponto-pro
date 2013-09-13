@@ -1,8 +1,15 @@
 package br.com.androidzin.pontopro.model;
 
+import java.util.concurrent.TimeUnit;
+
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import br.com.androidzin.pontopro.data.provider.PontoProContract;
 import br.com.androidzin.pontopro.model.Checkin.CheckinListener;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
+import br.com.androidzin.pontopro.settings.BusinessHourCommom;
 
 public class Today extends Workday {
 	
@@ -22,7 +29,6 @@ public class Today extends Workday {
 	
 	private int checkinCounter;
 	private CheckinListener mCheckinListener;
-	
 	
 	public void setCheckinListener(CheckinListener checkinListener){
 		mCheckinListener = checkinListener;
@@ -48,6 +54,7 @@ public class Today extends Workday {
 	
 	public void load(SharedPreferences mSharedPreferences){
 		long workdayID = mSharedPreferences.getLong(workdayPrefID, 0);
+		dailyMark = BusinessHourCommom.getWorkingTime(mSharedPreferences);
 		if ( workdayID != 0 ) {
 			setWorkdayID(workdayID);
 			setHasOpenCheckin(mSharedPreferences.getBoolean(workdayPrefOpenCheckin, false));
@@ -63,7 +70,7 @@ public class Today extends Workday {
 			Checkin checkin = new Checkin();
 			checkin.setCheckinID(mSharedPreferences.getLong(checkinPrefID + i, 0));
 			checkin.setWorkdayID(mSharedPreferences.getLong(workdayPrefID, 0));
-			checkin.setTimeStamp(mSharedPreferences.getString(checkinHour + i, ""));
+			checkin.setTimeStamp(mSharedPreferences.getLong(checkinHour + i, 0));
 			checkin.setType(mSharedPreferences.getInt(checkinType + i, 0));
 			
 			// TODO timestamp should be long
@@ -86,8 +93,8 @@ public class Today extends Workday {
 		SharedPreferences.Editor editor = mSharedPreferences.edit();
 		editor.putLong(workdayPrefID, getWorkdayID());
 		editor.putBoolean(workdayPrefOpenCheckin, hasOpenCheckin());
-		editor.putInt(workdayPrefWorkedTime, getWorkedTime());
-		editor.putInt(workdayPrefDailyMark, getDailyMark());
+		editor.putLong(workdayPrefWorkedTime, getWorkedTime());
+		editor.putLong(workdayPrefDailyMark, getDailyMark());
 		editor.putInt(workdayPrefCheckins, checkinCounter);
 		editor.putLong(workdayPrefInitialTime, initialTime);
 		//editor.putBoolean(workdayPrefValid, wasStarted());
@@ -107,7 +114,7 @@ public class Today extends Workday {
 			Checkin checkin) {
 		SharedPreferences.Editor editor = mSharedPreferences.edit(); 
 		editor.putLong(checkinPrefID + checkinCounter, checkin.getCheckinID());
-		editor.putString(checkinHour + checkinCounter, checkin.getTimeStamp());
+		editor.putLong(checkinHour + checkinCounter, checkin.getTime());
 		editor.putInt(checkinType + checkinCounter, checkin.getCheckinIntType());
 		
 		//editor.putBoolean(checkinStatus, hasOpenCheckin());
@@ -154,22 +161,53 @@ public class Today extends Workday {
 			mCheckinListener.onCheckinDone(getCheckinType(), System.currentTimeMillis(), System.currentTimeMillis());
 		}
 	}
+	
 	public int getCheckinCounter() {
 		return checkinCounter;
 	}
-	public void saveWorkdayToDB(SharedPreferences mSharedPreferences) {
-		// TODO Auto-generated method stub
-		
+	
+	public void saveWorkdayToDB(Context context) {
+		ContentValues values = PontoProContract.createWorkdayValues(getDailyMark(), getWorkedTime(), isClosed());
+		context.getContentResolver().update(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "workday/" + getWorkdayID()), values, null, null);
 	}
+	
 	public void computeWorkedHours() {
-		// TODO Auto-generated method stub
+		long total = 0;
+		int num = 1;
+		if ( getCheckinCounter() % 2 != 0 ) {
+			num = 2;
+		}
+		long[] times = new long[getCheckinCounter() - num];
+		for ( int i = 0; i < (getCheckinCounter() - num ); i++) {
+			if ( i % 2 == 0 ) {
+				times[i] = getCheckinList().get(i+1).getTime() - getCheckinList().get(i).getTime();
+			}
+		}
+		for ( int i = 0; i < times.length; i++) {
+			total += times[i];
+		}
+		
+		// TODO Convert from long to int
+		//workedTime = TimeUnit.MILLISECONDS.toMinutes(total);
+		workedTime = TimeUnit.MILLISECONDS.toMinutes(total);
 		
 	}
-	public void saveCheckinsToDB(SharedPreferences mSharedPreferences) {
-		// TODO Auto-generated method stub
+	public void saveCheckinsToDB(SharedPreferences mSharedPreferences, Context context) {
+		for (int i = 1; i <= mCheckinList.size(); i++) {
+			ContentValues values = PontoProContract.createCheckinValues(getWorkdayID(), mSharedPreferences.getLong(checkinHour + i, 0));
+			context.getContentResolver().insert(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "checkin/insert"), values);
+		}
 		
 	}
 
+	/*private void startToday() {
+		
+		Uri created = getActivity().getContentResolver().insert(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "workday/insert"), values);
+		mToday.initData(mSharedPreferences, 
+				created.getLastPathSegment(), 
+				values.getAsInteger(PontoProContract.WORKDAY_WORKED_HOURS), 
+				values.getAsInteger(PontoProContract.WORKDAY_DAILY_MARK));
+	}*/
 	
 
 }

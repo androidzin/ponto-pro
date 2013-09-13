@@ -4,10 +4,10 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +37,6 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	
 	private Today mToday = new Today();
 	private SharedPreferences mSharedPreferences;
-	private String workdayPrefFile = "pontopro.workday_file";
 	
 	private Button doCheckin;
 	private long ONE_DAY ;
@@ -45,7 +44,7 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mSharedPreferences = getActivity().getSharedPreferences(workdayPrefFile, Context.MODE_PRIVATE);
+		mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		ONE_DAY = Long.valueOf(getResources().getString(R.string.twenty_four_hour_value));;
 	}
 	
@@ -79,7 +78,8 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 				// create checkin data
 				// append to workday
 				Checkin checkin = new Checkin();
-				checkin.setTimeStamp(String.valueOf(System.currentTimeMillis()));
+				//checkin.setTimeStampSting(String.valueOf(System.currentTimeMillis()));
+				checkin.setTimeStamp(System.currentTimeMillis());
 				checkin.setWorkdayID(mToday.getWorkdayID());
 				checkin.setType(mToday.getCheckinCounter());
 				
@@ -89,8 +89,8 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 				// TODO
 				// Save previous day data
 				mToday.computeWorkedHours();
-				mToday.saveWorkdayToDB(mSharedPreferences);
-				mToday.saveCheckinsToDB(mSharedPreferences);
+				mToday.saveWorkdayToDB(getActivity());
+				mToday.saveCheckinsToDB(mSharedPreferences, getActivity());
 				
 				// Start new day
 				mToday = new Today();
