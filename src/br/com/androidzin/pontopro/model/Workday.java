@@ -131,4 +131,8 @@ public class Workday {
 	public void setDailyMak(int mark) {
 		dailyMark = mark;
 	}
+	
+	public boolean isClosed(){
+		return !hasOpenCheckin();
+	}
 }

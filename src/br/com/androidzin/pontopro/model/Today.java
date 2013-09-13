@@ -1,6 +1,5 @@
 package br.com.androidzin.pontopro.model;
 
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 
 import android.content.ContentValues;
@@ -10,6 +9,7 @@ import android.net.Uri;
 import br.com.androidzin.pontopro.data.provider.PontoProContract;
 import br.com.androidzin.pontopro.model.Checkin.CheckinListener;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
+import br.com.androidzin.pontopro.settings.BusinessHourCommom;
 
 public class Today extends Workday {
 	
@@ -54,6 +54,7 @@ public class Today extends Workday {
 	
 	public void load(SharedPreferences mSharedPreferences){
 		long workdayID = mSharedPreferences.getLong(workdayPrefID, 0);
+		dailyMark = BusinessHourCommom.getWorkingTime(mSharedPreferences);
 		if ( workdayID != 0 ) {
 			setWorkdayID(workdayID);
 			setHasOpenCheckin(mSharedPreferences.getBoolean(workdayPrefOpenCheckin, false));
@@ -166,7 +167,7 @@ public class Today extends Workday {
 	}
 	
 	public void saveWorkdayToDB(Context context) {
-		ContentValues values = PontoProContract.createWorkdayValues(getDailyMark(), getWorkedTime(), hasOpenCheckin());
+		ContentValues values = PontoProContract.createWorkdayValues(getDailyMark(), getWorkedTime(), isClosed());
 		context.getContentResolver().update(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "workday/" + getWorkdayID()), values, null, null);
 	}
 	
