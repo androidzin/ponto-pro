@@ -1,16 +1,53 @@
 package br.com.androidzin.pontopro.test.notification;
 
-import br.com.androidzin.pontopro.MainActivity;
-import junit.framework.TestCase;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.test.AndroidTestCase;
+import br.com.androidzin.pontopro.MainActivity;
+import br.com.androidzin.pontopro.notification.CheckinNotificationManager;
 
-public class Utils extends TestCase{
+public abstract class NotificationsBasic extends AndroidTestCase{
+	
+	protected Context mContext;
+	protected CheckinNotificationManager notificationManager;
+	protected SharedPreferences sharedPreferences;
+	protected AlarmManager mAlarmManager;
+	
+	public static final String KEY_NOTIFICATION_ENABLED = "pref_key_notification_enabled";
 	
 	
+	@Override
+	protected void setUp() throws Exception {
+		super.setUp();
+		initializeContext();
+		setUpSharedPreference();
+		cancelPastAlarmsAndNotifications();
+	}
 
+
+	private void initializeContext() {
+		mContext = getContext();
+		notificationManager = new CheckinNotificationManager(mContext);
+		mAlarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+	}
+	
+
+	protected abstract void setUpSharedPreference();
+	
+	protected void cancelPastAlarmsAndNotifications() {
+		Intent intent = notificationManager.getWorkdayCompleteIntent();
+		NotificationsBasic.cancelAlarm(mContext, intent, mAlarmManager);
+		NotificationsBasic.cancelScheduledNotifications(mContext);
+	}
+	
+
+	public abstract void testNotificationIntent();
+	
 	private static void cancelAlarm(AlarmManager alarmManager,
 			PendingIntent notifier) {
 		if(notifier != null){

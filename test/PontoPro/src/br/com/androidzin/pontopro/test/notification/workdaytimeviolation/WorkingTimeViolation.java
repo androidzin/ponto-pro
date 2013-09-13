@@ -1,42 +1,17 @@
 package br.com.androidzin.pontopro.test.notification.workdaytimeviolation;
 
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.test.AndroidTestCase;
 import br.com.androidzin.pontopro.MainActivity;
 import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
-import br.com.androidzin.pontopro.notification.CheckinNotificationManager;
 import br.com.androidzin.pontopro.settings.BusinessHourCommom;
 
-public class WorkingTimeViolation extends AndroidTestCase {
+public class WorkingTimeViolation extends WorkdayTimeViolationBasic {
 	
-	protected Context mContext;
-	protected CheckinNotificationManager notificationManager;
-	protected SharedPreferences sharedPreferences;
-	protected AlarmManager alarmManager;
-	
-	static final String KEY_NOTIFICATION_ENABLED = "pref_key_notification_enabled";
 	static final String KEY_WORKING_TIME_VIOLATION_NOTIFICATION = "pref_key_notification_maxhour_enabled";
 	
-	@Override
-	protected void setUp() throws Exception {
-		// TODO Auto-generated method stub
-		super.setUp();
-		mContext = getContext();
-		notificationManager = new CheckinNotificationManager(mContext);
-		alarmManager = (AlarmManager) mContext.getSystemService(mContext.ALARM_SERVICE);
-		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext);
-		setUpSharedPreference();
-		cancelNotifications();
-	}
-	
-
 	protected void setUpSharedPreference() {
 		sharedPreferences.
 			edit().
@@ -44,42 +19,6 @@ public class WorkingTimeViolation extends AndroidTestCase {
 			putBoolean(KEY_NOTIFICATION_ENABLED, true).
 			putBoolean(KEY_WORKING_TIME_VIOLATION_NOTIFICATION, true).
 			commit();
-	}
-	
-	protected void cancelNotifications() {
-		
-		Intent intent = notificationManager.getWorkingTimeViolationIntent();
-		PendingIntent notifier = PendingIntent.getBroadcast(mContext, 0, intent,
-				PendingIntent.FLAG_NO_CREATE);
-		
-		if(notifier != null){
-			notifier.cancel();
-			alarmManager.cancel(notifier);
-		}
-		
-		Intent resultIntent = new Intent(mContext, MainActivity.class);
-		PendingIntent resultPendingIntent =
-		    PendingIntent.getActivity(
-		    mContext,
-		    0,
-		    resultIntent,
-		    PendingIntent.FLAG_NO_CREATE
-		);
-		
-		if(resultPendingIntent != null){
-			resultPendingIntent.cancel();
-		}
-	}
-	
-	public void testNotificationIntent(){
-		Intent intent = notificationManager.getWorkingTimeViolationIntent();
-		
-		assertEquals(CheckinNotificationManager.WORKING_TIME_VIOLATION,
-				intent.getAction());
-		
-		assertEquals(CheckinNotificationManager.class.getName(),
-				intent.getComponent().getClassName());
-		
 	}
 	
 	public void testBasicSchedule(){
@@ -93,7 +32,7 @@ public class WorkingTimeViolation extends AndroidTestCase {
 		
 		assertNotNull("Schedule did not work", notifier);
 		
-		alarmManager.cancel(notifier);
+		mAlarmManager.cancel(notifier);
 	}
 	
 	public void testCancel(){

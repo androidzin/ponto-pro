@@ -4,7 +4,7 @@ import android.content.Intent;
 import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
 import br.com.androidzin.pontopro.settings.BusinessHourCommom;
-import br.com.androidzin.pontopro.test.notification.Utils;
+import br.com.androidzin.pontopro.test.notification.NotificationsBasic;
 
 public class WorkdayCompleteAllNotificationDisabled extends WorkdayBasic {
 	
@@ -23,7 +23,7 @@ public class WorkdayCompleteAllNotificationDisabled extends WorkdayBasic {
 		
 		Intent intent = notificationManager.getWorkdayCompleteIntent();
 		
-		Utils.assertAlarmIsNotScheduled(mContext, intent, mAlarmManager);
+		NotificationsBasic.assertAlarmIsNotScheduled(mContext, intent, mAlarmManager);
 	}
 	
 	
@@ -40,7 +40,7 @@ public class WorkdayCompleteAllNotificationDisabled extends WorkdayBasic {
 			e.printStackTrace();
 		}
 		
-		Utils.assertNotificationIsNotScheduled(mContext);
+		NotificationsBasic.assertNotificationIsNotScheduled(mContext);
 
 	}
 	

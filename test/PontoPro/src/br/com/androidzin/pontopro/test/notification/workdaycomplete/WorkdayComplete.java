@@ -4,7 +4,7 @@ import android.content.Intent;
 import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
 import br.com.androidzin.pontopro.settings.BusinessHourCommom;
-import br.com.androidzin.pontopro.test.notification.Utils;
+import br.com.androidzin.pontopro.test.notification.NotificationsBasic;
 
 public class WorkdayComplete extends WorkdayBasic {
 	
@@ -13,8 +13,8 @@ public class WorkdayComplete extends WorkdayBasic {
 		sharedPreferences.
 			edit().
 			putString(BusinessHourCommom.WORKING_TIME_KEY, mContext.getString(R.string.eight_hour_value)).
-			putBoolean(KEY_NOTIFICATION_ENABLED, true).
-			putBoolean(KEY_WORKDAY_COMPLETE_NOTIFICATION, true).
+			putBoolean(WorkdayComplete.KEY_NOTIFICATION_ENABLED, true).
+			putBoolean(WorkdayComplete.KEY_WORKDAY_COMPLETE_NOTIFICATION, true).
 			commit();
 	}
 	
@@ -22,7 +22,7 @@ public class WorkdayComplete extends WorkdayBasic {
 		doCheckinCauseSchedule();
 		Intent intent = notificationManager.getWorkdayCompleteIntent();
 		
-		Utils.assertAlarmIsScheduled(mContext, intent, mAlarmManager);
+		NotificationsBasic.assertAlarmIsScheduled(mContext, intent, mAlarmManager);
 	}
 
 
@@ -31,7 +31,7 @@ public class WorkdayComplete extends WorkdayBasic {
 		doCheckinCauseCancel();
 		Intent intent = notificationManager.getWorkdayCompleteIntent();
 		
-		Utils.assertAlarmNotificationWasCancelled(mContext, intent);
+		NotificationsBasic.assertAlarmNotificationWasCancelled(mContext, intent);
 	}
 
 	public void testWorkDayCompleteNofitication(){
@@ -47,7 +47,7 @@ public class WorkdayComplete extends WorkdayBasic {
 			e.printStackTrace();
 		}
 		
-		Utils.assertNotificationIsScheduled(mContext);
+		NotificationsBasic.assertNotificationIsScheduled(mContext);
 
 	}
 
