@@ -3,7 +3,7 @@ package br.com.androidzin.pontopro.test.notification.workdaycomplete;
 import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.settings.BusinessHourCommom;
 
-public class WorkdayNotificationDisabled extends WorkdayCompleteAllNotificationDisabled {
+public class WorkdayCompleteNotificationDisabled extends WorkdayCompleteAllNotificationDisabled {
 	
 	@Override
 	protected void setUpSharedPreference() {

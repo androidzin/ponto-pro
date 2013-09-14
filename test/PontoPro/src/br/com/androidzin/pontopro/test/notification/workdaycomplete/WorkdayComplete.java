@@ -4,7 +4,6 @@ import android.content.Intent;
 import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
 import br.com.androidzin.pontopro.settings.BusinessHourCommom;
-import br.com.androidzin.pontopro.test.notification.NotificationsBasic;
 
 public class WorkdayComplete extends WorkdayBasic {
 	
@@ -22,7 +21,7 @@ public class WorkdayComplete extends WorkdayBasic {
 		doCheckinCauseSchedule();
 		Intent intent = notificationManager.getWorkdayCompleteIntent();
 		
-		NotificationsBasic.assertAlarmIsScheduled(mContext, intent, mAlarmManager);
+		assertAlarmIsScheduled(mContext, intent, mAlarmManager);
 	}
 
 
@@ -31,7 +30,7 @@ public class WorkdayComplete extends WorkdayBasic {
 		doCheckinCauseCancel();
 		Intent intent = notificationManager.getWorkdayCompleteIntent();
 		
-		NotificationsBasic.assertAlarmNotificationWasCancelled(mContext, intent);
+		assertAlarmNotificationWasCancelled(mContext, intent);
 	}
 
 	public void testWorkDayCompleteNofitication(){
@@ -47,7 +46,7 @@ public class WorkdayComplete extends WorkdayBasic {
 			e.printStackTrace();
 		}
 		
-		NotificationsBasic.assertNotificationIsScheduled(mContext);
+		assertNotificationIsScheduled(mContext);
 
 	}
 
