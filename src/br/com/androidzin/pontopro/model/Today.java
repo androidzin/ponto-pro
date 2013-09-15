@@ -145,9 +145,8 @@ public class Today extends Workday {
 		case 6:
 			return CheckinType.ANY_LEAVING;
 		default:
-			break;
+			return null;
 		}
-		return CheckinType.ANY;
 	}
 
 	public void refreshData(SharedPreferences mSharedPreferences,

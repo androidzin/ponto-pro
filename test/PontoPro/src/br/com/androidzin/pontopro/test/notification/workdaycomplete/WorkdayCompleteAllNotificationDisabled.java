@@ -18,8 +18,8 @@ public class WorkdayCompleteAllNotificationDisabled extends WorkdayBasic {
 	}
 	
 	public void testScheduleThatShouldNotScheduled(){
-		doCheckinCauseSchedule();
-		
+		long workedHours = 14400000; // four hours
+		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, System.currentTimeMillis(), workedHours);		
 		Intent intent = notificationManager.getWorkdayCompleteIntent();
 		
 		assertAlarmIsNotScheduled(mContext, intent, mAlarmManager);

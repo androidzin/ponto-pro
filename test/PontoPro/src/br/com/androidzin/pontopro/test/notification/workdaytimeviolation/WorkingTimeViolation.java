@@ -20,7 +20,8 @@ public class WorkingTimeViolation extends WorkdayTimeViolationBasic {
 	}
 	
 	public void testBasicSchedule(){
-		doCheckinCauseSchedule();
+		long workedHours = 14400000; // four hours
+		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, System.currentTimeMillis(), workedHours);;
 		
 		Intent intent = notificationManager.getWorkingTimeViolationIntent();
 		
@@ -29,8 +30,9 @@ public class WorkingTimeViolation extends WorkdayTimeViolationBasic {
 	}
 
 	public void testCancel(){
-		doCheckinCauseSchedule();
-		doCheckinCauseCancel();
+		long workedHours = 14400000; // four hours
+		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, System.currentTimeMillis(), workedHours);;
+		notificationManager.onCheckinDone(CheckinType.LEAVING, System.currentTimeMillis(), 0);
 		Intent intent = notificationManager.getWorkingTimeViolationIntent();
 		
 		assertAlarmNotificationWasCancelled(mContext, intent);

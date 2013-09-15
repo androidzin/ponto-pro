@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -24,11 +25,15 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 			"br.com.androidzin.pontopro.notification.CheckinNotificationManager.WORKDAY_COMPLETE";
 	public static final String WORKING_TIME_VIOLATION = 
 			"br.com.androidzin.pontopro.notification.CheckinNotificationManager.WORKDING_TIME_VIOLATION";
+	public static final String GOBACK_TO_WORK =
+			"br.com.androidzin.pontopro.notification.CheckinNotificationManager.GOBACK_TO_WORK";
+	
 	private static final long TEN_HOURS = 36000000;
 	
 	private static final String KEY_NOTIFICATION_ENABLED = "pref_key_notification_enabled";
 	private static final String KEY_WORKDAY_COMPLETE_NOTIFICATION = "pref_key_notification_bussineshour_enabled";
 	private static final String KEY_WORKING_TIME_VIOLATION_NOTIFICATION = "pref_key_notification_maxhour_enabled";
+	
 	
 	private SharedPreferences sharedPreferences;
 	private AlarmManager alarmManager; 
@@ -40,7 +45,7 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 	public CheckinNotificationManager(Context context){
 		mContext = context;
 		sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-		alarmManager =	(AlarmManager) mContext.getSystemService(mContext.ALARM_SERVICE);
+		alarmManager =	(AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 	}
 	
 	@Override
@@ -53,6 +58,8 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 				notification = getWorkdayCompleteNotification(context);
 			} else if(intent.getAction().equals(WORKING_TIME_VIOLATION) && shouldNotify(context, WORKING_TIME_VIOLATION)){
 				notification = getWorkingTimeViolationNotification(context);
+			} else if(intent.getAction().equals(GOBACK_TO_WORK)){
+				notification = getGoBackToWorkNotification(context);
 			}
 	
 			if(notification != null){
@@ -76,6 +83,13 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 				context.getString(R.string.workingtime_violation_message),
 				R.drawable.warning);
 	}
+	
+	private Notification getGoBackToWorkNotification(Context context){
+		return getNotification(context,
+				context.getString(R.string.gobacktowork_title),
+				context.getString(R.string.gobacktowork_message),
+				R.drawable.goback_to_work);
+	}
 
 	private Notification getNotification(Context context, String title, String message, int icon) {
 		
@@ -93,6 +107,7 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 				.setContentTitle(title)
 				.setContentText(message)
 				.setSmallIcon(icon)
+				.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher))
 				.setContentIntent(resultPendingIntent)
 				.getNotification();
 		
@@ -101,13 +116,16 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 		return notification;
 	}
 	
-	//TODO: public for test propose
 	public Intent getWorkdayCompleteIntent(){
 		return getIntentNofitication(WORKDAY_COMPLETE);
 	}
 	
 	public Intent getWorkingTimeViolationIntent(){
 		return getIntentNofitication(WORKING_TIME_VIOLATION);
+	}
+	
+	public Intent getGobackToWorkIntent(){
+		return getIntentNofitication(GOBACK_TO_WORK);
 	}
 	
 	private Intent getIntentNofitication(String action){
@@ -125,21 +143,19 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 			return sharedPreferences.getBoolean(KEY_WORKDAY_COMPLETE_NOTIFICATION, true);
 		} else if (action.equals(WORKING_TIME_VIOLATION)) {
 			return sharedPreferences.getBoolean(KEY_WORKING_TIME_VIOLATION_NOTIFICATION, true);
-		}
+		} 
 		return false;
 	}
 	
 	@Override
 	public void onCheckinDone(CheckinType checkin, long when, long workedHours) {
 
-		Intent intent = null;
-		PendingIntent notifier = null;
-		
 		switch(checkin){
 			case ENTERED:
 			break;
 			
 			case LUNCH:
+				scheduleGobackToWorkNotification(when);
 			break;
 		
 			case AFTER_LUNCH:
@@ -150,6 +166,15 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 			case LEAVING:
 				cancelWorkdayCompleteNotification(workedHours);
 				cancelWorkingTimeViolationNotification();
+			break;
+			
+			case ANY_ENTRANCE:
+			break;
+			
+			case ANY_LEAVING:
+			break;
+			
+			default:
 			break;
 		}
 		
@@ -170,21 +195,35 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 		Intent intent = getWorkingTimeViolationIntent();
 		return getPendingIntent(intent);
 	}
+	
+	private PendingIntent getGobackToWorkPendingIntent() {
+		Intent intent = getGobackToWorkIntent();
+		return getPendingIntent(intent);
+	}
 
-	private void cancelWorkingTimeViolationNotification() {
-		PendingIntent notifier = getWorkingTimeViolationPendingIntent();
+	private void cancelAlarm(PendingIntent notifier) {
 		notifier.cancel();
 		alarmManager.cancel(notifier);
 	}
-
+	
 	private void cancelWorkdayCompleteNotification(long workedHours) {
 		if(workedHours < BusinessHourCommom.getWorkingTime(sharedPreferences))
 		{
 			PendingIntent notifier = getWorkdayCompletePendingIntent();
-			notifier.cancel();
-			alarmManager.cancel(notifier);
+			cancelAlarm(notifier);
 		}
 	}
+
+	private void cancelWorkingTimeViolationNotification() {
+		PendingIntent notifier = getWorkingTimeViolationPendingIntent();
+		cancelAlarm(notifier);
+	}
+	
+	private void cancelGobackToWorkNotification() {
+		PendingIntent notifier = getGobackToWorkPendingIntent();
+		cancelAlarm(notifier);
+	}
+
 	
 	private void scheduleWorkdayCompleteNotification(long when,
 			long workedHours) {
@@ -205,6 +244,15 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 		
 			PendingIntent notifier = getWorkingTimeViolationPendingIntent();
 			long notificationHour = when + (TEN_HOURS - workedHours);
+			alarmManager.set(AlarmManager.RTC_WAKEUP, notificationHour, notifier);
+		}
+	}
+	
+	private void scheduleGobackToWorkNotification(long when) {
+		if(isNotificationEnabled(mContext)){
+		
+			PendingIntent notifier = getGobackToWorkPendingIntent();
+			long notificationHour = when + BusinessHourCommom.getEatingTimeInterval(sharedPreferences);
 			alarmManager.set(AlarmManager.RTC_WAKEUP, notificationHour, notifier);
 		}
 	}
