@@ -7,6 +7,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.lang.reflect.GenericSignatureFormatError;
+import java.sql.Date;
+import java.util.Calendar;
 
 import br.com.androidzin.pontopro.R;
 
@@ -50,6 +52,18 @@ public class BusinessHourCommom {
 
 	public static long getEnteredCheckinTime(SharedPreferences sharedPreferences) {
 		return sharedPreferences.getLong(ENTERED_CHECKIN_KEY, 0);
+	}
+	
+	public static long getEatingTimeCheckinTime(SharedPreferences sharedPreferences) {
+		Long checkinTime = sharedPreferences.getLong(LUNCH_CHECKIN_KEY, 0);
+		Calendar pickedDate = Calendar.getInstance();
+		pickedDate.setTimeInMillis(checkinTime);
+		
+		Calendar nowDays = Calendar.getInstance();
+		nowDays.set(Calendar.HOUR_OF_DAY, pickedDate.get(Calendar.HOUR_OF_DAY));
+		nowDays.set(Calendar.MINUTE, pickedDate.get(Calendar.MINUTE));
+		
+		return nowDays.getTimeInMillis();
 	}
 
 	public static long getEatingTimeInterval(SharedPreferences sharedPreferences) {

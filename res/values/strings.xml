@@ -114,5 +114,8 @@
     <string name="workingtime_violation_title">Você já trabalhou demais!</string>
     <string name="workingtime_violation_message">Você está prestes a violar a lei trabalhista, portanto hora de ir.</string>
     
+    <string name="lunchtime_title">Que tal uma pausa?</string>
+    <string name="lunchtime_message">Hora de comer. O que vai ser hoje?</string>
+    
     
 </resources>
