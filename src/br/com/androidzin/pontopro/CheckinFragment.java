@@ -51,7 +51,7 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 	@Override
 	public void onPause() {
 		super.onPause();
-		mToday.save(mSharedPreferences);
+		mToday.save();
 	}
 
 	@Override
@@ -84,13 +84,14 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 				checkin.setType(mToday.getCheckinCounter());
 				
 				mToday.addCheckin(checkin);
-				mToday.refreshData(mSharedPreferences, checkin);
+				mToday.refreshData(checkin);
 			} else {
-				// TODO
-				// Save previous day data
-				mToday.computeWorkedHours();
-				mToday.saveWorkdayToDB(getActivity());
-				mToday.saveCheckinsToDB(mSharedPreferences, getActivity());
+
+				// Finish Day
+				// Save data to DB
+				// Calculate WorkedHours
+				mToday.finish(getActivity());
+				mToday = null;
 				
 				// Start new day
 				mToday = new Today();
@@ -105,11 +106,13 @@ public class CheckinFragment extends SherlockFragment implements OnTimeSetListen
 		}
 	}
 
+	
+
 	private void startToday() {
 		ContentValues values = PontoProContract.createWorkdayValues(0, 0, false);
 		Uri created = getActivity().getContentResolver().insert(Uri.withAppendedPath(PontoProContract.CONTENT_URI, "workday/insert"), values);
 		mToday.initData(mSharedPreferences, 
-				created.getLastPathSegment(), 
+				Long.valueOf(created.getLastPathSegment()), 
 				values.getAsInteger(PontoProContract.WORKDAY_WORKED_HOURS), 
 				values.getAsInteger(PontoProContract.WORKDAY_DAILY_MARK));
 	}
