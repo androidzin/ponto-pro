@@ -1,11 +1,11 @@
-package br.com.androidzin.pontopro.test.notification.workdaycomplete;
+package br.com.androidzin.pontopro.test.notification.dailygoal;
 
 import android.content.Intent;
 import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
 import br.com.androidzin.pontopro.settings.BusinessHourCommom;
 
-public class WorkdayCompleteAllNotificationDisabled extends WorkdayBasic {
+public class DailyGoalCompleteAllNotificationDisabled extends DailyGoalCompleteBasic {
 	
 		
 	@Override
@@ -13,25 +13,23 @@ public class WorkdayCompleteAllNotificationDisabled extends WorkdayBasic {
 		sharedPreferences.
 		edit().
 		putString(BusinessHourCommom.WORKING_TIME_KEY, mContext.getString(R.string.eight_hour_value)).
-		putBoolean(WorkdayComplete.KEY_NOTIFICATION_ENABLED, false).
+		putBoolean(DailyGoalComplete.KEY_NOTIFICATION_ENABLED, false).
 		commit();
 	}
 	
 	public void testScheduleThatShouldNotScheduled(){
 		long workedHours = 14400000; // four hours
-		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, System.currentTimeMillis(), workedHours, 0L);		
-		Intent intent = notificationManager.getWorkdayCompleteIntent();
+		notificationManager.scheduleDailyGoalCompleteNotification(System.currentTimeMillis(), workedHours, workedHours);
+		Intent intent = notificationManager.getDailyGoalCompleteTimeIntent();
 		
 		assertAlarmIsNotScheduled(mContext, intent, mAlarmManager);
 	}
 	
 	
-	public void testWorkDayCompleteNofiticationWontShow(){
-		long when = System.currentTimeMillis();
-		long workingTime = BusinessHourCommom.getWorkingTime(sharedPreferences);
-		long workedHours = workingTime - 5000;
-		
-		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, when, workedHours, 0L);
+	public void testDailyGoalCompleteNofiticationWontShow(){
+		long workedHours = 14400000; // four hours
+		long dailyMark = workedHours + 5000;
+		notificationManager.scheduleDailyGoalCompleteNotification(System.currentTimeMillis(), workedHours, dailyMark);
 		
 		try {
 			Thread.sleep(5000);

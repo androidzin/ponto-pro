@@ -117,5 +117,8 @@
     <string name="lunchtime_title">Que tal uma pausa?</string>
     <string name="lunchtime_message">Hora de comer. O que vai ser hoje?</string>
     
+     <string name="dailygoal_complete_title">Meta cumprida!</string>
+    <string name="dailygoal_complete_message">Hora de aproveitar.</string>
+    
     
 </resources>

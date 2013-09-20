@@ -18,14 +18,14 @@ public class GobackToWorkAllNotificaionDisabled extends GobackToWorkBasic {
 	}
 	
 	public void testScheduleThatShouldNotScheduled(){
-		notificationManager.onCheckinDone(CheckinType.LUNCH, System.currentTimeMillis(), 0);
+		notificationManager.onCheckinDone(CheckinType.LUNCH, System.currentTimeMillis(), 0, 0);
 		Intent intent = notificationManager.getGobackToWorkIntent();
 		
 		assertAlarmIsNotScheduled(mContext, intent, mAlarmManager);
 	}
 	
 	public void testGobackToWorkNofiticationWontShow(){
-		notificationManager.onCheckinDone(CheckinType.LUNCH, System.currentTimeMillis(), 0);
+		notificationManager.onCheckinDone(CheckinType.LUNCH, System.currentTimeMillis(), 0, 0);
 		
 		try {
 			Thread.sleep(TEST_EATING_TIME + 1000);

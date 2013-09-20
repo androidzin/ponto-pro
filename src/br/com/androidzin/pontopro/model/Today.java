@@ -157,7 +157,7 @@ public class Today extends Workday {
 	
 	private void notifyListener(){
 		if ( mCheckinListener != null ) {
-			mCheckinListener.onCheckinDone(getCheckinType(), System.currentTimeMillis(), System.currentTimeMillis());
+			mCheckinListener.onCheckinDone(getCheckinType(), System.currentTimeMillis(), getWorkedTime(), getDailyMark());
 		}
 	}
 	

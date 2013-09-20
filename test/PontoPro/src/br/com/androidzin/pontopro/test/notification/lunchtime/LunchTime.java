@@ -17,7 +17,7 @@ public class LunchTime extends LunchTimeBasic {
 	}
 	
 	public void testBasicSchedule(){
-		notificationManager.onCheckinDone(CheckinType.ENTERED, 0L, 0L);
+		notificationManager.onCheckinDone(CheckinType.ENTERED, 0L, 0L, 0L);
 		Intent intent = notificationManager.getLunchTimeIntent();
 		
 		assertAlarmIsScheduled(mContext, intent, mAlarmManager);
@@ -25,8 +25,8 @@ public class LunchTime extends LunchTimeBasic {
 
 
 	public void testCancel(){
-		notificationManager.onCheckinDone(CheckinType.ENTERED, 0L, 0L);
-		notificationManager.onCheckinDone(CheckinType.LUNCH, EATING_TIME_TEST - Constants.hoursInMilis , 0L);
+		notificationManager.onCheckinDone(CheckinType.ENTERED, 0L, 0L, 0L);
+		notificationManager.onCheckinDone(CheckinType.LUNCH, EATING_TIME_TEST - Constants.hoursInMilis , 0L, 0L);
 		Intent intent = notificationManager.getLunchTimeIntent();
 		
 		assertAlarmNotificationWasCancelled(mContext, intent);
@@ -37,7 +37,7 @@ public class LunchTime extends LunchTimeBasic {
 		long when = System.currentTimeMillis();
 		
 		sharedPreferences.edit().putLong(BusinessHourCommom.LUNCH_CHECKIN_KEY, when + delay).commit();
-		notificationManager.onCheckinDone(CheckinType.ENTERED, 0L, 0L);
+		notificationManager.onCheckinDone(CheckinType.ENTERED, 0L, 0L, 0L);
 		
 		
 		try {

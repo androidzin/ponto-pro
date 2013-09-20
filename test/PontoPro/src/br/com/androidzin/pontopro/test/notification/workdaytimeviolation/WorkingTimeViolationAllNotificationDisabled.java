@@ -20,7 +20,7 @@ public class WorkingTimeViolationAllNotificationDisabled extends WorkdayTimeViol
 	
 	public void testScheduleThatShouldNotScheduled(){
 		long workedHours = 14400000; // four hours
-		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, System.currentTimeMillis(), workedHours);
+		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, System.currentTimeMillis(), workedHours, 0L);
 		
 		Intent intent = notificationManager.getWorkingTimeViolationIntent();
 		
@@ -33,7 +33,7 @@ public class WorkingTimeViolationAllNotificationDisabled extends WorkdayTimeViol
 		long maxWorkingTime = 36000000;;
 		long workedHours = maxWorkingTime - 5000;
 		
-		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, when, workedHours);
+		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, when, workedHours, 0L);
 		
 		try {
 			Thread.sleep(5000);

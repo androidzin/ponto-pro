@@ -19,7 +19,7 @@ public class WorkdayComplete extends WorkdayBasic {
 	
 	public void testBasicSchedule(){
 		long workedHours = 14400000; // four hours
-		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, System.currentTimeMillis(), workedHours);
+		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, System.currentTimeMillis(), workedHours, 0);
 		Intent intent = notificationManager.getWorkdayCompleteIntent();
 		
 		assertAlarmIsScheduled(mContext, intent, mAlarmManager);
@@ -28,8 +28,8 @@ public class WorkdayComplete extends WorkdayBasic {
 
 	public void testCancel(){
 		long workedHours = 14400000; // four hours
-		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, System.currentTimeMillis(), workedHours);
-		notificationManager.onCheckinDone(CheckinType.LEAVING, System.currentTimeMillis(), 0);
+		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, System.currentTimeMillis(), workedHours, 0);
+		notificationManager.onCheckinDone(CheckinType.LEAVING, System.currentTimeMillis(), 0, 0);
 		Intent intent = notificationManager.getWorkdayCompleteIntent();
 		
 		assertAlarmNotificationWasCancelled(mContext, intent);
@@ -40,7 +40,7 @@ public class WorkdayComplete extends WorkdayBasic {
 		long workingTime = BusinessHourCommom.getWorkingTime(sharedPreferences);
 		long workedHours = workingTime - 5000;
 		
-		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, when, workedHours);
+		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, when, workedHours, 0);
 		
 		try {
 			Thread.sleep(5000);

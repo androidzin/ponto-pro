@@ -19,7 +19,7 @@ public class LunchTimeAllNotificationDisabled extends LunchTimeBasic {
 	}
 	
 	public void testScheduleThatShouldNotScheduled(){
-		notificationManager.onCheckinDone(CheckinType.ENTERED, 0L, 0L);
+		notificationManager.onCheckinDone(CheckinType.ENTERED, 0L, 0L, 0L);
 		Intent intent = notificationManager.getLunchTimeIntent();
 		
 		assertAlarmIsNotScheduled(mContext, intent, mAlarmManager);
@@ -31,7 +31,7 @@ public class LunchTimeAllNotificationDisabled extends LunchTimeBasic {
 		long when = System.currentTimeMillis();
 		
 		sharedPreferences.edit().putLong(BusinessHourCommom.LUNCH_CHECKIN_KEY, when + delay).commit();
-		notificationManager.onCheckinDone(CheckinType.ENTERED, 0L, 0L);
+		notificationManager.onCheckinDone(CheckinType.ENTERED, 0L, 0L, 0L);
 		
 		
 		try {

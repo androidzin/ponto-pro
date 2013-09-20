@@ -1,5 +1,6 @@
 package br.com.androidzin.pontopro.model;
 
+
 public class Checkin {
 
 	public enum CheckinType {
@@ -7,7 +8,8 @@ public class Checkin {
 	}
 	
 	public interface CheckinListener {
-		public void onCheckinDone(CheckinType checkin, long when, long workedHours);
+		public void onCheckinDone(CheckinType checkin, long checkinTime, long workedHours, long dailyMark);
+
 	}
 	
 	//private String timeStampString;
