@@ -56,34 +56,33 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 	public void onCheckinDone(CheckinType checkin, long checkinTime, long workedHours, long dailyMark) {
 
 		switch(checkin){
+
 			case ENTERED:
-				scheduleLunchTimeNotification(BusinessHourCommom.getEatingTimeCheckinTime(sharedPreferences));
+				scheduleLunchTimeNotification();
+			case ANY_ENTRANCE_BEFORE_LUNCH:
 			break;
 			
 			case LUNCH:
-				cancelLunchTimeNotification(checkinTime);
-				cancelDailyGoalCompleteNotification();
 				scheduleGobackToWorkNotification(checkinTime);
+				cancelLunchTimeNotification(checkinTime);
+			case ANY_LEAVING_BEFORE_LUNCH:
+				cancelDailyGoalCompleteNotification();
 			break;
 		
 			case AFTER_LUNCH:
+			case ANY_ENTRANCE_AFTER_LUNCH:
 				scheduleDailyGoalCompleteNotification(checkinTime, workedHours, dailyMark);
 				scheduleWorkdayCompleteNotification(checkinTime, workedHours);
 				scheduleWorkingTimeViolationNotification(checkinTime, workedHours);
 			break;
 			
 			case LEAVING:
+			case ANY_LEAVING_AFTER_LUNCH:
 				cancelDailyGoalCompleteNotification();
 				cancelWorkdayCompleteNotification(workedHours);
 				cancelWorkingTimeViolationNotification();
 			break;
-			
-			case ANY_ENTRANCE:
-			break;
-			
-			case ANY_LEAVING:
-			break;
-			
+		
 			default:
 			break;
 		}
@@ -318,7 +317,7 @@ public class CheckinNotificationManager extends BroadcastReceiver implements Che
 		}
 	}
 	
-	private void scheduleLunchTimeNotification(long when) {
+	private void scheduleLunchTimeNotification() {
 		if(isNotificationEnabled(mContext)){
 		
 			PendingIntent notifier = getLunchTimePendingIntent();

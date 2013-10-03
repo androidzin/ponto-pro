@@ -140,10 +140,7 @@ public class Today extends Workday {
 			return CheckinType.AFTER_LUNCH;
 		case 4:
 			return CheckinType.LEAVING;
-		case 5:
-			return CheckinType.ANY_ENTRANCE;
-		case 6:
-			return CheckinType.ANY_LEAVING;
+		
 		default:
 			return null;
 		}

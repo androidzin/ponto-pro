@@ -4,7 +4,8 @@ package br.com.androidzin.pontopro.model;
 public class Checkin {
 
 	public enum CheckinType {
-		ENTERED, LUNCH, AFTER_LUNCH, LEAVING, ANY_ENTRANCE, ANY_LEAVING
+		ENTERED, ANY_ENTRANCE_BEFORE_LUNCH, ANY_LEAVING_BEFORE_LUNCH, LUNCH,
+		AFTER_LUNCH, ANY_ENTRANCE_AFTER_LUNCH, ANY_LEAVING_AFTER_LUNCH, LEAVING
 	}
 	
 	public interface CheckinListener {

@@ -63,6 +63,8 @@ public class BusinessHourCommom {
 		nowDays.set(Calendar.HOUR_OF_DAY, pickedDate.get(Calendar.HOUR_OF_DAY));
 		nowDays.set(Calendar.MINUTE, pickedDate.get(Calendar.MINUTE));
 		
+		Log.d("DIEBETZ", pickedDate.getTimeInMillis() + "  " + nowDays.getTimeInMillis()+ " " + System.currentTimeMillis());
+		
 		return nowDays.getTimeInMillis();
 	}
 

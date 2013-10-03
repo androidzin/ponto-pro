@@ -1,5 +1,7 @@
 package br.com.androidzin.pontopro.test.notification.lunchtime;
 
+import java.util.Calendar;
+
 import android.content.Intent;
 import br.com.androidzin.pontopro.notification.CheckinNotificationManager;
 import br.com.androidzin.pontopro.test.notification.NotificationsBasic;
@@ -7,7 +9,14 @@ import br.com.androidzin.pontopro.util.Constants;
 
 public abstract class LunchTimeBasic extends NotificationsBasic {
 	
-	protected static final long EATING_TIME_TEST = Constants.hoursInMilis*12;
+	protected static long EATING_TIME_TEST = 0;
+	
+	public LunchTimeBasic() {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.HOUR_OF_DAY, 12);
+		c.set(Calendar.MINUTE, 0);
+		EATING_TIME_TEST = c.getTimeInMillis();
+	}
 	
 	protected abstract void setUpSharedPreference();
 	
