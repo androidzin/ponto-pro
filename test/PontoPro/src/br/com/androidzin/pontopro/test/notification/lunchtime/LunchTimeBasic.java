@@ -12,10 +12,8 @@ public abstract class LunchTimeBasic extends NotificationsBasic {
 	protected static long EATING_TIME_TEST = 0;
 	
 	public LunchTimeBasic() {
-		Calendar c = Calendar.getInstance();
-		c.set(Calendar.HOUR_OF_DAY, 12);
-		c.set(Calendar.MINUTE, 0);
-		EATING_TIME_TEST = c.getTimeInMillis();
+		super();
+		EATING_TIME_TEST = getTimeInMilis(12, 0);
 	}
 	
 	protected abstract void setUpSharedPreference();

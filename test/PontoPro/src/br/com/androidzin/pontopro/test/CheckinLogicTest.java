@@ -1,11 +1,11 @@
 package br.com.androidzin.pontopro.test;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.test.ActivityInstrumentationTestCase2;
 import br.com.androidzin.pontopro.MainActivity;
+import br.com.androidzin.pontopro.R;
 
 import com.jayway.android.robotium.solo.Solo;
 
@@ -79,7 +79,7 @@ public class CheckinLogicTest extends ActivityInstrumentationTestCase2<MainActiv
 	}
 	
 	public void testAssertCheckinInited(){
-		solo.clickOnText("Checkin");
+		solo.clickOnText(solo.getString(R.id.doCheckin));
 		//assertEquals(1, sharedPreferences.getInt(checkinPrefID, 0));
 		assertEquals(1, sharedPreferences.getInt(checkinCount, 0));
 		assertEquals(true, sharedPreferences.getBoolean(checkinStatus, false));
@@ -87,6 +87,19 @@ public class CheckinLogicTest extends ActivityInstrumentationTestCase2<MainActiv
 	
 	/*public void testAssertListenerCalled(){
 	}*/
+	
+	public void testCheckinBestPath(){
+		solo.getCurrentActivity().startActivity(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS));
+		solo.waitForText("Set time");
+		if(solo.isCheckBoxChecked(0)){
+			solo.clickOnCheckBox(0);
+		}
+		solo.clickInList(3);
+		solo.setTimePicker(0, 8, 0);
+		solo.clickOnButton(solo.getString(android.R.string.ok));
+		solo.clickOnText(solo.getString(R.id.doCheckin));
+		
+	}
 	
 	@Override
 	protected void tearDown() throws Exception {

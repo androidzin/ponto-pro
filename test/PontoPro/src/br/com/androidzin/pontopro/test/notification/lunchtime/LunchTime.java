@@ -26,25 +26,11 @@ public class LunchTime extends LunchTimeBasic {
 	}
 	
 	public void testScheduleWithMultipleCheckins(){
-		Calendar calendar = Calendar.getInstance();
-		
-		calendar.set(Calendar.HOUR_OF_DAY, 8);
-		calendar.set(Calendar.MINUTE, 0);
-		long eightOClock = calendar.getTimeInMillis();
-		
-		calendar.set(Calendar.MINUTE, 30);
-		long eightAndHalf = calendar.getTimeInMillis();
-		
-		calendar.set(Calendar.HOUR_OF_DAY, 9);
-		calendar.set(Calendar.MINUTE, 0);
-		long nineOClock = calendar.getTimeInMillis();
-		
-		calendar.set(Calendar.MINUTE, 30);
-		long nineAndHalf = calendar.getTimeInMillis();
-
-		calendar.set(Calendar.HOUR_OF_DAY, 11);
-		calendar.set(Calendar.MINUTE, 0);
-		long elevenOClock = calendar.getTimeInMillis();
+		long eightOClock = getTimeInMilis(8, 0);
+		long eightAndHalf = getTimeInMilis(8, 30);
+		long nineOClock = getTimeInMilis(9, 0);
+		long nineAndHalf = getTimeInMilis(9, 30);
+		long elevenOClock = getTimeInMilis(11, 0);
 		
 		notificationManager.onCheckinDone(CheckinType.ENTERED, eightOClock, 0L, 0L);
 		notificationManager.onCheckinDone(CheckinType.ANY_LEAVING_BEFORE_LUNCH, eightAndHalf, Constants.hoursInMilis/2, 0L);
