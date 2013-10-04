@@ -4,6 +4,7 @@ import android.content.Intent;
 import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
 import br.com.androidzin.pontopro.settings.BusinessHourCommom;
+import br.com.androidzin.pontopro.util.Constants;
 
 public class WorkdayComplete extends WorkdayBasic {
 	
@@ -11,6 +12,8 @@ public class WorkdayComplete extends WorkdayBasic {
 	protected void setUpSharedPreference() {
 		sharedPreferences.
 			edit().
+			putString(BusinessHourCommom.EATING_TIME_KEY, String.valueOf(Constants.hoursInMilis*2)).
+			putLong(BusinessHourCommom.LUNCH_CHECKIN_KEY, getTimeInMilis(12, 0)).
 			putString(BusinessHourCommom.WORKING_TIME_KEY, mContext.getString(R.string.eight_hour_value)).
 			putBoolean(WorkdayComplete.KEY_NOTIFICATION_ENABLED, true).
 			putBoolean(WorkdayComplete.KEY_WORKDAY_COMPLETE_NOTIFICATION, true).
@@ -23,6 +26,41 @@ public class WorkdayComplete extends WorkdayBasic {
 		Intent intent = notificationManager.getWorkdayCompleteIntent();
 		
 		assertAlarmIsScheduled(mContext, intent, mAlarmManager);
+	}
+	
+	public void testComplexWithMultipleCheckins(){
+		long eightOClock = getTimeInMilis(8, 0);
+		long eightAndHalf = getTimeInMilis(8, 30);
+		long nineOClock = getTimeInMilis(9, 0);
+		long twelveOClock = getTimeInMilis(12, 0);
+		long fourteenOClock = getTimeInMilis(14, 0);
+		long fifteenOClock = getTimeInMilis(15, 0);
+		long sixteenOClock = getTimeInMilis(16, 0);
+		long nineteenOClock = getTimeInMilis(19, 0);
+		long workedHours = 0;
+				
+		notificationManager.onCheckinDone(CheckinType.ENTERED, eightOClock, 0L, 0L);
+		workedHours =+ Constants.hoursInMilis/2;
+		notificationManager.onCheckinDone(CheckinType.ANY_LEAVING_BEFORE_LUNCH, eightAndHalf, workedHours, 0L);
+		
+		notificationManager.onCheckinDone(CheckinType.ANY_ENTRANCE_BEFORE_LUNCH, nineOClock, workedHours, 0L);
+		workedHours += 3*Constants.hoursInMilis;
+		notificationManager.onCheckinDone(CheckinType.LUNCH, twelveOClock, workedHours, 0L);
+		
+		notificationManager.onCheckinDone(CheckinType.AFTER_LUNCH, fourteenOClock, workedHours, 0L);
+		workedHours += Constants.hoursInMilis;
+		notificationManager.onCheckinDone(CheckinType.ANY_LEAVING_AFTER_LUNCH, fifteenOClock, workedHours, 0L);
+		
+		notificationManager.onCheckinDone(CheckinType.ANY_ENTRANCE_AFTER_LUNCH, sixteenOClock, workedHours, 0L);
+		workedHours += 3*Constants.hoursInMilis;
+		
+		Intent intent = notificationManager.getWorkdayCompleteIntent();
+		assertAlarmIsScheduled(mContext, intent, mAlarmManager);
+
+		notificationManager.onCheckinDone(CheckinType.LEAVING, nineteenOClock, workedHours, 0L);
+		
+		assertAlarmNotificationWasCancelled(mContext, intent);
+		
 	}
 
 

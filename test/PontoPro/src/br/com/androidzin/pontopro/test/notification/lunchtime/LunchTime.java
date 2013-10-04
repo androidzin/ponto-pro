@@ -1,7 +1,5 @@
 package br.com.androidzin.pontopro.test.notification.lunchtime;
 
-import java.util.Calendar;
-
 import android.content.Intent;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
 import br.com.androidzin.pontopro.settings.BusinessHourCommom;

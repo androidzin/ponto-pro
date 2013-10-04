@@ -1,8 +1,6 @@
 package br.com.androidzin.pontopro.test.notification.workdaytimeviolation;
 
 
-import java.util.Calendar;
-
 import android.content.Intent;
 import br.com.androidzin.pontopro.R;
 import br.com.androidzin.pontopro.model.Checkin.CheckinType;
@@ -58,7 +56,7 @@ public class WorkingTimeViolation extends WorkdayTimeViolationBasic {
 		notificationManager.onCheckinDone(CheckinType.ANY_LEAVING_AFTER_LUNCH, fifteenOClock, workedHours, 0L);
 		
 		notificationManager.onCheckinDone(CheckinType.ANY_ENTRANCE_AFTER_LUNCH, sixteenOClock, workedHours, 0L);
-		workedHours += 6*Constants.hoursInMilis;
+		workedHours += 4*Constants.hoursInMilis;
 		
 		Intent intent = notificationManager.getWorkingTimeViolationIntent();
 		assertAlarmIsScheduled(mContext, intent, mAlarmManager);
