@@ -101,7 +101,8 @@ public class DatabaseManager {
 			result = new Checkin();
 			result.setCheckinID(cursor.getLong(0));
 			result.setWorkdayID(cursor.getLong(1));
-			result.setTimeStamp(cursor.getString(2));
+			//result.setTimeStampSting(cursor.getString(2));
+			result.setTimeStamp(cursor.getLong(2));
 		}
 		return result;
 	}
@@ -125,7 +126,7 @@ public class DatabaseManager {
 				result = new Checkin();
 				result.setCheckinID(cursor.getLong(0));
 				result.setWorkdayID(cursor.getLong(1));
-				result.setTimeStamp(cursor.getString(2));
+				result.setTimeStamp(cursor.getLong(2));
 				checkinList.add(result);
 			} while ( cursor.moveToNext() );
 		}
@@ -152,7 +153,8 @@ public class DatabaseManager {
 				result = new Checkin();
 				result.setCheckinID(cursor.getLong(0));
 				result.setWorkdayID(cursor.getLong(1));
-				result.setTimeStamp(cursor.getString(2));
+				//result.setTimeStampSting(cursor.getString(2));
+				result.setTimeStamp(cursor.getLong(2));
 				checkinList.add(result);
 			} while ( cursor.moveToNext() );
 		}
@@ -184,7 +186,7 @@ public class DatabaseManager {
 				result = new Checkin();
 				result.setCheckinID(cursor.getLong(0));
 				result.setWorkdayID(cursor.getLong(1));
-				result.setTimeStamp(cursor.getString(2));
+				result.setTimeStamp(cursor.getLong(2));
 				checkinList.add(result);
 			} while ( cursor.moveToNext() );
 		}
@@ -250,7 +252,7 @@ public class DatabaseManager {
 	 * @param isClosed
 	 * @return
 	 */
-	public ContentValues createWorkdayValues(int dailyMark, int workedHours, boolean isClosed) {
+	public ContentValues createWorkdayValues(long dailyMark, long workedHours, boolean isClosed) {
 		ContentValues values = new ContentValues();
 		if ( dailyMark < 0 || workedHours < 0) 
 			throw new NumberFormatException();

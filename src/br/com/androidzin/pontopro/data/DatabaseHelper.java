@@ -25,9 +25,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			+ "workedHours INTEGER,"
 			+ "isClosed BOOLEAN,"
 			+ "dailyMark INTEGER" + ");";
-	private String createCheckinTable = "create table checkins (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+	/*private String createCheckinTable = "create table checkins (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
 			+ "workdayID LONG,"
 			+ "checkinHour DATE DEFAULT (datetime('now','localtime')),"
+			+ "FOREIGN KEY (workdayID) REFERENCES workday(_id) ON DELETE CASCADE ON UPDATE CASCADE"
+			+ ");";*/
+	
+	private String createCheckinTable = "create table checkins (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
+			+ "workdayID LONG,"
+			+ "checkinHour LONG,"
 			+ "FOREIGN KEY (workdayID) REFERENCES workday(_id) ON DELETE CASCADE ON UPDATE CASCADE"
 			+ ");";
 
@@ -47,7 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		db.execSQL(createWorkdayTable);
 		db.execSQL(createCheckinTable);
 		
-		insertFromFile(db, mContext);
+		//insertFromFile(db, mContext);
 	}
 
 	@Override

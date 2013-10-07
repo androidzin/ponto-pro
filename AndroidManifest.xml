@@ -29,6 +29,8 @@
             android:authorities="br.com.androidzin.pontopro.data.provider"
             android:exported="false"
             android:name=".data.provider.PontoProContentProvider"></provider>
+       
+        <receiver android:name=".notification.CheckinNotificationManager"/>
             
     </application>
 

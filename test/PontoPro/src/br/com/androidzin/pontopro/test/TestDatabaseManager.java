@@ -5,6 +5,7 @@ import java.util.List;
 import org.joda.time.DateTime;
 
 import android.content.ContentValues;
+import android.database.sqlite.SQLiteConstraintException;
 import android.test.AndroidTestCase;
 import android.test.RenamingDelegatingContext;
 import br.com.androidzin.pontopro.data.DatabaseManager;
@@ -94,7 +95,13 @@ public class TestDatabaseManager extends AndroidTestCase {
 	}
 	
 	public void testInsertCheckinInvalidWorkday(){
-		long id = databaseManager.addCheckin(10);
+		long id = 0;
+		try {
+			id = databaseManager.addCheckin(10);
+		} catch (SQLiteConstraintException e) {
+			// TODO: handle exception
+		}
+		
 		assertEquals(-1, id);
 	}
 	
