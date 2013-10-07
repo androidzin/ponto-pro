@@ -96,7 +96,7 @@ public abstract class NotificationsBasic extends AndroidTestCase{
 	public static void assertAlarmIsNotScheduled(Context context, Intent intent, AlarmManager alarmManager) {
 		PendingIntent notifier = getPendingIntentFromBroadcast(context, intent);
 		
-		assertNull("Notification was scheduled", notifier);
+		assertNull("Alarm was scheduled", notifier);
 
 		
 		cancelAlarm(alarmManager, notifier);
