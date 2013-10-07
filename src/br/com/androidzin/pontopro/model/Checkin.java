@@ -27,6 +27,14 @@ public class Checkin {
 		this.workdayID = workdayID;
 	}
 	
+	
+	
+	public Checkin(long workdayID, CheckinType checkinType){
+		this.type = checkinType;
+		this.workdayID = workdayID;
+		this.timeStamp = System.currentTimeMillis();
+	}
+	
 	public long getCheckinID() {
 		return checkinID;
 	}
