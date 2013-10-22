@@ -109,7 +109,7 @@
     <string name="gobacktowork_message">Veja pelo lado bom, você já compriu boa parte do expediente.</string>
     
     <string name="workday_complete_title">Hora de ir embora!</string>
-    <string name="workday_complete_message">Mais um dia de trabalho complete o/</string>
+    <string name="workday_complete_message">Mais um dia de trabalho completo o/</string>
     
     <string name="workingtime_violation_title">Você já trabalhou demais!</string>
     <string name="workingtime_violation_message">Você está prestes a violar a lei trabalhista, portanto hora de ir.</string>
