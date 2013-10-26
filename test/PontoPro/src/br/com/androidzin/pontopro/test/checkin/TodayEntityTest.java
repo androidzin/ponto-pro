@@ -151,11 +151,11 @@ public class TodayEntityTest extends AndroidTestCase {
 		//today.initData(mSharedPreferences, workdayID, workedTime, dailyMark);
 		
 		int checkinCounter = 1;
-		Checkin checkin = new Checkin(workdayID, CheckinType.ANY);
+		Checkin checkin = new Checkin(workdayID, CheckinType.ENTERED);
 		today.updateWorkdayStatus();
 		today.refreshData(checkin);
 		
-		assertEquals(CheckinType.ANY.ordinal(), mSharedPreferences.getInt(checkinType + checkinCounter, -1));
+		assertEquals(CheckinType.ENTERED.ordinal(), mSharedPreferences.getInt(checkinType + checkinCounter, -1));
 		assertEquals(checkinCounter, today.getCheckinCounter());
 	}
 	

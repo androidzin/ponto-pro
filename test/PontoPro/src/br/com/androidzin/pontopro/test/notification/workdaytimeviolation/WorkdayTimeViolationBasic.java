@@ -4,13 +4,9 @@ import android.content.Intent;
 import br.com.androidzin.pontopro.notification.CheckinNotificationManager;
 import br.com.androidzin.pontopro.test.notification.NotificationsBasic;
 
-public class WorkdayTimeViolationBasic extends NotificationsBasic {
-
-	@Override
-	protected void setUpSharedPreference() {
-		// TODO Auto-generated method stub
-
-	}
+public abstract class WorkdayTimeViolationBasic extends NotificationsBasic {
+	
+	static final String KEY_WORKING_TIME_VIOLATION_NOTIFICATION = "pref_key_notification_maxhour_enabled";
 
 	@Override
 	public void testNotificationIntent(){

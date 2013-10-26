@@ -1,5 +1,7 @@
 package br.com.androidzin.pontopro.test.notification;
 
+import java.util.Calendar;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -17,9 +19,21 @@ public abstract class NotificationsBasic extends AndroidTestCase{
 	protected SharedPreferences sharedPreferences;
 	protected AlarmManager mAlarmManager;
 	
+	private Calendar calendar;
+	
 	public static final String KEY_NOTIFICATION_ENABLED = "pref_key_notification_enabled";
 	
+	public NotificationsBasic() {
+		calendar = Calendar.getInstance();
+	}
 	
+	public long getTimeInMilis(int hourOfDay, int minutes){
+		calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		calendar.set(Calendar.MINUTE, minutes);
+		return calendar.getTimeInMillis();
+	}
+
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -82,7 +96,7 @@ public abstract class NotificationsBasic extends AndroidTestCase{
 	public static void assertAlarmIsNotScheduled(Context context, Intent intent, AlarmManager alarmManager) {
 		PendingIntent notifier = getPendingIntentFromBroadcast(context, intent);
 		
-		assertNull("Notification was scheduled", notifier);
+		assertNull("Alarm was scheduled", notifier);
 
 		
 		cancelAlarm(alarmManager, notifier);

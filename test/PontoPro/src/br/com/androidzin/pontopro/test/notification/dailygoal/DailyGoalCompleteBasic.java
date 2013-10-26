@@ -1,19 +1,17 @@
-package br.com.androidzin.pontopro.test.notification.workdaycomplete;
+package br.com.androidzin.pontopro.test.notification.dailygoal;
 
 import android.content.Intent;
 import br.com.androidzin.pontopro.notification.CheckinNotificationManager;
 import br.com.androidzin.pontopro.test.notification.NotificationsBasic;
 
-public abstract class WorkdayBasic extends NotificationsBasic {
-	
-	public static final String KEY_WORKDAY_COMPLETE_NOTIFICATION = "pref_key_notification_bussineshour_enabled";
+public abstract class DailyGoalCompleteBasic extends NotificationsBasic {
 	
 	protected abstract void setUpSharedPreference();
 	
 	public void testNotificationIntent(){
-		Intent intent = notificationManager.getWorkdayCompleteIntent();
+		Intent intent = notificationManager.getDailyGoalCompleteTimeIntent();
 		
-		assertEquals(CheckinNotificationManager.WORKDAY_COMPLETE,
+		assertEquals(CheckinNotificationManager.DAILY_GOAL_COMPLETE,
 				intent.getAction());
 		assertEquals(CheckinNotificationManager.class.getName(),
 				intent.getComponent().getClassName());

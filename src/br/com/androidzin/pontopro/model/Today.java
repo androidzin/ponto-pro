@@ -133,23 +133,11 @@ public class Today extends Workday {
 	
 	public CheckinType getCheckinType(){
 		//// ENTERED, LUNCH, AFTER_LUNCH, LEAVING, ANY_ENTRANCE, ANY_LEAVING, ANY
-		switch (checkinCounter) {
-		case 1:
-			return CheckinType.ENTERED;
-		case 2:
-			return CheckinType.LUNCH;
-		case 3:
-			return CheckinType.AFTER_LUNCH;
-		case 4:
-			return CheckinType.LEAVING;
-		case 5:
-			return CheckinType.ANY_ENTRANCE;
-		case 6:
-			return CheckinType.ANY_LEAVING;
-		default:
-			break;
+		CheckinType currentCheckin = null;
+		if(checkinCounter <= CheckinType.values().length ){
+			currentCheckin = CheckinType.values()[checkinCounter - 1];
 		}
-		return CheckinType.ANY;
+		return currentCheckin;
 	}
 
 	public void refreshData(Checkin checkin) {
@@ -159,7 +147,7 @@ public class Today extends Workday {
 	
 	private void notifyListener(){
 		if ( mCheckinListener != null ) {
-			mCheckinListener.onCheckinDone(getCheckinType(), System.currentTimeMillis(), getWorkedTime());
+			mCheckinListener.onCheckinDone(getCheckinType(), System.currentTimeMillis(), getWorkedTime(), getDailyMark());
 		}
 	}
 	
